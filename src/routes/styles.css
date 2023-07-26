@@ -18,11 +18,42 @@
 		Cantarell, 'Open Sans', 'Helvetica Neue', Arial, sans-serif;
 	font-family: var(--font-body);
 	color: black;
+	--bg-dark: #262626;
+	--bg-light: #e6e4df;
+	--bg-light-green: #e9f1cf;
+	--text-light: #fefefe;
+	--text-dark: var(--bg-dark);
+	--text-highlight: #ebffbf;
+	--gutter-sm: 16px;
+	--gutter-lg: 32px;
+	--cubic-ease-in-out: cubic-bezier(0.4, 0, 0.2, 1);
+	--top-nav-height: 80px;
 }
-
+html,
+body {
+	margin: 0;
+	padding: 0;
+}
 body {
 	min-height: 100vh;
-	margin: 0;
+	background: var(--bg-dark);
+	color: var(--text-light);
+}
+
+* {
+	box-sizing: border-box;
+}
+
+.gutter {
+	padding-left: var(--gutter-sm);
+	padding-right: var(--gutter-sm);
+}
+
+@media (min-width: 560px) {
+	.gutter {
+		padding-left: var(--gutter-lg);
+		padding-right: var(--gutter-lg);
+	}
 }
 
 h1,
