@@ -17,21 +17,23 @@
 	let linkElements: { [key: string]: HTMLAnchorElement } = {};
 	let fromToAnim = { from: { x: 0, width: 0 }, to: { x: 0, width: 0 } };
 
+	$: currentRoute = $page.url.pathname ?? '';
+
 	$: menuLinks = [
 		{
 			name: 'Work',
 			url: '/work',
-			isActive: ($page.route.id?.indexOf('/work') ?? -1) > -1
+			isActive: (currentRoute.indexOf('/work') ?? -1) > -1
 		},
 		{
 			name: 'About',
 			url: '/about',
-			isActive: ($page.route.id?.indexOf('/about') ?? -1) > -1
+			isActive: (currentRoute.indexOf('/about') ?? -1) > -1
 		},
 		{
 			name: 'Connect',
 			url: '/connect',
-			isActive: ($page.route.id?.indexOf('/connect') ?? -1) > -1
+			isActive: (currentRoute.indexOf('/connect') ?? -1) > -1
 		}
 	];
 
@@ -63,11 +65,6 @@
 			});
 		}
 	}
-
-	function highlight(
-		node: HTMLElement,
-		{ from, to, duration }: { from: BorderPosition; to: BorderPosition; duration: number }
-	) {}
 </script>
 
 <header class:isMenuOpen class="gutter">
@@ -126,7 +123,7 @@
 		border-radius: 50px;
 		border: 1px solid transparent;
 		padding: 0 36px;
-		height: 48px;
+		height: var(--button-height-large);
 		justify-content: center;
 		align-items: center;
 		transition: linear 180ms;
@@ -148,11 +145,15 @@
 		display: block;
 		position: relative;
 		background: transparent;
-		border: 1px solid var(--text-light);
+		border: 1px solid var(--text-light-40);
 		border-radius: 80px;
 		width: 40px;
 		height: 40px;
 		cursor: pointer;
+		transition: linear 180ms border-color;
+	}
+	.menu-btn {
+		border-color: var(--text-light);
 	}
 	.border {
 		position: absolute;
@@ -161,7 +162,7 @@
 		border: 1px solid var(--text-light);
 		border-radius: 80px;
 		width: 0;
-		height: 48px;
+		height: var(--button-height-large);
 		pointer-events: none;
 		visibility: hidden;
 	}
@@ -191,12 +192,16 @@
 	}
 	.insta-btn {
 		margin-left: 32px;
-		border: 1px solid var(--text-light);
+		border: 1px solid var(--text-light-40);
 		border-radius: 80px;
-		width: 48px;
-		height: 48px;
+		width: var(--button-height-large);
+		height: var(--button-height-large);
 		justify-content: center;
 		align-items: center;
+		transition: linear 180ms border-color;
+	}
+	.insta-btn:hover {
+		border-color: var(--text-light);
 	}
 	@media (min-width: 560px) {
 		.h-menu {

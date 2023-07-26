@@ -2,7 +2,6 @@
 import type { PageServerLoad } from './$types';
 import { getClient } from '$lib/sanity';
 import type { Project } from '$lib/types';
-import { error } from '@sveltejs/kit';
 
 // it so that it gets served as a static asset in production
 export const prerender = true;

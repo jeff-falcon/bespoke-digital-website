@@ -5,13 +5,22 @@
 	const randomId = crypto.randomUUID().toString();
 
 	export let project: Project;
+	export let size: 'half' | 'full' = 'half';
+
+	$: isFull = size === 'full';
 </script>
 
-<article class="project">
+<article class="project" class:isFull>
 	<a href="/work/{project.slug}">
 		<div class="thumbnail">
 			{#if project.thumb_vimeo_src}
-				<VimeoBG id={project.slug || randomId} src={project.thumb_vimeo_src} />
+				<VimeoBG
+					id={project.slug || randomId}
+					src={isFull && project.thumb_vimeo_src_hd
+						? project.thumb_vimeo_src_hd
+						: project.thumb_vimeo_src}
+					placeholder={project.image?.secure_url ?? ''}
+				/>
 			{:else if project.image}
 				<img
 					src={project.image.secure_url}
@@ -29,6 +38,13 @@
 </article>
 
 <style>
+	.project {
+		--aspect-pct: 81.78%;
+	}
+	.project.isFull {
+		--aspect-pct: 63.2%;
+		grid-column: 1 / span 2;
+	}
 	.project img {
 		display: block;
 		object-fit: cover;
@@ -57,7 +73,7 @@
 	}
 	@media (min-width: 560px) {
 		.thumbnail {
-			padding-top: 81.78%;
+			padding-top: var(--aspect-pct);
 			position: relative;
 		}
 		.thumbnail img {

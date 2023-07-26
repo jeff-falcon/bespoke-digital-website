@@ -22,6 +22,7 @@
 	--bg-light: #e6e4df;
 	--bg-light-green: #e9f1cf;
 	--text-light: #fefefe;
+	--text-light-40: hsla(0, 0%, 100%, 0.4);
 	--text-dark: var(--bg-dark);
 	--text-highlight: #ebffbf;
 	--gutter-sm: 16px;
@@ -39,6 +40,16 @@
 	--level2: 200;
 	--level1: 100;
 	--level0: 0;
+	--26pt: 1.625rem;
+	--24pt: 1.5rem;
+	--22pt: 1.375rem;
+	--20pt: 1.25rem;
+	--18pt: 1.125rem;
+	--16pt: 1rem;
+	--14pt: 0.875rem;
+	--12pt: 0.75rem;
+	--button-height-large: 48px;
+	--button-height-small: 40px;
 }
 html,
 body {
@@ -60,21 +71,22 @@ body {
 	padding-right: var(--gutter-sm);
 }
 
-@media (min-width: 560px) {
-	.gutter {
-		padding-left: var(--gutter-lg);
-		padding-right: var(--gutter-lg);
-	}
-}
-
 h1,
 h2,
+h3,
+h4,
+h5,
+h6,
 p {
-	font-weight: 400;
+	font-weight: normal;
 }
-
-p {
-	line-height: 1.5;
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+	line-height: 2rem;
 }
 
 a {
@@ -87,12 +99,23 @@ a:hover {
 }
 
 h1 {
-	font-size: 2rem;
-	text-align: center;
+	font-size: var(--24pt);
 }
 
 h2 {
-	font-size: 1rem;
+	font-size: var(--22pt);
+}
+
+h3,
+h4,
+h5,
+h6 {
+	font-size: var(--20pt);
+}
+
+p {
+	font-size: var(--16pt);
+	line-height: 1.5rem;
 }
 
 input,
@@ -105,12 +128,6 @@ button:focus:not(:focus-visible) {
 	outline: none;
 }
 
-@media (min-width: 720px) {
-	h1 {
-		font-size: 2.4rem;
-	}
-}
-
 .visually-hidden {
 	border: 0;
 	clip: rect(0 0 0 0);
@@ -121,4 +138,34 @@ button:focus:not(:focus-visible) {
 	position: absolute;
 	width: 1px;
 	white-space: nowrap;
+}
+
+/* Desktop sizing */
+
+@media (min-width: 560px) {
+	.gutter {
+		padding-left: var(--gutter-lg);
+		padding-right: var(--gutter-lg);
+	}
+
+	h1 {
+		font-size: var(--26pt);
+	}
+
+	h2 {
+		font-size: var(--24pt);
+	}
+
+	h3 {
+		font-size: var(--22pt);
+	}
+
+	h4,
+	h5,
+	h6 {
+		font-size: var(--20pt);
+	}
+	p {
+		font-size: var(--18pt);
+	}
 }

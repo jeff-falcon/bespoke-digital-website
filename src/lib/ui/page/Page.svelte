@@ -1,12 +1,13 @@
 <script lang="ts">
+	import type { Page } from '$lib/types';
 	import ProjectThumb from '$lib/ui/project/ProjectThumb.svelte';
-	import type { PageData } from './$types';
-	export let data: PageData;
+
+	export let data: Page;
 </script>
 
 <svelte:head>
-	<title>Home</title>
-	<meta name="description" content="Bespoke Digital" />
+	<title>{data.name ?? 'Home'} | Bespoke Digital</title>
+	<meta name="description" content={data.description ?? 'Bespoke Digital'} />
 </svelte:head>
 
 <div class="gutter">
@@ -14,8 +15,8 @@
 		{#if data.components}
 			{#each data.components as component}
 				{#if component._type === 'project_grid'}
-					{#each component.projects as project}
-						<ProjectThumb {project} />
+					{#each component.projects as project, index}
+						<ProjectThumb {project} size={index === 0 ? 'full' : 'half'} />
 					{/each}
 				{/if}
 			{/each}

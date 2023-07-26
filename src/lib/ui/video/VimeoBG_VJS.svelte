@@ -1,7 +1,6 @@
 <script lang="ts">
-	import { onMount } from 'svelte';
 	export let src: string;
-	export let placeholder: string | null = null;
+	export let placeholder: string = '';
 	export let id: string;
 
 	let videoEl: HTMLVideoElement | null = null;
@@ -17,6 +16,7 @@
 		autoplay
 		muted
 		preload="auto"
+		poster={placeholder}
 	>
 		<source {src} />
 	</video>

@@ -16,6 +16,7 @@ export interface Project {
 	image?: CloudinaryImage;
 	thumb_vimeo_id?: string;
 	thumb_vimeo_src?: string;
+	thumb_vimeo_src_hd?: string;
 }
 export interface ProjectGrid {
 	_type: 'project_grid';
