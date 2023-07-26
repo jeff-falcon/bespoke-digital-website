@@ -107,6 +107,11 @@
 		justify-content: space-between;
 		align-items: center;
 		color: white;
+		z-index: var(--level10);
+		transition: linear 300ms background-color;
+		backdrop-filter: blur(14px);
+		-webkit-backdrop-filter: blur(14px);
+		background-color: rgba(38, 38, 38, 0.8);
 	}
 	.right {
 		display: flex;

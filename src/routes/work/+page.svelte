@@ -10,8 +10,6 @@
 	<meta name="description" content="Bespoke Digital" />
 </svelte:head>
 
-<h1>Projects</h1>
-
 <div class="gutter">
 	<section class="projects">
 		{#each data.projects as project}
@@ -30,8 +28,8 @@
 						{/if}
 					</div>
 					<div class="info">
-						<h2>{project.client}</h2>
-						<h3>{project.name}</h3>
+						<h2 class="name">{project.name}</h2>
+						<h3 class="client">{project.client}</h3>
 					</div>
 				</a>
 			</article>
@@ -53,6 +51,23 @@
 	.project a {
 		display: block;
 		text-decoration: none;
+	}
+	.info {
+		display: flex;
+		align-items: center;
+		gap: 1.5rem;
+	}
+	.info .name {
+		font-size: 1.25rem;
+		text-transform: uppercase;
+		line-height: 1.5rem;
+		font-weight: normal;
+	}
+	.info .client {
+		font-size: 1rem;
+		opacity: 0.6;
+		line-height: 1.5rem;
+		font-weight: normal;
 	}
 	@media (min-width: 560px) {
 		.projects {

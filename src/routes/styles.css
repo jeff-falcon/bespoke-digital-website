@@ -28,6 +28,17 @@
 	--gutter-lg: 32px;
 	--cubic-ease-in-out: cubic-bezier(0.4, 0, 0.2, 1);
 	--top-nav-height: 80px;
+	--level10: 1000;
+	--level9: 900;
+	--level8: 800;
+	--level7: 700;
+	--level6: 600;
+	--level5: 500;
+	--level4: 400;
+	--level3: 300;
+	--level2: 200;
+	--level1: 100;
+	--level0: 0;
 }
 html,
 body {
