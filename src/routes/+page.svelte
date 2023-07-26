@@ -16,7 +16,7 @@
 	<section class="projects">
 		{#each data.projects as project}
 			<article class="project">
-				<a href="/work/{project.slug.current}">
+				<a href="/work/{project.slug}">
 					<div class="thumbnail">
 						{#if project.thumb_vimeo_src}
 							<VimeoBg id={project.slug} src={project.thumb_vimeo_src} />

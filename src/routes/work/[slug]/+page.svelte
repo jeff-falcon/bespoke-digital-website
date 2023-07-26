@@ -15,16 +15,20 @@
 	<section>
 		<h2>{data.client}</h2>
 		<h3>{data.name}</h3>
-		<div class="description">
-			<PortableText value={data.description} />
-		</div>
+		{#if data.description}
+			<div class="description">
+				<PortableText value={data.description} />
+			</div>
+		{/if}
 		<div class="thumbnail">
-			<img
-				src={data.image.secure_url}
-				width={data.image.width}
-				height={data.image.height}
-				alt={data.name}
-			/>
+			{#if data.image?.secure_url}
+				<img
+					src={data.image.secure_url}
+					width={data.image.width}
+					height={data.image.height}
+					alt={data.name}
+				/>
+			{/if}
 		</div>
 	</section>
 {/if}
