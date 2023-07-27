@@ -79,4 +79,11 @@
 	.cover.isVideo.isVideoPlaying picture {
 		visibility: hidden;
 	}
+	.cover.isVideo :global(.video-container) {
+		opacity: 0;
+		transition: 1200ms linear opacity;
+	}
+	.cover.isVideo.isVideoPlaying :global(.video-container) {
+		opacity: 1;
+	}
 </style>
