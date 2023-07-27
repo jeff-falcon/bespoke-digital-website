@@ -1,25 +1,11 @@
 import { createClient } from '@sanity/client';
 import { SANITY_TOKEN, SANITY_DATASET, SANITY_PROJECT_ID } from '$env/static/private';
-import type { Hero, Page, Project, ProjectGrid } from '$lib/types';
+import type { Hero, Page, ProjectGrid } from '$lib/types';
 import { error } from '@sveltejs/kit';
+import { parseCloudinaryImage, parseProjectFromData } from './parse';
 
 export function getClient() {
 	return client;
-}
-
-function parseProjectFromData(project: any) {
-	return {
-		_type: 'project',
-		pageTitle: project.name,
-		name: project.name,
-		slug: project.slug.current ?? '',
-		description: project.description,
-		client: project.client,
-		image: project.image,
-		thumb_vimeo_id: project.thumb_vimeo_id,
-		thumb_vimeo_src: project.thumb_vimeo_src,
-		thumb_vimeo_src_hd: project.thumb_vimeo_src_hd
-	} satisfies Project;
 }
 
 export async function getPage(slug: string) {
@@ -50,8 +36,8 @@ export async function getPage(slug: string) {
 						client: pageData.hero.client,
 						category: pageData.hero.category,
 						description: pageData.hero.description,
-						image_desktop: pageData.hero.image_desktop,
-						image_mobile: pageData.hero.image_mobile
+						image_desktop: parseCloudinaryImage(pageData.hero.image_desktop),
+						image_mobile: parseCloudinaryImage(pageData.hero.image_mobile)
 				  } satisfies Hero)
 				: undefined,
 			components:

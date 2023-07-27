@@ -2,6 +2,11 @@ import type { InputValue } from '@portabletext/svelte/ptTypes';
 
 export interface CloudinaryImage {
 	url: string;
+	sizes?: {
+		sm: string;
+		md: string;
+		lg: string;
+	};
 	width: number;
 	height: number;
 }

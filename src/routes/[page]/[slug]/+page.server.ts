@@ -1,32 +1,9 @@
 // since there's no dynamic data here, we can prerender
 import type { PageServerLoad } from './$types';
 import { getClient } from '$lib/sanity';
-import type { CloudinaryImage, Project, ProjectMedia, ProjectMediaPair } from '$lib/types';
+import type { Project, ProjectMedia, ProjectMediaPair } from '$lib/types';
 import { error } from '@sveltejs/kit';
-
-function parseCloudinaryImage(image: any) {
-	if (!image) return undefined;
-	return {
-		url:
-			image.derived?.[0]?.secure_url ??
-			image.secure_url.replace(/\/upload\/(.*?)v/, `/upload/f_auto,q_auto:good/v`),
-		width: image.width,
-		height: image.height
-	} satisfies CloudinaryImage;
-}
-
-function parseProjectMediaFromData(project: any) {
-	return {
-		_type: 'project_media',
-		_key: project._id,
-		name: project.name,
-		image: parseCloudinaryImage(project.image),
-		kind: project.kind,
-		thumb_vimeo_id: project.thumb_vimeo_id,
-		thumb_vimeo_src: project.thumb_vimeo_src,
-		thumb_vimeo_src_hd: project.thumb_vimeo_src_hd
-	} satisfies ProjectMedia;
-}
+import { parseCloudinaryImage, parseProjectMediaFromData } from '$lib/parse';
 
 // it so that it gets served as a static asset in production
 export const prerender = true;

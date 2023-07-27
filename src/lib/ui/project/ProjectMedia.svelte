@@ -1,5 +1,5 @@
 <script lang="ts">
-	import type { Project, ProjectMedia } from '$lib/types';
+	import type { ProjectMedia } from '$lib/types';
 	import VimeoBG from '$lib/ui/video/VimeoBG_VJS.svelte';
 
 	export let media: ProjectMedia;
@@ -12,12 +12,26 @@
 		<VimeoBG id="media-{media._key}" src={videoBgSrc || ''} placeholder={media.image?.url ?? ''} />
 	{/if}
 	{#if media.image}
-		<img
-			src={media.image.url}
-			width={media.image.width}
-			height={media.image.height}
-			alt={media.name}
-		/>
+		{#if media.image.sizes}
+			<picture>
+				<source srcset={media.image.sizes.sm} media="(max-width: 559px)" />
+				<source srcset={media.image.sizes.md} media="(min-width: 560px) and (max-width: 1199px)" />
+				<source srcset={media.image.sizes.lg} media="(min-width: 1200px)" />
+				<img
+					src={media.image.sizes.sm}
+					width={media.image.width}
+					height={media.image.height}
+					alt={media.name}
+				/>
+			</picture>
+		{:else}
+			<img
+				src={media.image.url}
+				width={media.image.width}
+				height={media.image.height}
+				alt={media.name}
+			/>
+		{/if}
 	{/if}
 </figure>
 

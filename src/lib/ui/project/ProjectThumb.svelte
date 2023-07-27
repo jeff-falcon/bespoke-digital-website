@@ -22,12 +22,29 @@
 					placeholder={project.image?.url ?? ''}
 				/>
 			{:else if project.image}
-				<img
-					src={project.image.url}
-					width={project.image.width}
-					height={project.image.height}
-					alt={project.name}
-				/>
+				{#if project.image.sizes}
+					<picture>
+						<source srcset={project.image.sizes.sm} media="(max-width: 559px)" />
+						<source
+							srcset={project.image.sizes.md}
+							media="(min-width: 560px) and (max-width: 1199px)"
+						/>
+						<source srcset={project.image.sizes.lg} media="(min-width: 1200px)" />
+						<img
+							src={project.image.sizes.sm}
+							width={project.image.width}
+							height={project.image.height}
+							alt={project.name}
+						/>
+					</picture>
+				{:else}
+					<img
+						src={project.image.url}
+						width={project.image.width}
+						height={project.image.height}
+						alt={project.name}
+					/>
+				{/if}
 			{/if}
 		</div>
 		<div class="info">
@@ -57,21 +74,25 @@
 		text-decoration: none;
 	}
 	.info {
-		display: flex;
 		align-items: center;
-		gap: 1.5rem;
+		margin-top: 1.5rem;
 	}
 	.info .name {
 		font-size: 1.25rem;
 		text-transform: uppercase;
 		line-height: 1.5rem;
 		font-weight: normal;
+		display: inline-block;
+		margin: 0 2rem 0 0;
 	}
 	.info .client {
 		font-size: 1rem;
 		opacity: 0.6;
 		line-height: 1.5rem;
 		font-weight: normal;
+		display: inline;
+		white-space: nowrap;
+		margin: 0;
 	}
 	@media (min-width: 560px) {
 		.thumbnail {
