@@ -1,10 +1,25 @@
 import { createClient } from '@sanity/client';
 import { SANITY_TOKEN, SANITY_DATASET, SANITY_PROJECT_ID } from '$env/static/private';
-import type { Page, Project, ProjectGrid } from '$lib/types';
+import type { Hero, Page, Project, ProjectGrid } from '$lib/types';
 import { error } from '@sveltejs/kit';
 
 export function getClient() {
 	return client;
+}
+
+function parseProjectFromData(project: any) {
+	return {
+		_type: 'project',
+		pageTitle: project.name,
+		name: project.name,
+		slug: project.slug.current ?? '',
+		description: project.description,
+		client: project.client,
+		image: project.image,
+		thumb_vimeo_id: project.thumb_vimeo_id,
+		thumb_vimeo_src: project.thumb_vimeo_src,
+		thumb_vimeo_src_hd: project.thumb_vimeo_src_hd
+	} satisfies Project;
 }
 
 export async function getPage(slug: string) {
@@ -15,7 +30,7 @@ export async function getPage(slug: string) {
 		name,
 		"slug": slug.current,
 		description,
-		hero->,
+		hero->{...,project->},
 		components[]->{..., projects[]->}
 	}`;
 	try {
@@ -28,28 +43,24 @@ export async function getPage(slug: string) {
 			name: pageData.name,
 			slug: pageData.slug,
 			description: pageData.description,
-			hero: pageData.hero,
+			hero: pageData.hero
+				? ({
+						_type: 'hero',
+						name: pageData.hero.name,
+						client: pageData.hero.client,
+						category: pageData.hero.category,
+						description: pageData.hero.description,
+						image_desktop: pageData.hero.image_desktop,
+						image_mobile: pageData.hero.image_mobile
+				  } satisfies Hero)
+				: undefined,
 			components:
 				pageData.components?.map((component: any) => {
 					if (component._type === 'project_grid') {
 						return {
 							_type: component._type,
 							name: component.name,
-							projects:
-								component.projects?.map((project: any) => {
-									return {
-										_type: 'project',
-										pageTitle: project.name,
-										name: project.name,
-										slug: project.slug.current ?? '',
-										description: project.description,
-										client: project.client,
-										image: project.image,
-										thumb_vimeo_id: project.thumb_vimeo_id,
-										thumb_vimeo_src: project.thumb_vimeo_src,
-										thumb_vimeo_src_hd: project.thumb_vimeo_src_hd
-									} satisfies Project;
-								}) ?? []
+							projects: component.projects?.map((data: any) => parseProjectFromData(data)) ?? []
 						} satisfies ProjectGrid;
 					}
 				}) ?? []

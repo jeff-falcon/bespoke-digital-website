@@ -32,7 +32,9 @@
 		</div>
 		<div class="info">
 			<h2 class="name">{project.name}</h2>
-			<h3 class="client">{project.client}</h3>
+			{#if project.client}
+				<h3 class="client">{project.client}</h3>
+			{/if}
 		</div>
 	</a>
 </article>
