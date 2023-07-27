@@ -40,6 +40,7 @@
 	--level2: 200;
 	--level1: 100;
 	--level0: 0;
+	--32pt: 2rem;
 	--26pt: 1.625rem;
 	--24pt: 1.5rem;
 	--22pt: 1.375rem;
@@ -101,6 +102,9 @@ a:hover {
 h1 {
 	font-size: var(--24pt);
 }
+h1.display {
+	font-size: 2rem;
+}
 
 h2 {
 	font-size: var(--22pt);
@@ -110,7 +114,7 @@ h3,
 h4,
 h5,
 h6 {
-	font-size: var(--20pt);
+	font-size: var(--18pt);
 }
 
 p {
@@ -156,10 +160,7 @@ button:focus:not(:focus-visible) {
 		font-size: var(--24pt);
 	}
 
-	h3 {
-		font-size: var(--22pt);
-	}
-
+	h3,
 	h4,
 	h5,
 	h6 {

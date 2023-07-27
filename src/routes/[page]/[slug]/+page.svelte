@@ -1,6 +1,6 @@
 <script lang="ts">
 	import type { Project } from '$lib/types';
-	import ProjectMedia from '$lib/ui/project/ProjectMedia.svelte';
+	import ProjectMediaComponent from '$lib/ui/project/ProjectMediaComponent.svelte';
 	import type { PageData } from './$types';
 	import { PortableText } from '@portabletext/svelte';
 
@@ -30,12 +30,12 @@
 			<section class="medias gutter">
 				{#each project.media as item}
 					{#if item._type === 'project_media'}
-						<ProjectMedia media={item} />
+						<ProjectMediaComponent media={item} />
 					{/if}
 					{#if item._type === 'item_pair'}
 						<div class="pair">
-							<ProjectMedia media={item.left} />
-							<ProjectMedia media={item.right} />
+							<ProjectMediaComponent media={item.left} />
+							<ProjectMediaComponent media={item.right} />
 						</div>
 					{/if}
 				{/each}

@@ -1,9 +1,32 @@
 <script lang="ts">
+	import { onMount, createEventDispatcher } from 'svelte';
+	import videojs from 'video.js';
+
+	const dispatch = createEventDispatcher<{ isPlaying: boolean }>();
+
 	export let src: string;
 	export let placeholder: string = '';
 	export let id: string;
 
 	let videoEl: HTMLVideoElement | null = null;
+
+	function onPlaying() {
+		dispatch('isPlaying', true);
+	}
+	function onPaused() {
+		dispatch('isPlaying', false);
+	}
+
+	onMount(() => {
+		const player = videojs(videoEl!);
+		player.on('playing', onPlaying);
+		player.on('pause', onPaused);
+		return () => {
+			player.off('playing', onPlaying);
+			player.off('pause', onPaused);
+			player.dispose();
+		};
+	});
 </script>
 
 <div class="video-container">
@@ -24,12 +47,14 @@
 
 <style>
 	.video-container,
-	video {
+	.video-container :global(video) {
 		width: 100%;
 		height: 100%;
 		position: absolute;
 		top: 0;
 		left: 0;
+	}
+	.video-container :global(video) {
 		object-fit: cover;
 	}
 </style>

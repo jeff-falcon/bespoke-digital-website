@@ -3,13 +3,25 @@
 	import VimeoBG from '$lib/ui/video/VimeoBG_VJS.svelte';
 
 	export let media: ProjectMedia;
+	export let cover = false;
 
+	let isVideoPlaying = false;
 	$: videoBgSrc = media.thumb_vimeo_src || media.thumb_vimeo_src_hd;
+	$: isVideo = media.kind === 'video-bg' && Boolean(videoBgSrc);
+
+	function onVideoPlaying(e: { detail: boolean }) {
+		isVideoPlaying = e.detail;
+	}
 </script>
 
-<figure class="media">
-	{#if media.kind === 'video-bg' && videoBgSrc}
-		<VimeoBG id="media-{media._key}" src={videoBgSrc || ''} placeholder={media.image?.url ?? ''} />
+<figure class="media" class:cover class:isVideo class:isVideoPlaying>
+	{#if isVideo}
+		<VimeoBG
+			id="media-{media._key}"
+			src={videoBgSrc || ''}
+			placeholder={media.image?.url ?? ''}
+			on:isPlaying={onVideoPlaying}
+		/>
 	{/if}
 	{#if media.image}
 		{#if media.image.sizes}
@@ -50,5 +62,21 @@
 	}
 	.media :global(.video-container) {
 		z-index: 1;
+	}
+	.cover.media,
+	.cover img,
+	.cover picture {
+		position: absolute;
+		top: 0;
+		left: 0;
+		width: 100%;
+		height: 100%;
+		display: block;
+	}
+	.cover img {
+		object-fit: cover;
+	}
+	.cover.isVideo.isVideoPlaying picture {
+		visibility: hidden;
 	}
 </style>
