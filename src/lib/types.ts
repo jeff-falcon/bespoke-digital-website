@@ -1,7 +1,7 @@
 import type { InputValue } from '@portabletext/svelte/ptTypes';
 
 export interface CloudinaryImage {
-	secure_url: string;
+	url: string;
 	width: number;
 	height: number;
 }
@@ -49,7 +49,7 @@ export interface ProjectMedia {
 	_type: 'project_media';
 	_key: string;
 	name: string;
-	image: CloudinaryImage;
+	image?: CloudinaryImage;
 	kind?: 'image' | 'video-bg' | 'video-player';
 	thumb_vimeo_id?: string;
 	thumb_vimeo_src?: string;

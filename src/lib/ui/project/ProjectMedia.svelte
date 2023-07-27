@@ -9,15 +9,11 @@
 
 <figure class="media">
 	{#if media.kind === 'video-bg' && videoBgSrc}
-		<VimeoBG
-			id="media-{media._key}"
-			src={videoBgSrc || ''}
-			placeholder={media.image?.secure_url ?? ''}
-		/>
+		<VimeoBG id="media-{media._key}" src={videoBgSrc || ''} placeholder={media.image?.url ?? ''} />
 	{/if}
 	{#if media.image}
 		<img
-			src={media.image.secure_url}
+			src={media.image.url}
 			width={media.image.width}
 			height={media.image.height}
 			alt={media.name}

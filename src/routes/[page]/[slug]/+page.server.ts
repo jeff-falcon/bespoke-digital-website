@@ -1,15 +1,26 @@
 // since there's no dynamic data here, we can prerender
 import type { PageServerLoad } from './$types';
 import { getClient } from '$lib/sanity';
-import type { Project, ProjectMedia, ProjectMediaPair } from '$lib/types';
-import { HttpError, error } from '@sveltejs/kit';
+import type { CloudinaryImage, Project, ProjectMedia, ProjectMediaPair } from '$lib/types';
+import { error } from '@sveltejs/kit';
+
+function parseCloudinaryImage(image: any) {
+	if (!image) return undefined;
+	return {
+		url:
+			image.derived?.[0]?.secure_url ??
+			image.secure_url.replace(/\/upload\/(.*?)v/, `/upload/f_auto,q_auto:good/v`),
+		width: image.width,
+		height: image.height
+	} satisfies CloudinaryImage;
+}
 
 function parseProjectMediaFromData(project: any) {
 	return {
 		_type: 'project_media',
 		_key: project._id,
 		name: project.name,
-		image: project.image,
+		image: parseCloudinaryImage(project.image),
 		kind: project.kind,
 		thumb_vimeo_id: project.thumb_vimeo_id,
 		thumb_vimeo_src: project.thumb_vimeo_src,
@@ -46,7 +57,7 @@ export const load: PageServerLoad = async ({ params }) => {
 			slug: projectData.slug.current,
 			description: projectData.description,
 			client: projectData.client,
-			image: projectData.image,
+			image: parseCloudinaryImage(projectData.image),
 			thumb_vimeo_id: projectData.thumb_vimeo_id,
 			thumb_vimeo_src: projectData.thumb_vimeo_src,
 			media:

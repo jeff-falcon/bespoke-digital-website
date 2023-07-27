@@ -19,11 +19,11 @@
 					src={isFull && project.thumb_vimeo_src_hd
 						? project.thumb_vimeo_src_hd
 						: project.thumb_vimeo_src}
-					placeholder={project.image?.secure_url ?? ''}
+					placeholder={project.image?.url ?? ''}
 				/>
 			{:else if project.image}
 				<img
-					src={project.image.secure_url}
+					src={project.image.url}
 					width={project.image.width}
 					height={project.image.height}
 					alt={project.name}
