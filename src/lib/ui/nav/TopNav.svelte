@@ -1,11 +1,11 @@
 <script lang="ts">
-	import { page } from '$app/stores';
+	import { page, navigating } from '$app/stores';
+	import { menuState } from '$lib/store';
 	import BespokeLogo from '$lib/ui/logos/BespokeLogo.svelte';
 	import InstagramLogo from '$lib/ui/logos/InstagramLogo.svelte';
 
 	import anime from 'animejs';
 
-	let isMenuOpen = false;
 	let isBorderAnimating = false;
 
 	interface BorderPosition {
@@ -17,7 +17,11 @@
 	let linkElements: { [key: string]: HTMLAnchorElement } = {};
 	let fromToAnim = { from: { x: 0, width: 0 }, to: { x: 0, width: 0 } };
 
-	$: currentRoute = $page.url.pathname ?? '';
+	$: if ($navigating?.type === 'popstate' || $navigating?.type === 'link') {
+		if ($menuState === 'open') {
+			menuState.set('closed');
+		}
+	}
 
 	$: menuLinks = [
 		{
@@ -37,8 +41,12 @@
 		}
 	];
 
+	$: currentRoute = $page.url.pathname ?? '';
+	$: isMenuOpen = $menuState === 'open';
+
 	function toggleMenu() {
-		isMenuOpen = !isMenuOpen;
+		console.log('toggleMenu', $menuState);
+		menuState.update((state) => (state === 'open' ? 'closed' : 'open'));
 	}
 	function drawBorder(url: string) {
 		const prevLink = menuLinks.find((link) => link.isActive);
@@ -92,6 +100,13 @@
 		<a class="insta-btn" href="https://www.instagram.com/bespoke__digital/"><InstagramLogo /></a>
 	</div>
 </header>
+<div class="nav-overlay" class:isMenuOpen>
+	<nav class="v-menu">
+		{#each menuLinks as link (link.url)}
+			<a href={link.url} class:active={link.isActive}>{link.name}</a>
+		{/each}
+	</nav>
+</div>
 
 <style>
 	header {
@@ -184,11 +199,39 @@
 	.menu-btn .line2 {
 		transform: translateY(3px);
 	}
-	.isMenuOpen .menu-btn .line1 {
+	header.isMenuOpen .menu-btn .line1 {
 		transform: translateY(0) rotate(45deg);
 	}
-	.isMenuOpen .menu-btn .line2 {
+	header.isMenuOpen .menu-btn .line2 {
 		transform: translateY(0) rotate(-45deg);
+	}
+	.nav-overlay {
+		position: fixed;
+		top: 0;
+		left: 0;
+		height: 100dvh;
+		width: 100dvw;
+		z-index: var(--level9);
+		background: var(--bg-dark);
+		opacity: 0;
+		pointer-events: none;
+		display: flex;
+		align-items: center;
+	}
+	.nav-overlay.isMenuOpen {
+		opacity: 1;
+		pointer-events: all;
+	}
+	.v-menu {
+		display: flex;
+		flex-direction: column;
+		gap: 40px;
+		padding-left: calc(50% + var(--gutter-sm) * 0.05);
+	}
+	.v-menu a {
+		font-size: var(--24pt);
+		line-height: 1;
+		color: white;
 	}
 	.insta-btn {
 		margin-left: 32px;
@@ -203,7 +246,7 @@
 	.insta-btn:hover {
 		border-color: var(--text-light);
 	}
-	@media (min-width: 560px) {
+	@media (min-width: 760px) {
 		.h-menu {
 			display: flex;
 		}
@@ -211,6 +254,9 @@
 			display: flex;
 		}
 		.menu-btn {
+			display: none;
+		}
+		.nav-overlay {
 			display: none;
 		}
 	}

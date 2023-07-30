@@ -27,7 +27,7 @@
 	--text-highlight: #ebffbf;
 	--gutter-sm: 16px;
 	--gutter-lg: 32px;
-	--cubic-ease-in-out: ccubic-bezier(0.645, 0.045, 0.355, 1);
+	--cubic-ease-in-out: cubic-bezier(0.645, 0.045, 0.355, 1);
 	--cubic-ease-out: cubic-bezier(0.215, 0.61, 0.355, 1);
 	--top-nav-height: 80px;
 	--level10: 1000;
