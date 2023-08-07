@@ -1,6 +1,5 @@
 <script lang="ts">
 	import type { Page } from '$lib/types';
-	import ProjectThumb from '$lib/ui/project/ProjectThumb.svelte';
 	import ProjectGrid from '$lib/ui/project/ProjectGrid.svelte';
 
 	export let data: Page;

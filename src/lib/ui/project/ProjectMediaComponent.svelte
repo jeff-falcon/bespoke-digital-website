@@ -5,6 +5,7 @@
 
 	export let media: ProjectMedia;
 	export let cover = false;
+	export let scaleOnReveal = true;
 
 	let figureEl: HTMLElement;
 	let isIntersecting = false;
@@ -25,6 +26,7 @@
 		class:isVideoPlaying
 		bind:this={figureEl}
 		class:isIntersecting
+		class:scaleOnReveal
 	>
 		{#if isVideo}
 			<VimeoBG
@@ -109,14 +111,18 @@
 	.media:not(.isVideo) picture {
 		overflow: hidden;
 	}
+	.media.scaleOnReveal:not(.isVideo) img {
+		transform: scale(1.15);
+	}
 	.media:not(.isVideo) img {
 		opacity: 0;
 		transform-origin: center top;
-		transform: scale(1.15);
 		transition: 1.5s linear opacity, 5s transform var(--cubic-ease-out);
 	}
 	.media:not(.isVideo).isIntersecting img {
 		opacity: 1;
+	}
+	.media.scaleOnReveal:not(.isVideo).isIntersecting img {
 		transform: scale(1);
 	}
 </style>

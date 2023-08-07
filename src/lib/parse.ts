@@ -40,6 +40,7 @@ export function parseProjectFromData(project: any) {
 		_type: 'project',
 		pageTitle: project.name,
 		name: project.name,
+		shortName: project.short_name ?? '',
 		slug: project.slug.current ?? '',
 		description: project.description,
 		client: project.client,

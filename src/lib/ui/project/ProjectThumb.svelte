@@ -19,6 +19,7 @@
 		thumb_vimeo_src: project.thumb_vimeo_src,
 		thumb_vimeo_src_hd: project.thumb_vimeo_src_hd
 	};
+	$: name = project.shortName || project.name;
 </script>
 
 <article class="project" class:isFull>
@@ -27,7 +28,7 @@
 			<ProjectMediaComponent {media} cover={true} />
 		</div>
 		<div class="info">
-			<h2 class="title">{project.name}</h2>
+			<h2 class="title">{name}</h2>
 			{#if project.client}
 				<h3 class="subtitle">{project.client}</h3>
 			{/if}

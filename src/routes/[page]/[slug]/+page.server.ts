@@ -27,13 +27,15 @@ export const load: PageServerLoad = async ({ params }) => {
 		const data = await client.fetch(groq);
 		const projectData = data[0];
 		console.log(JSON.stringify(projectData, null, 2));
-		const project = {
+		const project: Project = {
 			_type: 'project',
 			pageTitle: projectData.name + ' | Work | Bespoke Digital',
 			name: projectData.name,
+			shortName: projectData.short_name ?? '',
 			slug: projectData.slug.current,
 			description: projectData.description,
 			client: projectData.client,
+			credits: projectData.credits ?? [],
 			image: parseCloudinaryImage(projectData.image),
 			thumb_vimeo_id: projectData.thumb_vimeo_id,
 			thumb_vimeo_src: projectData.thumb_vimeo_src,
@@ -54,7 +56,7 @@ export const load: PageServerLoad = async ({ params }) => {
 						}
 					})
 					.filter((media: ProjectMedia | null) => media != null) ?? []
-		} as Project;
+		};
 		return { project };
 	}
 

@@ -29,6 +29,7 @@
 	--gutter-lg: 32px;
 	--cubic-ease-in-out: cubic-bezier(0.645, 0.045, 0.355, 1);
 	--cubic-ease-out: cubic-bezier(0.215, 0.61, 0.355, 1);
+	--column-width: calc((100vw - var(--gutter-sm)) * (1 / 4));
 	--top-nav-height: 80px;
 	--level10: 1000;
 	--level9: 900;
@@ -62,6 +63,7 @@ body {
 	min-height: 100vh;
 	background: var(--bg-dark);
 	color: var(--text-light);
+	-webkit-font-smoothing: antialiased;
 }
 
 * {
@@ -148,6 +150,9 @@ button:focus:not(:focus-visible) {
 /* Desktop sizing */
 
 @media (min-width: 560px) {
+	:root {
+		--column-width: calc((100vw - var(--gutter-lg)) * (1 / 12));
+	}
 	.gutter {
 		padding-left: var(--gutter-lg);
 		padding-right: var(--gutter-lg);

@@ -11,14 +11,21 @@ export interface CloudinaryImage {
 	height: number;
 }
 
+export interface Credit {
+	name: string;
+	credit: string;
+}
+
 export interface Project {
 	_type: 'project';
 	name: string;
+	shortName: string;
 	slug: string;
 	pageTitle?: string;
 	kind?: 'image' | 'video-bg';
 	description?: InputValue;
 	client?: string;
+	credits?: Credit[],
 	image?: CloudinaryImage;
 	thumb_vimeo_id?: string;
 	thumb_vimeo_src?: string;
