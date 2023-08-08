@@ -17,6 +17,29 @@
 
 <Footer config={data.config} hasContactForm={true} />
 
+<svg viewBox="0 0 100 100" height="0" width="0">
+	<defs>
+		<filter id="colorizer-bg-light" color-interpolation-filters="sRGB">
+			<feColorMatrix
+				type="matrix"
+				values="0 0 0 0 0.901960784313725  0 0 0 0 0.894117647058824  0 0 0 0 0.874509803921569  0 0 0 1 0"
+			/>
+		</filter>
+		<filter id="colorizer-bg-dark" color-interpolation-filters="sRGB">
+			<feColorMatrix
+				type="matrix"
+				values="0 0 0 0 0.149019607843137  0 0 0 0 0.149019607843137  0 0 0 0 0.149019607843137  0 0 0 1 0"
+			/>
+		</filter>
+		<filter id="colorizer-text-light" color-interpolation-filters="sRGB">
+			<feColorMatrix
+				type="matrix"
+				values="0 0 0 0 0.078431372549  0 0 0 0 0.996078431372549  0 0 0 0 0.996078431372549  0 0 0 1 0"
+			/>
+		</filter>
+	</defs>
+</svg>
+
 <style>
 	main {
 		width: 100%;

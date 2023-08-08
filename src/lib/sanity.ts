@@ -1,6 +1,6 @@
 import { createClient } from '@sanity/client';
 import { SANITY_TOKEN, SANITY_DATASET, SANITY_PROJECT_ID } from '$env/static/private';
-import type { Hero, Page, ProjectGrid } from '$lib/types';
+import type { Hero, LogoGrid, Page, ProjectGrid } from '$lib/types';
 import { error } from '@sveltejs/kit';
 import { parseCloudinaryImage, parseProjectFromData } from './parse';
 
@@ -17,7 +17,10 @@ export async function getPage(slug: string) {
 		"slug": slug.current,
 		description,
 		hero->{...,project->},
-		components[]->{..., projects[]->}
+		components[]{
+			_type == 'logo_grid_ref' => @->{..., "desktop": desktop.asset->url, "mobile": mobile.asset->url},
+			_type == 'projects' => @->{...,projects[]->},
+		}
 	}`;
 	try {
 		const result = await client.fetch(groq);
@@ -43,10 +46,19 @@ export async function getPage(slug: string) {
 				pageData.components?.map((component: any) => {
 					if (component._type === 'project_grid') {
 						return {
-							_type: component._type,
+							_type: 'project_grid',
 							name: component.name,
 							projects: component.projects?.map((data: any) => parseProjectFromData(data)) ?? []
 						} satisfies ProjectGrid;
+					}
+					if (component._type === 'logo_grid') {
+						return {
+							_type: 'logo_grid',
+							title: component.title,
+							desktop: component.desktop,
+							mobile: component.mobile,
+							color: component.color,
+						} satisfies LogoGrid;
 					}
 				}) ?? []
 		};

@@ -54,7 +54,7 @@ export interface Page {
 	slug: string;
 	description?: string;
 	hero?: Hero;
-	components?: Array<ProjectGrid | Hero>;
+	components?: Array<ProjectGrid | LogoGrid>;
 }
 
 export interface ProjectMedia {
@@ -93,4 +93,12 @@ export interface Config {
 	_type: 'config';
 	socials: { name: string, links: Social[] }
 	locations: Location[]
+}
+
+export interface LogoGrid {
+	_type: 'logo_grid';
+	title: string;
+	desktop: string;
+	mobile: string;
+	color: string;
 }

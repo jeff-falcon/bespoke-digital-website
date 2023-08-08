@@ -19,6 +19,7 @@
 	font-family: var(--font-body);
 	color: black;
 	--bg-dark: #262626;
+	--bg-darker: #202020;
 	--bg-light: #e6e4df;
 	--bg-light-green: #e9f1cf;
 	--text-light: #fefefe;
@@ -27,6 +28,8 @@
 	--text-light-15: hsla(0, 0%, 100%, 0.15);
 	--text-dark: var(--bg-dark);
 	--text-highlight: #ebffbf;
+	--gray-mid: #373636;
+	--blue: #284aac;
 	--error-text: var(--text-highlight);
 	--gutter-sm: 16px;
 	--gutter-lg: 32px;
