@@ -29,7 +29,7 @@
 
 	function onUseForm(): ReturnType<SubmitFunction> {
 		return async ({ result, update }) => {
-			if (result.status === 200) {
+			if (result.type === 'success' && result.data) {
 				formResultMessage = result.data.message;
 			} else {
 				console.log('update', update);
