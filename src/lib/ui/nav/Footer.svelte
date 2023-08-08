@@ -1,23 +1,33 @@
 <script lang="ts">
 	import type { Config } from '$lib/types';
+	import Contact from '../form/Contact.svelte';
 	import NewsletterSignup from '../form/NewsletterSignup.svelte';
 	import Location from './Location.svelte';
 
 	export let config: Config;
+	export let hasContactForm = false;
+	export let hasDivider = false;
 </script>
 
-<footer class="gutter">
-	<div class="newsletter">
-		<NewsletterSignup />
-	</div>
-	<div class="socials">
-		<h3 class="title">{config.socials.name}</h3>
-		<div class="links">
-			{#each config.socials.links as link}
-				<a href={link.url} target="_blank">
-					<img src={link.icon} width="16" height="16" alt={link.name} />
-				</a>
-			{/each}
+<footer class="gutter" class:hasDivider class:hasContactForm>
+	{#if hasContactForm}
+		<div class="contact">
+			<Contact />
+		</div>
+	{/if}
+	<div class="signup-socials-row">
+		<div class="newsletter">
+			<NewsletterSignup />
+		</div>
+		<div class="socials">
+			<h3 class="title">{config.socials.name}</h3>
+			<div class="links">
+				{#each config.socials.links as link}
+					<a href={link.url} target="_blank">
+						<img src={link.icon} width="16" height="16" alt={link.name} />
+					</a>
+				{/each}
+			</div>
 		</div>
 	</div>
 	<div class="locations">
@@ -34,10 +44,17 @@
 <style>
 	footer {
 		margin-top: 88px;
+	}
+	footer.hasDivider {
 		padding-top: 40px;
 		border-top: 1px solid var(--text-light-15);
 	}
-	h3.title {
+	.contact + .signup-socials-row {
+		padding-top: 40px;
+		margin-top: 48px;
+		border-top: 1px solid var(--text-light-15);
+	}
+	footer :global(h3.title) {
 		font-size: var(--18pt);
 		line-height: var(--24pt);
 		font-weight: bold;
@@ -96,5 +113,43 @@
 	}
 	.newsletter {
 		margin-bottom: 40px;
+	}
+	@media (min-width: 768px) {
+		footer {
+			margin-top: 128px;
+		}
+		.signup-socials-row {
+			display: grid;
+			grid-template-columns: repeat(12, 1fr);
+			gap: 0 var(--gutter-lg);
+		}
+		.newsletter {
+			grid-column: 1 / span 7;
+			margin-bottom: 0;
+		}
+		.newsletter :global(.sign-up-form form) {
+			display: flex;
+			flex-direction: row;
+			gap: 16px;
+		}
+		.newsletter :global(.sign-up-form .textfield-container) {
+			width: 100%;
+			max-width: 376px;
+		}
+		.newsletter :global(button) {
+			width: auto;
+			padding-left: 40px;
+			padding-right: 40px;
+			white-space: nowrap;
+		}
+		.socials {
+			grid-column: 9 / span 4;
+			width: min-content;
+			justify-self: end;
+		}
+		.locations {
+			grid-template-columns: repeat(4, 1fr);
+			gap: 48px var(--gutter-lg);
+		}
 	}
 </style>

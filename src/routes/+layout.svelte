@@ -15,7 +15,7 @@
 	<slot />
 </main>
 
-<Footer config={data.config} />
+<Footer config={data.config} hasContactForm={true} />
 
 <style>
 	main {

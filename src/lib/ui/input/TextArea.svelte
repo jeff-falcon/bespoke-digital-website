@@ -3,65 +3,64 @@
 	import { fade } from 'svelte/transition';
 
 	export let label: string = '';
-	export let placeholder: string = '';
 	export let hint: string = '';
 	export let name: string;
 	export let id: string;
 	export let value: string;
-	export let type: string = 'text';
 	export let error: string = '';
-	export let allowSpaces: boolean | null = null;
 	export let readonly = false;
 
 	let dispatch = createEventDispatcher<{ blur: string }>();
 
 	let isFocused = false;
-	let inputValue = value;
+	let textareaEl: HTMLTextAreaElement;
+	let scrollHeight = 0;
+	let actualScrollHeight = 0;
 
 	$: hasError = error.trim().length > 0;
-	$: shouldAllowSpaces = allowSpaces === false ? false : type !== 'password' && type !== 'email';
+	$: isTaller = scrollHeight > 50;
+	$: isScrollable = actualScrollHeight > 160;
 
-	function onChange(val: string) {
-		if (!shouldAllowSpaces) {
-			value = val.replace(/\s/g, '');
-			inputValue = value;
-		} else {
-			value = val;
-		}
+	function onChange(el: HTMLTextAreaElement) {
+		scrollHeight = 0;
+		window.requestAnimationFrame(() => {
+			actualScrollHeight = textareaEl.scrollHeight;
+			scrollHeight = Math.min(144, textareaEl.scrollHeight);
+		});
 	}
 </script>
 
 <div
-	class="textfield-container"
+	class="textarea-container"
 	class:hasValue={value.trim().length > 0}
 	class:isFocused={readonly ? false : isFocused}
 	class:hasError
+	class:isTaller
+	class:isScrollable
+	style="--height: {scrollHeight < actualScrollHeight && !isScrollable
+		? actualScrollHeight
+		: scrollHeight}px"
 >
-	<div class="textfield">
+	<div class="textarea">
 		{#if label}
 			<label for={id}>{label}</label>
 		{/if}
-		<input
-			{type}
-			{placeholder}
+		<textarea
 			{name}
 			{id}
-			value={inputValue}
+			bind:value
 			{readonly}
+			bind:this={textareaEl}
 			on:focus={(e) => (isFocused = true)}
 			on:blur={(e) => {
 				isFocused = false;
-				console.log('blur:', `|${e.currentTarget.value}|`);
-				onChange(e.currentTarget.value);
-				dispatch('blur', inputValue);
+				dispatch('blur', value);
 			}}
 			on:change={(e) => {
-				console.log('change:', `|${e.currentTarget.value}|`, e);
-				onChange(e.currentTarget.value);
+				onChange(e.currentTarget);
 			}}
 			on:input={(e) => {
-				console.log('input:', `|${e.currentTarget.value}|`);
-				onChange(e.currentTarget.value);
+				onChange(e.currentTarget);
 			}}
 		/>
 	</div>
@@ -73,7 +72,7 @@
 </div>
 
 <style>
-	.textfield-container {
+	.textarea-container {
 		display: flex;
 		flex-direction: column;
 		gap: 4px;
@@ -89,14 +88,14 @@
 		color: var(--error-text);
 		text-align: right;
 	}
-	.textfield {
-		height: var(--button-height-large);
+	.textarea {
+		height: max(var(--height), var(--button-height-large));
 		display: flex;
 		flex-direction: column;
 		gap: 4px;
 		position: relative;
 	}
-	.textfield:after {
+	.textarea:after {
 		content: '';
 		display: block;
 		position: absolute;
@@ -109,20 +108,20 @@
 		pointer-events: none;
 		transition: 180ms linear border-color;
 	}
-	.hasError .textfield:after {
+	.hasError .textarea:after {
 		border-color: var(--error-text);
 	}
-	.hasError .textfield input {
+	.hasError .textarea textarea {
 		color: var(--error-text);
 	}
 	label {
 		position: absolute;
-		top: 50%;
+		top: 12px;
 		left: 24px;
 		pointer-events: none;
 		font-size: var(--16pt);
 		transition: 180ms all var(--ease-in-out-cubic);
-		transform: translate3d(0, -50%, 0);
+		transform: translate3d(0, 0, 0);
 		transform-origin: 0 50%;
 		opacity: 0.3;
 		color: var(--text-light);
@@ -130,39 +129,47 @@
 		z-index: 1;
 	}
 	.hasValue label {
-		transform: translate3d(0, calc(-50% - 13px), 0) scale(0.875);
+		transform: translate3d(0, -12px, 0) scale(0.875);
 	}
-	input {
+	textarea {
 		border: 0;
-		height: 100%;
+		height: max(var(--height), var(--button-height-large));
 		position: relative;
-		padding: 0 24px;
+		padding: 13px 24px 0;
 		background: transparent;
 		color: var(--text-light);
 		font-size: var(--16pt);
 		line-height: var(--24pt);
+		resize: none;
 	}
-	input:-webkit-autofill,
-	input:-webkit-autofill:focus {
-		box-shadow: 0 0 0 1000px var(--bg-dark) inset;
-		-webkit-text-fill-color: var(--text-highlight);
-	}
-	input:focus {
+	textarea:focus {
 		outline: none;
 	}
-	input::selection {
+	textarea::selection {
 		background-color: var(--text-light-15);
 		color: var(--text-light);
 	}
-
-	.hasValue input {
+	.hasValue textarea {
 		transform: translate(0, 7px);
 	}
-	.isFocused:not(.hasError) .textfield:after {
+	.isFocused:not(.hasError) .textarea:after {
 		border-color: var(--text-light);
 	}
 	.isFocused:not(.hasValue) label {
 		opacity: 1;
-		transform: translate(8px, -50%);
+		transform: translate(8px, 0);
+	}
+	.isTaller .textarea {
+		height: calc(var(--height) + 12px);
+	}
+	.isTaller textarea {
+		padding-top: 0;
+		height: calc(var(--height) + 12px);
+		transform: translate(0, 21px);
+	}
+	.isTaller.isScrollable .textarea {
+		height: calc(var(--height) + 40px);
+	}
+	.isTaller.isScrollable textarea {
 	}
 </style>
