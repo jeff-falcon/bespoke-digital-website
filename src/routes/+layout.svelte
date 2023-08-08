@@ -45,6 +45,5 @@
 		width: 100%;
 		overflow-x: hidden;
 		overflow-y: auto;
-		padding-top: var(--top-nav-height);
 	}
 </style>

@@ -1,14 +1,14 @@
 import { createClient } from '@sanity/client';
 import { SANITY_TOKEN, SANITY_DATASET, SANITY_PROJECT_ID } from '$env/static/private';
 import type { Hero, LogoGrid, Page, ProjectGrid } from '$lib/types';
-import { error } from '@sveltejs/kit';
+import { HttpError, error } from '@sveltejs/kit';
 import { parseCloudinaryImage, parseProjectFromData } from './parse';
 
 export function getClient() {
 	return client;
 }
 
-export async function getPage(slug: string) {
+export async function getPage(slug: string): Promise<Page | HttpError> {
 	if (!slug) return error(404, 'Page not found');
 
 	const client = getClient();
@@ -62,7 +62,7 @@ export async function getPage(slug: string) {
 					}
 				}) ?? []
 		};
-		return { page };
+		return page;
 	} catch (err) {
 		console.log('fetch error', (err as Error).message);
 		return error(403, (err as Error).message);

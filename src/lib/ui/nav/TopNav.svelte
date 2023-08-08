@@ -1,12 +1,13 @@
 <script lang="ts">
 	import { page, navigating } from '$app/stores';
-	import { menuState } from '$lib/store';
+	import { menuState, pageHasHero } from '$lib/store';
 	import BespokeLogo from '$lib/ui/logos/BespokeLogo.svelte';
 	import InstagramLogo from '$lib/ui/logos/InstagramLogo.svelte';
 
 	import anime from 'animejs';
 
 	let isBorderAnimating = false;
+	let scrollY = 0;
 
 	interface BorderPosition {
 		x: number;
@@ -75,7 +76,9 @@
 	}
 </script>
 
-<header class:isMenuOpen class="gutter">
+<svelte:window bind:scrollY />
+
+<header class:isMenuOpen class="gutter" class:hasBg={!($pageHasHero && scrollY < 120)}>
 	<div class="logo">
 		<a href="/">
 			<BespokeLogo />
@@ -121,6 +124,8 @@
 		color: white;
 		z-index: var(--level10);
 		transition: linear 300ms background-color;
+	}
+	header.hasBg {
 		backdrop-filter: blur(14px);
 		-webkit-backdrop-filter: blur(14px);
 		background-color: rgba(38, 38, 38, 0.8);
