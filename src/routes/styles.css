@@ -23,12 +23,15 @@
 	--bg-light-green: #e9f1cf;
 	--text-light: #fefefe;
 	--text-light-40: hsla(0, 0%, 100%, 0.4);
+	--text-light-30: hsla(0, 0%, 100%, 0.3);
+	--text-light-15: hsla(0, 0%, 100%, 0.15);
 	--text-dark: var(--bg-dark);
 	--text-highlight: #ebffbf;
+	--error-text: var(--text-highlight);
 	--gutter-sm: 16px;
 	--gutter-lg: 32px;
-	--cubic-ease-in-out: cubic-bezier(0.645, 0.045, 0.355, 1);
-	--cubic-ease-out: cubic-bezier(0.215, 0.61, 0.355, 1);
+	--ease-in-out-cubic: cubic-bezier(0.645, 0.045, 0.355, 1);
+	--ease-out-cubic: cubic-bezier(0.215, 0.61, 0.355, 1);
 	--column-width: calc((100vw - var(--gutter-sm)) * (1 / 4));
 	--top-nav-height: 80px;
 	--level10: 1000;
@@ -53,6 +56,7 @@
 	--12pt: 0.75rem;
 	--button-height-large: 48px;
 	--button-height-small: 40px;
+	--input-border-radius: 24px;
 }
 html,
 body {
@@ -133,6 +137,27 @@ button {
 
 button:focus:not(:focus-visible) {
 	outline: none;
+}
+
+form button {
+	cursor: pointer;
+	height: var(--button-height-large);
+	border-radius: var(--input-border-radius);
+	border: 1px solid var(--text-light);
+	background: transparent;
+	color: var(--text-light);
+	transition: border-color 0.2s linear;
+	display: block;
+	width: 100%;
+	font-weight: bold;
+}
+form button:hover {
+	border-color: var(--text-light);
+}
+form button:disabled {
+	border-color: var(--text-light-15);
+	color: var(--text-light-30);
+	cursor: default;
 }
 
 .visually-hidden {

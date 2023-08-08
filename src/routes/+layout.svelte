@@ -1,8 +1,12 @@
-<script>
+<script lang="ts">
 	import TopNav from '$lib/ui/nav/TopNav.svelte';
 	import 'video.js';
 	import 'video.js/dist/video-js.css';
 	import './styles.css';
+	import Footer from '$lib/ui/nav/Footer.svelte';
+	import type { LayoutData } from './$types';
+
+	export let data: LayoutData;
 </script>
 
 <TopNav />
@@ -11,9 +15,7 @@
 	<slot />
 </main>
 
-<footer class="gutter">
-	<p>© {new Date().getFullYear()} Bespoke Digital</p>
-</footer>
+<Footer config={data.config} />
 
 <style>
 	main {

@@ -26,7 +26,6 @@ export const load: PageServerLoad = async ({ params }) => {
 		}`;
 		const data = await client.fetch(groq);
 		const projectData = data[0];
-		console.log(JSON.stringify(projectData, null, 2));
 		const project: Project = {
 			_type: 'project',
 			pageTitle: projectData.name + ' | Work | Bespoke Digital',

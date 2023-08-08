@@ -23,7 +23,6 @@ export async function getPage(slug: string) {
 		const result = await client.fetch(groq);
 		if (!result || !result.length) return error(404, 'Page not found');
 		const pageData = result[0];
-		console.log(JSON.stringify(pageData, null, 2));
 		const page: Page = {
 			_type: 'page',
 			name: pageData.name,
@@ -31,14 +30,14 @@ export async function getPage(slug: string) {
 			description: pageData.description,
 			hero: pageData.hero
 				? ({
-						_type: 'hero',
-						name: pageData.hero.name,
-						client: pageData.hero.client,
-						category: pageData.hero.category,
-						description: pageData.hero.description,
-						image_desktop: parseCloudinaryImage(pageData.hero.image_desktop),
-						image_mobile: parseCloudinaryImage(pageData.hero.image_mobile)
-				  } satisfies Hero)
+					_type: 'hero',
+					name: pageData.hero.name,
+					client: pageData.hero.client,
+					category: pageData.hero.category,
+					description: pageData.hero.description,
+					image_desktop: parseCloudinaryImage(pageData.hero.image_desktop),
+					image_mobile: parseCloudinaryImage(pageData.hero.image_mobile)
+				} satisfies Hero)
 				: undefined,
 			components:
 				pageData.components?.map((component: any) => {

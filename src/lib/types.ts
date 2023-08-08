@@ -73,3 +73,24 @@ export interface ProjectMediaPair {
 	left: ProjectMedia;
 	right: ProjectMedia;
 }
+
+export interface Social {
+	name: string
+	_type: 'social'
+	url: string
+	icon: string
+}
+
+export interface Location {
+	name: string
+	_type: 'location'
+	address: string
+	email: string
+	timezone: string
+}
+
+export interface Config {
+	_type: 'config';
+	socials: { name: string, links: Social[] }
+	locations: Location[]
+}
