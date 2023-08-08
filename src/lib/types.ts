@@ -40,11 +40,12 @@ export interface ProjectGrid {
 export interface Hero {
 	_type: 'hero';
 	name: string;
-	client?: string;
-	category?: string;
-	description?: string;
+	subtitle?: string;
+	kind?: 'image' | 'video-bg';
 	image_desktop?: CloudinaryImage;
 	image_mobile?: CloudinaryImage;
+	thumb_vimeo_src?: string;
+	thumb_vimeo_src_hd?: string;
 	project?: Project;
 }
 

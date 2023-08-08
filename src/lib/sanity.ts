@@ -35,11 +35,13 @@ export async function getPage(slug: string): Promise<Page | HttpError> {
 				? ({
 					_type: 'hero',
 					name: pageData.hero.name,
-					client: pageData.hero.client,
-					category: pageData.hero.category,
-					description: pageData.hero.description,
+					subtitle: pageData.hero.subtitle,
 					image_desktop: parseCloudinaryImage(pageData.hero.image_desktop),
-					image_mobile: parseCloudinaryImage(pageData.hero.image_mobile)
+					image_mobile: parseCloudinaryImage(pageData.hero.image_mobile),
+					kind: pageData.hero.kind,
+					thumb_vimeo_src: pageData.hero.thumb_vimeo_src,
+					thumb_vimeo_src_hd: pageData.hero.thumb_vimeo_src_hd,
+					project: pageData.hero.project ? parseProjectFromData(pageData.hero.project) : undefined
 				} satisfies Hero)
 				: undefined,
 			components:

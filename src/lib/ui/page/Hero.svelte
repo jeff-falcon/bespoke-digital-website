@@ -1,20 +1,29 @@
 <script lang="ts">
-	import type { Hero, Project } from '$lib/types';
+	import type { Hero, Project, ProjectMedia } from '$lib/types';
 	import ArrowButton from '$lib/ui/button/ArrowButton.svelte';
+	import ProjectMediaComponent from '../project/ProjectMediaComponent.svelte';
 
 	export let data: Hero;
+
+	let media: ProjectMedia;
+	$: media = {
+		_key: 'hero',
+		_type: 'project_media',
+		name: '',
+		kind: data.kind,
+		image: data.image_desktop,
+		thumb_vimeo_src: data.thumb_vimeo_src,
+		thumb_vimeo_src_hd: data.thumb_vimeo_src_hd
+	};
 </script>
 
 <section class="hero">
 	<div class="info gutter">
 		{#if data.name}
-			<h1>{data.name}</h1>
+			<h1 class="title">{data.name}</h1>
 		{/if}
-		{#if data.client}
-			<p>{data.client}</p>
-		{/if}
-		{#if data.description}
-			<p>{data.description}</p>
+		{#if data.subtitle}
+			<p class="subtitle">{data.subtitle}</p>
 		{/if}
 		{#if data.project}
 			<a href="/work/{data.project.slug}" class="project">
@@ -23,22 +32,14 @@
 					<p class="client">{data.project.client}</p>
 				</div>
 				<div class="arrow">
-					<ArrowButton />
+					<ArrowButton title="View Project" isTitleHiddenOnMobile={true} />
 				</div>
 			</a>
 		{/if}
 	</div>
-	{#if data.image_desktop?.url}
-		<picture class="image">
-			{#if data.image_mobile?.url}
-				<source media="(max-width: 767px)" srcset={data.image_mobile.url} />
-				<source media="(min-width: 768px)" srcset={data.image_desktop.url} />
-				<img src={data.image_mobile.url} alt="Hero" />
-			{:else}
-				<img src={data.image_desktop.url} alt="Hero" />
-			{/if}
-		</picture>
-	{/if}
+	<div class="bg">
+		<ProjectMediaComponent {media} cover={true} scaleOnReveal={false} />
+	</div>
 </section>
 
 <style>
@@ -46,22 +47,14 @@
 		position: relative;
 		height: 100svh;
 	}
-	picture,
-	img {
-		object-fit: cover;
-		object-position: top center;
-		display: block;
-		width: 100%;
-		height: 100%;
-	}
-	picture {
+	.bg {
 		z-index: 0;
 		position: absolute;
 		top: 0;
 		left: 0;
 		width: 100%;
 		height: 100%;
-		opacity: 0.8;
+		opacity: 0.7;
 	}
 	.info {
 		position: relative;
@@ -70,7 +63,47 @@
 		flex-direction: column;
 		justify-content: flex-end;
 		height: 100%;
-		padding-left: calc(50% + var(--gutter-lg) * 0.5);
-		padding-bottom: 72px;
+		padding-bottom: var(--16pt);
+	}
+	.title {
+		font-size: var(--38pt);
+		line-height: var(--40pt);
+		margin: 0;
+	}
+	.subtitle {
+		font-size: var(--24pt);
+		line-height: var(--32pt);
+		margin: var(--16pt) 0 0;
+	}
+	.project {
+		display: flex;
+		justify-content: space-between;
+		align-items: center;
+		border-top: 1px solid var(--text-light-30);
+		padding-top: var(--12pt);
+		margin-top: var(--18pt);
+		gap: 16px;
+	}
+	.project:hover {
+		text-decoration: none;
+	}
+	.name-client .name,
+	.name-client .client {
+		margin: 0;
+		line-height: var(--24pt);
+	}
+	.name-client .name {
+		text-transform: uppercase;
+		font-weight: bold;
+		font-size: var(--16pt);
+	}
+	.name-client .client {
+		font-size: var(--14pt);
+	}
+	@media (min-width: 560px) {
+		.info {
+			padding-left: calc(50% + var(--gutter-lg) * 0.5);
+			padding-bottom: 72px;
+		}
 	}
 </style>

@@ -1,26 +1,81 @@
-<button on:click type="button">
-	<svg width="5" height="6" viewBox="0 0 5 6" fill="none" xmlns="http://www.w3.org/2000/svg">
-		<path d="M5 2.99993L0.5 5.59801L0.5 0.401855L5 2.99993Z" />
-	</svg>
+<script lang="ts">
+	export let title: string = '';
+	export let isTitleHiddenOnMobile = false;
+	export let isTitleBefore = true;
+</script>
+
+<button
+	on:click
+	type="button"
+	class:hasTitle={Boolean(title)}
+	class:isTitleHiddenOnMobile
+	class:isTitleBefore
+>
+	{#if title}
+		<span class="title">{title}</span>
+	{/if}
+	<span class="icon">
+		<svg width="6" height="6" viewBox="0 0 6 6" fill="none" xmlns="http://www.w3.org/2000/svg">
+			<path d="M6 2.99993L1.5 5.59801L1.5 0.401855L6 2.99993Z" />
+		</svg>
+	</span>
 </button>
 
 <style>
 	button {
 		background: transparent;
-		border: 1px solid var(--text-light-40);
-		width: var(--button-height-large);
-		height: var(--button-height-large);
 		cursor: pointer;
-		transition: linear 180ms border-color;
+		display: flex;
+		align-items: center;
+		padding: 0;
+		border: 0;
+		gap: var(--14pt);
+		color: var(--text-light);
+	}
+	.icon {
 		display: flex;
 		align-items: center;
 		justify-content: center;
-	}
-	button:hover {
-		border-color: var(--text-light);
+		width: 32px;
+		height: 32px;
+		box-shadow: 0 0 0 1px inset var(--text-light-40);
+		border-radius: 100px;
+		transition: linear 180ms box-shadow;
 	}
 	svg {
-		fill: var(--text-light);
 		display: block;
+		fill: var(--text-light);
+	}
+	button:hover .icon {
+		box-shadow: 0 0 0 1px inset var(--text-light);
+	}
+	.title {
+		font-size: var(--14pt);
+		line-height: var(--24pt);
+		order: 2;
+	}
+	.isTitleBefore .title {
+		order: 1;
+	}
+	.isTitleBefore .icon {
+		order: 2;
+	}
+	@media (max-width: 559px) {
+		.isTitleHiddenOnMobile .title {
+			display: none;
+		}
+	}
+	@media (min-width: 560px) {
+		button {
+			gap: var(--18pt);
+		}
+		.icon {
+			width: 36px;
+			height: 36px;
+		}
+		.title {
+			font-size: var(--16pt);
+			line-height: var(--24pt);
+		}
 	}
 </style>

@@ -47,11 +47,15 @@ export const load: PageServerLoad = async ({ params }) => {
 							return parseProjectMediaFromData(media);
 						}
 						if (media._type === 'item_pair') {
-							return {
+							const left = parseProjectMediaFromData(media.left)
+							const right = parseProjectMediaFromData(media.right)
+							if (!left && !right) return null;
+							if (!left || !right) return left ?? right;
+							return <ProjectMediaPair>{
 								_type: 'item_pair',
-								left: parseProjectMediaFromData(media.left),
-								right: parseProjectMediaFromData(media.right)
-							} satisfies ProjectMediaPair;
+								left,
+								right
+							};
 						}
 					})
 					.filter((media: ProjectMedia | null) => media != null) ?? []

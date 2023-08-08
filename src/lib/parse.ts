@@ -1,4 +1,4 @@
-import type { Project, ProjectMedia, CloudinaryImage } from '$lib/types';
+import type { Project, ProjectMedia, CloudinaryImage, Hero } from '$lib/types';
 
 export function parseCloudinaryImage(image: any) {
 	if (!image) return undefined;
@@ -6,7 +6,7 @@ export function parseCloudinaryImage(image: any) {
 		image.derived?.[0]?.secure_url ??
 		image.secure_url.replace(/\/upload\/v/, `/upload/f_auto,q_auto:good/v`);
 	const matches = url.match(/\/upload\/(.*)(w_\d+,*)(.*)\/v/);
-	return {
+	return <CloudinaryImage>{
 		url,
 		sizes: {
 			sm: matches?.length
@@ -19,11 +19,12 @@ export function parseCloudinaryImage(image: any) {
 		},
 		width: image.width,
 		height: image.height
-	} satisfies CloudinaryImage;
+	};
 }
 
 export function parseProjectMediaFromData(project: any) {
-	return {
+	if (project?._type !== 'project_media') return undefined;
+	return <ProjectMedia>{
 		_type: 'project_media',
 		_key: project._id,
 		name: project.name,
@@ -32,11 +33,12 @@ export function parseProjectMediaFromData(project: any) {
 		thumb_vimeo_id: project.thumb_vimeo_id,
 		thumb_vimeo_src: project.thumb_vimeo_src,
 		thumb_vimeo_src_hd: project.thumb_vimeo_src_hd
-	} satisfies ProjectMedia;
+	};
 }
 
 export function parseProjectFromData(project: any) {
-	return {
+	if (project?._type !== 'project') return undefined;
+	return <Project>{
 		_type: 'project',
 		pageTitle: project.name,
 		name: project.name,
@@ -48,5 +50,20 @@ export function parseProjectFromData(project: any) {
 		thumb_vimeo_id: project.thumb_vimeo_id,
 		thumb_vimeo_src: project.thumb_vimeo_src,
 		thumb_vimeo_src_hd: project.thumb_vimeo_src_hd
-	} satisfies Project;
+	}
+}
+
+export function parseHeroFromData(data: any) {
+	if (data?._type !== 'hero') return undefined;
+	return <Hero>{
+		_type: 'hero',
+		name: data.name,
+		subtitle: data.subtitle,
+		image_desktop: parseCloudinaryImage(data.image_desktop),
+		image_mobile: parseCloudinaryImage(data.image_mobile),
+		kind: data.kind,
+		thumb_vimeo_src: data.thumb_vimeo_src,
+		thumb_vimeo_src_hd: data.thumb_vimeo_src_hd,
+		project: data.project ? parseProjectFromData(data.project) : undefined
+	}
 }
