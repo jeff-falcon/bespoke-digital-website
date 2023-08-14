@@ -14,10 +14,10 @@
 		_type: 'project_media',
 		_key: project.slug,
 		name: project.name,
-		kind: project.thumb_vimeo_src ? 'video-bg' : 'image',
+		kind: project.vimeoSrc ? 'video-bg' : 'image',
 		image: project.image,
-		thumb_vimeo_src: project.thumb_vimeo_src,
-		thumb_vimeo_src_hd: project.thumb_vimeo_src_hd
+		vimeoSrc: project.vimeoSrc,
+		vimeoSrcHd: project.vimeoSrcHd
 	};
 	$: name = project.shortName || project.name;
 </script>

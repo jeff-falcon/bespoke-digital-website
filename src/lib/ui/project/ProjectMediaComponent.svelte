@@ -2,6 +2,8 @@
 	import type { ProjectMedia } from '$lib/types';
 	import VimeoBG from '$lib/ui/video/VimeoBG_VJS.svelte';
 	import IntersectionObserver from 'svelte-intersection-observer';
+	import VimeoPlayer from '../video/VimeoPlayer.svelte';
+	import VimeoEmbed from '../video/VimeoEmbed.svelte';
 
 	export let media: ProjectMedia;
 	export let cover = false;
@@ -10,59 +12,79 @@
 	let figureEl: HTMLElement;
 	let isIntersecting = false;
 	let isVideoPlaying = false;
-	$: videoBgSrc = media.thumb_vimeo_src || media.thumb_vimeo_src_hd;
-	$: isVideo = media.kind === 'video-bg' && Boolean(videoBgSrc);
+	$: videoBgSrc = media.vimeoSrc || media.vimeoSrcHd;
+	$: isBgVideo = media.kind === 'video-bg' && Boolean(videoBgSrc);
+	$: isStaticImage = media.kind === 'image' && Boolean(media.image?.url);
+	$: hasVideoId = !isNaN(Number(media.vimeoPlayerSrc));
+	$: isVideoPlayer = media.kind === 'video-player' && Boolean(media.vimeoPlayerSrc) && !hasVideoId;
+	$: isVideoEmbed = media.kind === 'video-player' && Boolean(media.vimeoPlayerSrc) && hasVideoId;
 
 	function onVideoPlaying(e: { detail: boolean }) {
 		isVideoPlaying = e.detail;
 	}
 </script>
 
-<IntersectionObserver element={figureEl} bind:intersecting={isIntersecting} once={true}>
-	<figure
-		class="media"
-		class:cover
-		class:isVideo
-		class:isVideoPlaying
-		bind:this={figureEl}
-		class:isIntersecting
-		class:scaleOnReveal
-	>
-		{#if isVideo}
-			<VimeoBG
-				id="media-{media._key}"
-				src={videoBgSrc || ''}
-				placeholder={media.image?.url ?? ''}
-				on:isPlaying={onVideoPlaying}
-			/>
-		{/if}
-		{#if media.image}
-			{#if media.image.sizes}
-				<picture>
-					<source srcset={media.image.sizes.sm} media="(max-width: 559px)" />
-					<source
-						srcset={media.image.sizes.md}
-						media="(min-width: 560px) and (max-width: 1199px)"
-					/>
-					<source srcset={media.image.sizes.lg} media="(min-width: 1200px)" />
+{#if isVideoEmbed}
+	<div class="video-embed">
+		<VimeoEmbed vimeoId={Number(media.vimeoPlayerSrc)} title={media.name} />
+	</div>
+{:else if isVideoPlayer}
+	{@const src = media.vimeoPlayerSrc ?? ''}
+	<div class="video-player">
+		<VimeoPlayer
+			id="media-{media._key}"
+			{src}
+			title={media.name}
+			placeholder={media.image?.url ?? ''}
+		/>
+	</div>
+{:else if isStaticImage || isBgVideo}
+	<IntersectionObserver element={figureEl} bind:intersecting={isIntersecting} once={true}>
+		<figure
+			class="media"
+			class:cover
+			class:isBgVideo
+			class:isVideoPlaying
+			bind:this={figureEl}
+			class:isIntersecting
+			class:scaleOnReveal
+		>
+			{#if isBgVideo}
+				<VimeoBG
+					id="media-{media._key}"
+					src={videoBgSrc || ''}
+					placeholder={media.image?.url ?? ''}
+					on:isPlaying={onVideoPlaying}
+				/>
+			{/if}
+			{#if media.image}
+				{#if media.image.sizes}
+					<picture>
+						<source srcset={media.image.sizes.sm} media="(max-width: 559px)" />
+						<source
+							srcset={media.image.sizes.md}
+							media="(min-width: 560px) and (max-width: 1199px)"
+						/>
+						<source srcset={media.image.sizes.lg} media="(min-width: 1200px)" />
+						<img
+							src={media.image.sizes.sm}
+							width={media.image.width}
+							height={media.image.height}
+							alt={media.name}
+						/>
+					</picture>
+				{:else}
 					<img
-						src={media.image.sizes.sm}
+						src={media.image.url}
 						width={media.image.width}
 						height={media.image.height}
 						alt={media.name}
 					/>
-				</picture>
-			{:else}
-				<img
-					src={media.image.url}
-					width={media.image.width}
-					height={media.image.height}
-					alt={media.name}
-				/>
+				{/if}
 			{/if}
-		{/if}
-	</figure>
-</IntersectionObserver>
+		</figure>
+	</IntersectionObserver>
+{/if}
 
 <style>
 	.media {
@@ -98,31 +120,31 @@
 	.cover img {
 		object-fit: cover;
 	}
-	.cover.isVideo.isVideoPlaying picture {
+	.cover.isBgVideo.isVideoPlaying picture {
 		visibility: hidden;
 	}
-	.cover.isVideo :global(.video-container) {
+	.cover.isBgVideo :global(.video-container) {
 		opacity: 0;
 		transition: 1200ms linear opacity;
 	}
-	.cover.isVideo.isVideoPlaying :global(.video-container) {
+	.cover.isBgVideo.isVideoPlaying :global(.video-container) {
 		opacity: 1;
 	}
-	.media:not(.isVideo) picture {
+	.media:not(.isBgVideo) picture {
 		overflow: hidden;
 	}
-	.media.scaleOnReveal:not(.isVideo) img {
+	.media.scaleOnReveal:not(.isBgVideo) img {
 		transform: scale(1.15);
 	}
-	.media:not(.isVideo) img {
+	.media:not(.isBgVideo) img {
 		opacity: 0;
 		transform-origin: center top;
 		transition: 1.5s linear opacity, 5s transform var(--cubic-ease-out);
 	}
-	.media:not(.isVideo).isIntersecting img {
+	.media:not(.isBgVideo).isIntersecting img {
 		opacity: 1;
 	}
-	.media.scaleOnReveal:not(.isVideo).isIntersecting img {
+	.media.scaleOnReveal:not(.isBgVideo).isIntersecting img {
 		transform: scale(1);
 	}
 </style>

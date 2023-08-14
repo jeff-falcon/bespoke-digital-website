@@ -5,6 +5,7 @@
 	import LogoGrid from '../logos/LogoGrid.svelte';
 	import Hero from './Hero.svelte';
 	import { pageHasHero } from '$lib/store';
+	import ProjectMediaComponent from '../project/ProjectMediaComponent.svelte';
 
 	export let data: Page;
 
@@ -23,12 +24,17 @@
 		<Hero data={data.hero} />
 	{/if}
 	{#if data.components}
-		{#each data.components as component}
+		{#each data.components as component (component)}
 			{#if component._type === 'project_grid'}
 				<ProjectGrid projects={component.projects} />
 			{/if}
 			{#if component._type === 'logo_grid'}
 				<LogoGrid data={component} />
+			{/if}
+			{#if component._type === 'project_media'}
+				<div class="project-media gutter">
+					<ProjectMediaComponent media={component} />
+				</div>
 			{/if}
 		{/each}
 	{/if}
@@ -37,5 +43,13 @@
 <style>
 	.page:not(.hasHero) {
 		padding-top: var(--top-nav-height);
+	}
+	.project-media {
+		margin: var(--gutter-sm) 0;
+	}
+	@media (min-width: 560px) {
+		.project-media {
+			margin: var(--gutter-lg) 0;
+		}
 	}
 </style>

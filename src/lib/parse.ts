@@ -30,9 +30,9 @@ export function parseProjectMediaFromData(project: any) {
 		name: project.name,
 		image: parseCloudinaryImage(project.image),
 		kind: project.kind,
-		thumb_vimeo_id: project.thumb_vimeo_id,
-		thumb_vimeo_src: project.thumb_vimeo_src,
-		thumb_vimeo_src_hd: project.thumb_vimeo_src_hd
+		vimeoPlayerSrc: project.vimeo_player_src,
+		vimeoSrc: project.thumb_vimeo_src,
+		vimeoSrcHd: project.thumb_vimeo_src_hd
 	};
 }
 

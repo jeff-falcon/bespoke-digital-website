@@ -27,9 +27,9 @@ export interface Project {
 	client?: string;
 	credits?: Credit[],
 	image?: CloudinaryImage;
-	thumb_vimeo_id?: string;
-	thumb_vimeo_src?: string;
-	thumb_vimeo_src_hd?: string;
+	vimeoPlayerSrc?: string;
+	vimeoSrc?: string;
+	vimeoSrcHd?: string;
 	media?: Array<ProjectMedia | ProjectMediaPair>;
 }
 export interface ProjectGrid {
@@ -44,8 +44,8 @@ export interface Hero {
 	kind?: 'image' | 'video-bg';
 	image_desktop?: CloudinaryImage;
 	image_mobile?: CloudinaryImage;
-	thumb_vimeo_src?: string;
-	thumb_vimeo_src_hd?: string;
+	vimeoSrc?: string;
+	vimeoSrcHd?: string;
 	project?: Project;
 }
 
@@ -55,7 +55,7 @@ export interface Page {
 	slug: string;
 	description?: string;
 	hero?: Hero;
-	components?: Array<ProjectGrid | LogoGrid>;
+	components?: Array<ProjectGrid | LogoGrid | ProjectMedia>;
 }
 
 export interface ProjectMedia {
@@ -64,9 +64,9 @@ export interface ProjectMedia {
 	name: string;
 	image?: CloudinaryImage;
 	kind?: 'image' | 'video-bg' | 'video-player';
-	thumb_vimeo_id?: string;
-	thumb_vimeo_src?: string;
-	thumb_vimeo_src_hd?: string;
+	vimeoPlayerSrc?: string;
+	vimeoSrc?: string;
+	vimeoSrcHd?: string;
 }
 
 export interface ProjectMediaPair {
