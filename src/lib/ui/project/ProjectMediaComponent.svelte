@@ -133,13 +133,13 @@
 	.media:not(.isBgVideo) picture {
 		overflow: hidden;
 	}
-	.media.scaleOnReveal:not(.isBgVideo) img {
+	.media.scaleOnReveal:not(.isBgVideo):not(.isIntersecting) img {
 		transform: scale(1.15);
 	}
 	.media:not(.isBgVideo) img {
 		opacity: 0;
 		transform-origin: center top;
-		transition: 1.5s linear opacity, 5s transform var(--cubic-ease-out);
+		transition: 1.5s linear opacity, 5s transform var(--ease-out-cubic);
 	}
 	.media:not(.isBgVideo).isIntersecting img {
 		opacity: 1;

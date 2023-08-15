@@ -1,14 +1,19 @@
 <script lang="ts">
-	import type { Project } from '$lib/types';
+	import type { Project, ProjectGrid } from '$lib/types';
 
 	import ProjectThumb from './ProjectThumb.svelte';
-	export let projects: Project[];
+	export let data: ProjectGrid;
 </script>
 
-<section class="projects gutter">
-	{#each projects as project, index}
-		<ProjectThumb {project} size={index === 0 ? 'full' : 'half'} />
-	{/each}
+<section class="project-grid gutter">
+	{#if data.title}
+		<h2>{data.title}</h2>
+	{/if}
+	<div class="projects">
+		{#each data.projects as project, index}
+			<ProjectThumb {project} size={index === 0 && data.useFeature ? 'full' : 'half'} />
+		{/each}
+	</div>
 </section>
 
 <style>

@@ -51,11 +51,13 @@ export async function getPage(slug: string): Promise<Page | HttpError> {
 			components:
 				pageData.components?.map((component: any) => {
 					if (component._type === 'project_grid') {
-						return {
+						return <ProjectGrid>{
 							_type: 'project_grid',
 							name: component.name,
+							title: component.title,
+							useFeature: component.feature_first ?? false,
 							projects: component.projects?.map((data: any) => parseProjectFromData(data)) ?? []
-						} satisfies ProjectGrid;
+						};
 					} else if (component._type === 'project_media') {
 						return parseProjectMediaFromData(component);
 					} else if (component._type === 'logo_grid') {

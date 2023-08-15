@@ -28,40 +28,42 @@
 	{#if data.components}
 		{#each data.components as component (component)}
 			{#if component._type === 'project_grid'}
-				<ProjectGrid projects={component.projects} />
+				<ProjectGrid data={component} />
 			{/if}
 			{#if component._type === 'logo_grid'}
 				<LogoGrid data={component} />
 			{/if}
 			{#if component._type === 'project_media'}
-				<div class="project-media gutter">
+				<section class="project-media-single gutter">
 					<ProjectMediaComponent media={component} />
-				</div>
+				</section>
 			{/if}
 			{#if component._type === 'text_only'}
-				<div class="text-only">
-					<TextOnly data={component} />
-				</div>
+				<TextOnly data={component} />
 			{/if}
 			{#if component._type === 'columned_text'}
-				<div class="columned_text">
-					<ColumnedText data={component} />
-				</div>
+				<ColumnedText data={component} />
 			{/if}
 		{/each}
 	{/if}
 </div>
 
 <style>
+	.page {
+		--section-spacing: 6rem;
+	}
 	.page:not(.hasHero) {
 		padding-top: var(--top-nav-height);
 	}
-	.project-media {
-		margin: var(--gutter-sm) 0;
+	.project-media-single {
+		margin: var(--section-spacing) 0;
 	}
 	@media (min-width: 560px) {
-		.project-media {
-			margin: var(--gutter-lg) 0;
+		.page {
+			--section-spacing: 8rem;
 		}
+	}
+	.page :global(.project-grid + section) {
+		margin-top: var(--section-spacing);
 	}
 </style>

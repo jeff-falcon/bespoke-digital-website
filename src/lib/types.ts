@@ -35,6 +35,8 @@ export interface Project {
 export interface ProjectGrid {
 	_type: 'project_grid';
 	name: string;
+	title?: string;
+	useFeature: boolean;
 	projects: Project[];
 }
 export interface Hero {
