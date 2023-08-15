@@ -9,6 +9,7 @@
 	import TextOnly from '../content/TextOnly.svelte';
 	import ColumnedText from '../content/ColumnedText.svelte';
 	import ClientList from '../content/ClientList.svelte';
+	import Form from '../form/Form.svelte';
 
 	export let data: Page;
 
@@ -50,6 +51,9 @@
 			{/if}
 			{#if component._type === 'client_list'}
 				<ClientList data={component} />
+			{/if}
+			{#if component._type === 'form'}
+				<Form data={component} />
 			{/if}
 		{/each}
 	{/if}

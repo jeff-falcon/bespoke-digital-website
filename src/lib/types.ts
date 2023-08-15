@@ -50,7 +50,7 @@ export interface Hero {
 	project?: Project;
 }
 
-export type PageComponents = Array<ProjectGrid | LogoGrid | ProjectMedia | TextOnly | ColumnedText | ClientList>
+export type PageComponents = Array<ProjectGrid | LogoGrid | ProjectMedia | TextOnly | ColumnedText | ClientList | Form>
 
 export interface Page {
 	_type: 'page';
@@ -130,3 +130,13 @@ export interface ClientList {
 	title: string;
 	clients: string[];
 }
+
+export interface Form {
+	_type: 'form';
+	_id: string;
+	title: string;
+	body: InputValue;
+	form: FormType
+}
+
+export type FormType = 'contact' | 'job'

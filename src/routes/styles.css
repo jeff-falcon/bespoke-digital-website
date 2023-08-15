@@ -36,6 +36,7 @@
 	--error-text: var(--text-highlight);
 	--gutter-sm: 16px;
 	--gutter-lg: 32px;
+	--ease-in-out-sine: cubic-bezier(0.445, 0.05, 0.55, 0.95);
 	--ease-in-out-cubic: cubic-bezier(0.645, 0.045, 0.355, 1);
 	--ease-out-cubic: cubic-bezier(0.215, 0.61, 0.355, 1);
 	--column-width: calc((100vw - var(--gutter-sm)) * (1 / 4));
@@ -77,6 +78,7 @@ body {
 	background: var(--bg-dark);
 	color: var(--text-light);
 	-webkit-font-smoothing: antialiased;
+	transition: background-color 300ms var(--ease-in-out-sine);
 }
 
 body.bg-default {

@@ -1,0 +1,52 @@
+<script lang="ts">
+	import type { Form } from '$lib/types';
+	import { PortableText } from '@portabletext/svelte';
+	export let data: Form;
+</script>
+
+<section class="gutter">
+	<div class="wrap">
+		<h2 class="title">{data.title}</h2>
+		<div class="body">
+			<PortableText value={data.body} />
+		</div>
+
+		<form>
+			<h3>Form {data.form} goes here</h3>
+		</form>
+	</div>
+</section>
+
+<style>
+	section {
+		margin: 6rem 0;
+	}
+	.body {
+		opacity: 0.6;
+		font-size: var(--16pt);
+		line-height: var(--24pt);
+	}
+	.body :global(p) {
+		font-size: inherit;
+		line-height: inherit;
+	}
+	@media (min-width: 560px) {
+		section {
+			margin: 8rem 0;
+			display: grid;
+			grid-template-columns: repeat(12, 1fr);
+			gap: var(--gutter-sm);
+		}
+		.wrap {
+			grid-column: 2 / span 10;
+		}
+		.body {
+			font-size: var(--18pt);
+		}
+	}
+	@media (min-width: 1024px) {
+		.wrap {
+			grid-column: 2 / span 5;
+		}
+	}
+</style>

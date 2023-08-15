@@ -1,6 +1,6 @@
 import { createClient } from '@sanity/client';
 import { SANITY_TOKEN, SANITY_DATASET, SANITY_PROJECT_ID } from '$env/static/private';
-import type { ClientList, ColumnedText, Hero, LogoGrid, Page, PageComponents, ProjectGrid, ProjectMedia } from '$lib/types';
+import type { ClientList, ColumnedText, Form, Hero, LogoGrid, Page, PageComponents, ProjectGrid, ProjectMedia } from '$lib/types';
 import { type HttpError, error } from '@sveltejs/kit';
 import { parseCloudinaryImage, parseProjectFromData, parseProjectMediaFromData } from './parse';
 import type TextOnly from './ui/content/TextOnly.svelte';
@@ -27,6 +27,7 @@ export async function getPage(slug: string): Promise<Page | HttpError> {
 			_type == 'text_only_ref' => @->,
 			_type == 'columned_text_ref' => @->{..., "borderedTitle": bordered_title},
 			_type == 'client_list_ref' => @->,
+			_type == 'form_ref' => @->,
 		}
 	}`;
 	try {
@@ -80,6 +81,8 @@ export async function getPage(slug: string): Promise<Page | HttpError> {
 							clients: component.clients.replace(/\n\s*\n+/g, '\n').split('\n'),
 						}
 						return clients
+					} else if (component._type === 'form') {
+						return component as Form;
 					} else {
 						console.log('unknown component', component);
 					}

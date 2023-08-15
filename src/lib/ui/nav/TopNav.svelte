@@ -123,7 +123,7 @@
 		align-items: center;
 		color: white;
 		z-index: var(--level10);
-		transition: linear 300ms background-color;
+		transition: var(--ease-in-out-sine) 300ms background-color;
 	}
 	header.hasBg {
 		backdrop-filter: blur(14px);
