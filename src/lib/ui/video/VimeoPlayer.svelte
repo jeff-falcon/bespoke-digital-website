@@ -12,6 +12,7 @@
 
 	type Player = ReturnType<typeof videojs>;
 
+	let containerEl: HTMLElement;
 	let videoEl: HTMLVideoElement | null = null;
 	let isIntersecting = false;
 	let startedPlaying = false;
@@ -72,8 +73,8 @@
 	});
 </script>
 
-<IntersectionObserver bind:intersecting={isIntersecting}>
-	<div class="video-container">
+<IntersectionObserver element={containerEl} bind:intersecting={isIntersecting}>
+	<div class="video-container" bind:this={containerEl}>
 		<!-- svelte-ignore a11y-media-has-caption -->
 		<video
 			{id}
@@ -105,12 +106,16 @@
 		transform: scale(0.8, 1);
 	}
 	.video-container :global(.vjs-control-bar) {
-		height: 62px;
+		--progress-bar-height: 30px;
+		--bar-height: calc(var(--progress-bar-height) + 32px);
+		height: var(--bar-height);
 		background: transparent;
+		margin: 0 16px 16px;
+		width: auto;
 	}
 	.video-container :global(.vjs-control-bar .vjs-progress-holder) {
 		margin: 0;
-		height: 30px;
+		height: var(--progress-bar-height);
 		background-color: rgba(255, 255, 255, 0.2);
 	}
 	.video-container :global(.vjs-play-progress:before) {
@@ -143,14 +148,14 @@
 	}
 	.video-container :global(.vjs-mute-control .vjs-icon-placeholder:before) {
 		font-size: 32px;
-		line-height: 62px;
+		line-height: var(--bar-height);
 	}
 	.video-container :global(.vjs-progress-control) {
 		order: 2;
 	}
 	.video-container :global(.vjs-play-control .vjs-icon-placeholder:before) {
 		font-size: 46px;
-		line-height: 62px;
+		line-height: var(--bar-height);
 		left: -3px;
 	}
 	.video-container :global(.vjs-icon-pause:before),
@@ -197,10 +202,10 @@
 	.video-container :global(.vjs-volume-control.vjs-volume-vertical) {
 		background-color: transparent;
 		width: 40px;
-		height: 68px;
+		height: calc(var(--bar-height) + 6px);
 		padding: 8px 0;
 		margin: 0;
-		bottom: 68px;
+		bottom: calc(var(--bar-height) + 6px);
 		transition: opacity 300ms var(--ease-in-out-cubic);
 	}
 
