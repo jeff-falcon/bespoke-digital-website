@@ -23,13 +23,13 @@
 		section {
 			margin: 8rem 0;
 		}
-		.wrap {
-			width: 75%;
+		.text-only {
+			display: grid;
+			grid-template-columns: repeat(12, 1fr);
+			gap: var(--gutter-lg);
 		}
-	}
-	@media (min-width: 768px) {
 		.wrap {
-			width: 50%;
+			grid-column: 1 / span 10;
 		}
 	}
 </style>

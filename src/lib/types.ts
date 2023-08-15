@@ -50,13 +50,15 @@ export interface Hero {
 	project?: Project;
 }
 
+export type PageComponents = Array<ProjectGrid | LogoGrid | ProjectMedia | TextOnly | ColumnedText | ClientList>
+
 export interface Page {
 	_type: 'page';
 	name: string;
 	slug: string;
 	description?: string;
 	hero?: Hero;
-	components?: Array<ProjectGrid | LogoGrid | ProjectMedia | TextOnly | ColumnedText>;
+	components?: PageComponents;
 }
 
 export interface ProjectMedia {
@@ -116,6 +118,12 @@ export interface ColumnedText {
 	title: string;
 	body: {
 		title: string;
-		description: string;
+		body: InputValue;
 	}[];
+}
+
+export interface ClientList {
+	_type: 'client_list';
+	title: string;
+	clients: string[];
 }

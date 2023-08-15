@@ -130,9 +130,13 @@ h6 {
 	font-size: var(--18pt);
 }
 
-p {
+p,
+li {
 	font-size: var(--16pt);
 	line-height: 1.5rem;
+}
+li {
+	margin: 1rem 0;
 }
 
 input,
@@ -203,7 +207,8 @@ form button:disabled {
 	h6 {
 		font-size: var(--20pt);
 	}
-	p {
+	p,
+	li {
 		font-size: var(--18pt);
 	}
 }

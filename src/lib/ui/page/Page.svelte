@@ -8,6 +8,7 @@
 	import ProjectMediaComponent from '../project/ProjectMediaComponent.svelte';
 	import TextOnly from '../content/TextOnly.svelte';
 	import ColumnedText from '../content/ColumnedText.svelte';
+	import ClientList from '../content/ClientList.svelte';
 
 	export let data: Page;
 
@@ -43,6 +44,9 @@
 			{/if}
 			{#if component._type === 'columned_text'}
 				<ColumnedText data={component} />
+			{/if}
+			{#if component._type === 'client_list'}
+				<ClientList data={component} />
 			{/if}
 		{/each}
 	{/if}

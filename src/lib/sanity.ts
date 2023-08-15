@@ -1,6 +1,6 @@
 import { createClient } from '@sanity/client';
 import { SANITY_TOKEN, SANITY_DATASET, SANITY_PROJECT_ID } from '$env/static/private';
-import type { ColumnedText, Hero, LogoGrid, Page, ProjectGrid, ProjectMedia } from '$lib/types';
+import type { ClientList, ColumnedText, Hero, LogoGrid, Page, PageComponents, ProjectGrid, ProjectMedia } from '$lib/types';
 import { type HttpError, error } from '@sveltejs/kit';
 import { parseCloudinaryImage, parseProjectFromData, parseProjectMediaFromData } from './parse';
 import type TextOnly from './ui/content/TextOnly.svelte';
@@ -24,6 +24,7 @@ export async function getPage(slug: string): Promise<Page | HttpError> {
 			_type == 'project_media_ref' => @->,
 			_type == 'text_only_ref' => @->,
 			_type == 'columned_text_ref' => @->,
+			_type == 'client_list_ref' => @->,
 		}
 	}`;
 	try {
@@ -68,10 +69,17 @@ export async function getPage(slug: string): Promise<Page | HttpError> {
 						return component as TextOnly;
 					} else if (component._type === 'columned_text') {
 						return component as ColumnedText;
+					} else if (component._type === 'client_list') {
+						const clients: ClientList = {
+							_type: 'client_list',
+							title: component.title,
+							clients: component.clients.replace(/\n\s*\n+/g, '\n').split('\n'),
+						}
+						return clients
 					} else {
 						console.log('unknown component', component);
 					}
-				}).filter((component: ProjectMedia | LogoGrid | ProjectGrid) => component != null) ?? []
+				}).filter((component: PageComponents) => component != null) ?? []
 		};
 		console.log({ components: page.components });
 

@@ -1,5 +1,6 @@
 <script lang="ts">
 	import type { ColumnedText } from '$lib/types';
+	import { PortableText } from '@portabletext/svelte';
 
 	export let data: ColumnedText;
 </script>
@@ -18,7 +19,7 @@
 					<h2 class="title">{column.title}</h2>
 					<hr />
 					<div class="body">
-						<p>{column.description}</p>
+						<PortableText value={column.body} />
 					</div>
 				</div>
 			{/each}
@@ -60,5 +61,8 @@
 		opacity: 0.15;
 		border: 0;
 		margin: var(--16pt) 0 var(--24pt);
+	}
+	.body {
+		opacity: 0.6;
 	}
 </style>
