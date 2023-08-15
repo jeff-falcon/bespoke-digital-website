@@ -23,7 +23,7 @@ export async function getPage(slug: string): Promise<Page | HttpError> {
 			_type == 'projects' => @->{...,projects[]->},
 			_type == 'project_media_ref' => @->,
 			_type == 'text_only_ref' => @->,
-			_type == 'columned_text_ref' => @->,
+			_type == 'columned_text_ref' => @->{..., "borderedTitle": bordered_title},
 			_type == 'client_list_ref' => @->,
 		}
 	}`;

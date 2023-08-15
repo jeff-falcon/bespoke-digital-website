@@ -116,6 +116,7 @@ export interface TextOnly {
 export interface ColumnedText {
 	_type: 'columned_text';
 	title: string;
+	borderedTitle: boolean;
 	body: {
 		title: string;
 		body: InputValue;

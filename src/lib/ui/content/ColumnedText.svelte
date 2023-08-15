@@ -3,12 +3,14 @@
 	import { PortableText } from '@portabletext/svelte';
 
 	export let data: ColumnedText;
+
+	$: hasBorderedTitle = data.title && data.title.length > 0 && data.borderedTitle;
 </script>
 
-<section class="columned-text gutter">
+<section class="columned-text gutter" class:hasBorderedTitle>
 	<div class="wrap">
 		{#if data.title}
-			<h1>{data.title}</h1>
+			<h1 class="title">{data.title}</h1>
 		{/if}
 	</div>
 
@@ -31,29 +33,6 @@
 	section {
 		margin: 6rem 0;
 	}
-	@media (min-width: 560px) {
-		section {
-			margin: 8rem 0;
-		}
-		.wrap {
-			width: 75%;
-		}
-		.columns {
-			display: grid;
-			grid-template-columns: repeat(2, 1fr);
-			grid-gap: var(--gutter-lg);
-		}
-	}
-	@media (min-width: 768px) {
-		.columns {
-			display: grid;
-			grid-template-columns: repeat(var(--max-columns), 1fr);
-			grid-gap: var(--gutter-lg);
-		}
-		.wrap {
-			width: 50%;
-		}
-	}
 	.column hr {
 		width: 48px;
 		height: 1px;
@@ -64,5 +43,38 @@
 	}
 	.body {
 		opacity: 0.6;
+	}
+	.hasBorderedTitle .wrap .title {
+		border-bottom: 1px solid var(--text-light-15);
+		padding-bottom: 32px;
+		margin-bottom: 32px;
+	}
+	.hasBorderedTitle hr {
+		display: none;
+	}
+	.hasBorderedTitle .columns :global(p) {
+		font-size: var(--18pt);
+		line-height: var(--24pt);
+	}
+	@media (min-width: 560px) {
+		section {
+			margin: 8rem 0;
+		}
+		.columns {
+			display: grid;
+			grid-template-columns: repeat(2, 1fr);
+			grid-gap: var(--gutter-lg);
+		}
+	}
+	.hasBorderedTitle .columns :global(p) {
+		font-size: var(--20pt);
+		line-height: var(--32pt);
+	}
+	@media (min-width: 768px) {
+		.columns {
+			display: grid;
+			grid-template-columns: repeat(var(--max-columns), 1fr);
+			grid-gap: var(--gutter-lg);
+		}
 	}
 </style>
