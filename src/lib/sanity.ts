@@ -1,8 +1,9 @@
 import { createClient } from '@sanity/client';
 import { SANITY_TOKEN, SANITY_DATASET, SANITY_PROJECT_ID } from '$env/static/private';
-import type { Hero, LogoGrid, Page, ProjectGrid, ProjectMedia } from '$lib/types';
+import type { ColumnedText, Hero, LogoGrid, Page, ProjectGrid, ProjectMedia } from '$lib/types';
 import { type HttpError, error } from '@sveltejs/kit';
 import { parseCloudinaryImage, parseProjectFromData, parseProjectMediaFromData } from './parse';
+import type TextOnly from './ui/content/TextOnly.svelte';
 
 export function getClient() {
 	return client;
@@ -21,6 +22,8 @@ export async function getPage(slug: string): Promise<Page | HttpError> {
 			_type == 'logo_grid_ref' => @->{..., "desktop": desktop.asset->url, "mobile": mobile.asset->url},
 			_type == 'projects' => @->{...,projects[]->},
 			_type == 'project_media_ref' => @->,
+			_type == 'text_only_ref' => @->,
+			_type == 'columned_text_ref' => @->,
 		}
 	}`;
 	try {
@@ -57,6 +60,10 @@ export async function getPage(slug: string): Promise<Page | HttpError> {
 						return parseProjectMediaFromData(component);
 					} else if (component._type === 'logo_grid') {
 						return component as LogoGrid;
+					} else if (component._type === 'text_only') {
+						return component as TextOnly;
+					} else if (component._type === 'columned_text') {
+						return component as ColumnedText;
 					} else {
 						console.log('unknown component', component);
 					}

@@ -55,7 +55,7 @@ export interface Page {
 	slug: string;
 	description?: string;
 	hero?: Hero;
-	components?: Array<ProjectGrid | LogoGrid | ProjectMedia>;
+	components?: Array<ProjectGrid | LogoGrid | ProjectMedia | TextOnly | ColumnedText>;
 }
 
 export interface ProjectMedia {
@@ -102,4 +102,19 @@ export interface LogoGrid {
 	desktop: string;
 	mobile: string;
 	color: string;
+}
+
+export interface TextOnly {
+	_type: 'text_only';
+	title: string;
+	body: InputValue;
+}
+
+export interface ColumnedText {
+	_type: 'columned_text';
+	title: string;
+	body: {
+		title: string;
+		description: string;
+	}[];
 }

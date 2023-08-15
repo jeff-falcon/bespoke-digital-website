@@ -6,6 +6,8 @@
 	import Hero from './Hero.svelte';
 	import { pageHasHero } from '$lib/store';
 	import ProjectMediaComponent from '../project/ProjectMediaComponent.svelte';
+	import TextOnly from '../content/TextOnly.svelte';
+	import ColumnedText from '../content/ColumnedText.svelte';
 
 	export let data: Page;
 
@@ -34,6 +36,16 @@
 			{#if component._type === 'project_media'}
 				<div class="project-media gutter">
 					<ProjectMediaComponent media={component} />
+				</div>
+			{/if}
+			{#if component._type === 'text_only'}
+				<div class="text-only">
+					<TextOnly data={component} />
+				</div>
+			{/if}
+			{#if component._type === 'columned_text'}
+				<div class="columned_text">
+					<ColumnedText data={component} />
 				</div>
 			{/if}
 		{/each}
