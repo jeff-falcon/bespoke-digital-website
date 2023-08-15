@@ -12,8 +12,8 @@
 		name: '',
 		kind: data.kind,
 		image: data.image_desktop,
-		vimeoSrc: data.vimeoSrc,
-		vimeoSrcHd: data.vimeoSrcHd
+		videoBgSrc: data.videoBgSrc,
+		vimeoBgSrcHd: data.videoBgSrcHd
 	};
 </script>
 

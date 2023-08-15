@@ -12,12 +12,12 @@
 	let figureEl: HTMLElement;
 	let isIntersecting = false;
 	let isVideoPlaying = false;
-	$: videoBgSrc = media.vimeoSrc || media.vimeoSrcHd;
+	$: videoBgSrc = media.videoBgSrc || media.videoBgSrcHd;
 	$: isBgVideo = media.kind === 'video-bg' && Boolean(videoBgSrc);
 	$: isStaticImage = media.kind === 'image' && Boolean(media.image?.url);
-	$: hasVideoId = !isNaN(Number(media.vimeoPlayerSrc));
-	$: isVideoPlayer = media.kind === 'video-player' && Boolean(media.vimeoPlayerSrc) && !hasVideoId;
-	$: isVideoEmbed = media.kind === 'video-player' && Boolean(media.vimeoPlayerSrc) && hasVideoId;
+	$: hasVideoId = !isNaN(Number(media.videoPlayerSrc));
+	$: isVideoPlayer = media.kind === 'video-player' && Boolean(media.videoPlayerSrc) && !hasVideoId;
+	$: isVideoEmbed = media.kind === 'video-player' && Boolean(media.videoPlayerSrc) && hasVideoId;
 
 	function onVideoPlaying(e: { detail: boolean }) {
 		isVideoPlaying = e.detail;
@@ -26,10 +26,10 @@
 
 {#if isVideoEmbed}
 	<div class="video-embed">
-		<VimeoEmbed vimeoId={Number(media.vimeoPlayerSrc)} title={media.name} />
+		<VimeoEmbed vimeoId={Number(media.videoPlayerSrc)} title={media.name} />
 	</div>
 {:else if isVideoPlayer}
-	{@const src = media.vimeoPlayerSrc ?? ''}
+	{@const src = media.videoPlayerSrc ?? ''}
 	<div class="video-player">
 		<VimeoPlayer
 			id="media-{media._key}"
@@ -48,6 +48,7 @@
 			bind:this={figureEl}
 			class:isIntersecting
 			class:scaleOnReveal
+			data-data={JSON.stringify(media)}
 		>
 			{#if isBgVideo}
 				<VimeoBG

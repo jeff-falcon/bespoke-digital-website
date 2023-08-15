@@ -24,33 +24,35 @@ export function parseCloudinaryImage(image: any) {
 
 export function parseProjectMediaFromData(project: any) {
 	if (project?._type !== 'project_media') return undefined;
-	return <ProjectMedia>{
+	const media: ProjectMedia = {
 		_type: 'project_media',
 		_key: project._id,
 		name: project.name,
 		image: parseCloudinaryImage(project.image),
 		kind: project.kind,
-		vimeoPlayerSrc: project.vimeo_player_src,
-		vimeoSrc: project.thumb_vimeo_src,
-		vimeoSrcHd: project.thumb_vimeo_src_hd
+		videoPlayerSrc: project.vimeo_player_src,
+		videoBgSrc: project.thumb_vimeo_src,
+		videoBgSrcHd: project.thumb_vimeo_src_hd
 	};
+	return media;
 }
 
-export function parseProjectFromData(project: any) {
-	if (project?._type !== 'project') return undefined;
-	return <Project>{
+export function parseProjectFromData(data: any) {
+	if (data?._type !== 'project') return undefined;
+	const project: Project = {
 		_type: 'project',
-		pageTitle: project.name,
-		name: project.name,
-		shortName: project.short_name ?? '',
-		slug: project.slug.current ?? '',
-		description: project.description,
-		client: project.client,
-		image: parseCloudinaryImage(project.image),
-		thumb_vimeo_id: project.thumb_vimeo_id,
-		thumb_vimeo_src: project.thumb_vimeo_src,
-		thumb_vimeo_src_hd: project.thumb_vimeo_src_hd
+		pageTitle: data.name,
+		name: data.name,
+		shortName: data.short_name ?? '',
+		slug: data.slug.current ?? '',
+		description: data.description,
+		client: data.client,
+		kind: data.kind,
+		image: parseCloudinaryImage(data.image),
+		videoBgSrc: data.thumb_vimeo_src,
+		videoBgSrcHd: data.thumb_vimeo_src_hd
 	}
+	return project;
 }
 
 export function parseHeroFromData(data: any) {

@@ -36,9 +36,8 @@ export const load: PageServerLoad = async ({ params }) => {
 			client: projectData.client,
 			credits: projectData.credits ?? [],
 			image: parseCloudinaryImage(projectData.image),
-			vimeoPlayerSrc: projectData.vimeo_player_src,
-			vimeoSrc: projectData.thumb_vimeo_src,
-			vimeoSrcHd: projectData.thumb_vimeo_src_hd,
+			videoBgSrc: projectData.thumb_vimeo_src,
+			videoBgSrcHd: projectData.thumb_vimeo_src_hd,
 			media:
 				projectData.media
 					?.map((media: any) => {

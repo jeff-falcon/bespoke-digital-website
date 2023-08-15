@@ -27,9 +27,8 @@ export interface Project {
 	client?: string;
 	credits?: Credit[],
 	image?: CloudinaryImage;
-	vimeoPlayerSrc?: string;
-	vimeoSrc?: string;
-	vimeoSrcHd?: string;
+	videoBgSrc?: string;
+	videoBgSrcHd?: string;
 	media?: Array<ProjectMedia | ProjectMediaPair>;
 }
 export interface ProjectGrid {
@@ -46,8 +45,8 @@ export interface Hero {
 	kind?: 'image' | 'video-bg';
 	image_desktop?: CloudinaryImage;
 	image_mobile?: CloudinaryImage;
-	vimeoSrc?: string;
-	vimeoSrcHd?: string;
+	videoBgSrc?: string;
+	videoBgSrcHd?: string;
 	project?: Project;
 }
 
@@ -66,9 +65,9 @@ export interface ProjectMedia {
 	name: string;
 	image?: CloudinaryImage;
 	kind?: 'image' | 'video-bg' | 'video-player';
-	vimeoPlayerSrc?: string;
-	vimeoSrc?: string;
-	vimeoSrcHd?: string;
+	videoPlayerSrc?: string;
+	videoBgSrc?: string;
+	videoBgSrcHd?: string;
 }
 
 export interface ProjectMediaPair {

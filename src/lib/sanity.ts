@@ -43,21 +43,23 @@ export async function getPage(slug: string): Promise<Page | HttpError> {
 					image_desktop: parseCloudinaryImage(pageData.hero.image_desktop),
 					image_mobile: parseCloudinaryImage(pageData.hero.image_mobile),
 					kind: pageData.hero.kind,
-					vimeoSrc: pageData.hero.thumb_vimeo_src,
-					vimeoSrcHd: pageData.hero.thumb_vimeo_src_hd,
+					videoBgSrc: pageData.hero.thumb_vimeo_src,
+					videoBgSrcHd: pageData.hero.thumb_vimeo_src_hd,
 					project: pageData.hero.project ? parseProjectFromData(pageData.hero.project) : undefined
 				} satisfies Hero)
 				: undefined,
 			components:
 				pageData.components?.map((component: any) => {
 					if (component._type === 'project_grid') {
-						return <ProjectGrid>{
+						const grid: ProjectGrid = {
 							_type: 'project_grid',
 							name: component.name,
 							title: component.title,
 							useFeature: component.feature_first ?? false,
 							projects: component.projects?.map((data: any) => parseProjectFromData(data)) ?? []
 						};
+						console.log(grid)
+						return grid;
 					} else if (component._type === 'project_media') {
 						return parseProjectMediaFromData(component);
 					} else if (component._type === 'logo_grid') {
