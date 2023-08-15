@@ -22,6 +22,9 @@
 	--bg-darker: #202020;
 	--bg-light: #e6e4df;
 	--bg-light-green: #e9f1cf;
+	--bg-default: var(--bg-dark);
+	--bg-rust: #6d3434;
+	--bg-olive: #3f4239;
 	--text-light: #fefefe;
 	--text-light-40: hsla(0, 0%, 100%, 0.4);
 	--text-light-30: hsla(0, 0%, 100%, 0.3);
@@ -74,6 +77,16 @@ body {
 	background: var(--bg-dark);
 	color: var(--text-light);
 	-webkit-font-smoothing: antialiased;
+}
+
+body.bg-default {
+	background: var(--bg-default);
+}
+body.bg-rust {
+	background: var(--bg-rust);
+}
+body.bg-olive {
+	background: var(--bg-olive);
 }
 
 * {

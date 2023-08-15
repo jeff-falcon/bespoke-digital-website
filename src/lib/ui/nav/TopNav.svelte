@@ -130,6 +130,12 @@
 		-webkit-backdrop-filter: blur(14px);
 		background-color: rgba(38, 38, 38, 0.8);
 	}
+	:global(body.bg-rust) header.hasBg {
+		background-color: rgba(108, 51, 51, 0.8);
+	}
+	:global(body.bg-olive) header.hasBg {
+		background-color: rgba(63, 66, 57, 0.8);
+	}
 	.right {
 		display: flex;
 		align-items: center;

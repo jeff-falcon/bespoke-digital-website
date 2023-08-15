@@ -4,7 +4,7 @@
 	import { onMount } from 'svelte';
 	import LogoGrid from '../logos/LogoGrid.svelte';
 	import Hero from './Hero.svelte';
-	import { pageHasHero } from '$lib/store';
+	import { bgColor, pageHasHero } from '$lib/store';
 	import ProjectMediaComponent from '../project/ProjectMediaComponent.svelte';
 	import TextOnly from '../content/TextOnly.svelte';
 	import ColumnedText from '../content/ColumnedText.svelte';
@@ -14,6 +14,9 @@
 
 	onMount(() => {
 		pageHasHero.set(data.hero != null);
+		bgColor.set(data.bgColor || 'default');
+		document.body.className = `bg-${$bgColor}`;
+		console.log({ bgColor: data.bgColor || 'default' });
 	});
 </script>
 

@@ -4,6 +4,8 @@
 	export let data: PageData;
 </script>
 
-{#if data._type === 'page'}
-	<PageComponent {data} />
-{/if}
+{#key data._id}
+	{#if data._type === 'page'}
+		<PageComponent {data} />
+	{/if}
+{/key}

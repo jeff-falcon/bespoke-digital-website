@@ -14,9 +14,11 @@ export async function getPage(slug: string): Promise<Page | HttpError> {
 
 	const client = getClient();
 	const groq = `*[_type == "page" && slug.current == "${slug}"]{
+		_id,
 		name,
 		"slug": slug.current,
 		description,
+		"bgColor": bg_color,
 		hero->{...,project->},
 		components[]{
 			_type == 'logo_grid_ref' => @->{..., "desktop": desktop.asset->url, "mobile": mobile.asset->url},
@@ -33,7 +35,9 @@ export async function getPage(slug: string): Promise<Page | HttpError> {
 		const pageData = result[0];
 		const page: Page = {
 			_type: 'page',
+			_id: pageData._id,
 			name: pageData.name,
+			bgColor: pageData.bgColor,
 			slug: pageData.slug,
 			description: pageData.description,
 			hero: pageData.hero
@@ -81,7 +85,6 @@ export async function getPage(slug: string): Promise<Page | HttpError> {
 					}
 				}).filter((component: PageComponents) => component != null) ?? []
 		};
-		console.log({ components: page.components });
 
 		return page;
 	} catch (err) {

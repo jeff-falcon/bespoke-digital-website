@@ -54,7 +54,9 @@ export type PageComponents = Array<ProjectGrid | LogoGrid | ProjectMedia | TextO
 
 export interface Page {
 	_type: 'page';
+	_id: string;
 	name: string;
+	bgColor?: 'default' | 'rust' | 'olive',
 	slug: string;
 	description?: string;
 	hero?: Hero;
