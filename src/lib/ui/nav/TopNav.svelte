@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { page, navigating } from '$app/stores';
 	import { menuState, pageHasHero } from '$lib/store';
-	import BespokeLogo from '$lib/ui/logos/BespokeLogo.svelte';
+	import BespokeAnimatedLogo from '$lib/ui/logos/BespokeAnimatedLogo.svelte';
 	import InstagramLogo from '$lib/ui/logos/InstagramLogo.svelte';
 
 	import anime from 'animejs';
@@ -81,7 +81,7 @@
 <header class:isMenuOpen class="gutter" class:hasBg={!($pageHasHero && scrollY < 120)}>
 	<div class="logo">
 		<a href="/">
-			<BespokeLogo />
+			<BespokeAnimatedLogo />
 		</a>
 	</div>
 	<div class="right">
