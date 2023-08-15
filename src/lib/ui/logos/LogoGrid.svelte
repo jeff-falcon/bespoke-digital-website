@@ -39,6 +39,8 @@
 		margin-left: auto;
 		margin-right: auto;
 		display: block;
+		width: 100%;
+		height: auto;
 	}
 	@media (min-width: 768px) {
 		section {
