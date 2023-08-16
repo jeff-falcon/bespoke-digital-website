@@ -31,6 +31,8 @@
 		line-height: var(--32pt);
 		font-weight: normal;
 		width: 75%;
+		padding-bottom: 16px;
+		border-bottom: 1px solid var(--text-light-15);
 	}
 	picture {
 		margin-top: 48px;
@@ -48,12 +50,13 @@
 			padding-bottom: 160px;
 		}
 		picture {
-			margin-top: 128px;
+			margin-top: 64px;
 		}
 		h3 {
 			font-size: var(--24pt);
 			width: 100%;
-			margin-bottom: 128px;
+			padding-bottom: 48px;
+			margin-bottom: 64px;
 		}
 	}
 </style>
