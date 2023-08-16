@@ -10,7 +10,7 @@
 	export let data: LayoutData;
 </script>
 
-<TopNav usePillFollower={true} />
+<TopNav config={data.config} usePillFollower={true} />
 
 <main>
 	<slot />

@@ -1,11 +1,15 @@
 <script lang="ts">
 	import { page, navigating } from '$app/stores';
 	import { menuState, pageHasHero } from '$lib/store';
+	import type { Config } from '$lib/types';
 	import BespokeAnimatedLogo from '$lib/ui/logos/BespokeAnimatedLogo.svelte';
 	import InstagramLogo from '$lib/ui/logos/InstagramLogo.svelte';
 
 	import anime from 'animejs';
+	import { cubicIn, cubicOut, expoOut, sineInOut } from 'svelte/easing';
+	import { fly } from 'svelte/transition';
 	export let usePillFollower = true;
+	export let config: Config;
 
 	let isBorderAnimating = false;
 	let scrollY = 0;
@@ -165,11 +169,97 @@
 	</div>
 </header>
 <div class="nav-overlay" class:isMenuOpen>
-	<nav class="v-menu">
-		{#each menuLinks as link (link.url)}
-			<a href={link.url} class:active={link.isActive}>{link.name}</a>
-		{/each}
-	</nav>
+	{#if isMenuOpen}
+		<div
+			class="bg"
+			in:fly={{
+				opacity: 0,
+				y: 0,
+				x: 0,
+				duration: 400,
+				easing: sineInOut,
+				delay: 0
+			}}
+			out:fly={{
+				opacity: 0,
+				y: 0,
+				x: 0,
+				duration: 600,
+				easing: sineInOut,
+				delay: 600
+			}}
+		/>
+		<div class="wrap">
+			<nav class="v-menu">
+				{#each menuLinks as link, index (link.url)}
+					<a
+						href={link.url}
+						in:fly|global={{
+							duration: 1200,
+							opacity: 0,
+							y: 30,
+							easing: expoOut,
+							delay: index * 80
+						}}
+						out:fly|global={{
+							duration: 400,
+							opacity: 0,
+							y: 0,
+							easing: cubicIn,
+							delay: index * 50
+						}}
+						class:active={link.isActive}>{link.name}</a
+					>
+				{/each}
+			</nav>
+			<footer>
+				<div class="socials">
+					{#each config.socials.links as link, index (link)}
+						<a
+							href={link.url}
+							target="_blank"
+							in:fly|global={{
+								duration: 800,
+								opacity: 0,
+								x: 10,
+								easing: cubicOut,
+								delay: index * 50
+							}}
+							out:fly|global={{
+								duration: 400,
+								opacity: 0,
+								x: 0,
+								easing: cubicIn,
+								delay: index * 50
+							}}
+						>
+							<img src={link.icon} width="16" height="16" alt={link.name} />
+						</a>
+					{/each}
+				</div>
+				<div
+					class="credits"
+					in:fly|global={{
+						duration: 800,
+						opacity: 0,
+						x: 0,
+						y: 0,
+						easing: sineInOut,
+						delay: 300
+					}}
+					out:fly|global={{
+						duration: 400,
+						opacity: 0,
+						x: 0,
+						y: 0,
+						easing: sineInOut
+					}}
+				>
+					<p class="copyright">© {new Date().getFullYear()} Bespoke Digital</p>
+				</div>
+			</footer>
+		</div>
+	{/if}
 </div>
 
 <style>
@@ -291,26 +381,64 @@
 		height: 100dvh;
 		width: 100dvw;
 		z-index: var(--level9);
-		background: var(--bg-dark);
-		opacity: 0;
 		pointer-events: none;
-		display: flex;
-		align-items: center;
+		display: grid;
+		grid-template-columns: repeat(4, 1fr);
+		gap: 40px var(--gutter-sm);
+	}
+	.nav-overlay .bg {
+		position: absolute;
+		top: 0;
+		left: 0;
+		width: 100%;
+		height: 100%;
+		z-index: 0;
+		background: var(--bg-dark);
+	}
+
+	:global(.bg-rust) .nav-overlay .bg {
+		background: var(--bg-rust);
+	}
+	:global(.bg-olive) .nav-overlay .bg {
+		background: var(--bg-olive);
 	}
 	.nav-overlay.isMenuOpen {
-		opacity: 1;
 		pointer-events: all;
+		overflow-x: hidden;
+		overflow-y: auto;
+		overscroll-behavior: contain;
+	}
+	.nav-overlay .wrap {
+		grid-column: 3 / span 2;
+		display: flex;
+		flex-direction: column;
+		position: relative;
+		z-index: 1;
+	}
+	.nav-overlay .copyright {
+		font-size: var(--12pt);
+		opacity: 0.4;
+		margin: 24px 0 0;
+	}
+	.nav-overlay footer {
+		padding-bottom: 40px;
 	}
 	.v-menu {
 		display: flex;
 		flex-direction: column;
 		gap: 40px;
-		padding-left: calc(50% + var(--gutter-sm) * 0.05);
+		flex: 1;
+		justify-content: center;
 	}
 	.v-menu a {
 		font-size: var(--24pt);
 		line-height: 1;
 		color: white;
+	}
+	.v-menu a:hover,
+	.v-menu a:focus,
+	.v-menu a:active {
+		text-decoration: none;
 	}
 	.insta-btn {
 		display: flex;
@@ -325,6 +453,19 @@
 	.insta-btn:hover {
 		border-color: var(--text-light);
 	}
+	.socials {
+		display: flex;
+		gap: 12px;
+		transform: translateX(-8px);
+	}
+	.socials a {
+		display: inline-flex;
+		width: 32px;
+		height: 32px;
+		align-items: center;
+		justify-content: center;
+	}
+
 	@media (min-width: 760px) {
 		.h-menu {
 			display: flex;
