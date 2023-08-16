@@ -126,6 +126,7 @@
 				'description project-name'
 				'description credits';
 			grid-template-columns: 8fr 4fr;
+			grid-template-rows: auto 1fr;
 			gap: 40px calc(var(--gutter-lg) + var(--column-width));
 			padding-top: 128px;
 			padding-bottom: 68px;

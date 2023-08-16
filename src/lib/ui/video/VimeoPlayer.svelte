@@ -84,7 +84,7 @@
 			loop
 			controls
 			preload="auto"
-			poster={placeholder}
+			poster={placeholder || undefined}
 		>
 			<source {src} />
 		</video>
@@ -95,15 +95,35 @@
 	.video-container :global(.vjs-big-play-button) {
 		border: 0;
 		border-radius: 0;
-		background-color: transparent;
 		font-size: 8em;
+		width: 100%;
+		height: 100%;
+		left: 0;
+		top: 0;
+		transform: translateZ(0);
+		margin: 0;
+		display: flex;
+		align-items: center;
+		justify-content: center;
 	}
+	.video-container :global(.vjs-big-play-button),
 	.video-container :global(.video-js:hover .vjs-big-play-button),
 	.video-container :global(.vjs-big-play-button:focus) {
-		background-color: transparent;
+		background-color: rgba(0, 0, 0, 0.2);
 	}
 	.video-container :global(.vjs-big-play-button .vjs-icon-placeholder:before) {
 		transform: scale(0.8, 1);
+		height: 100px;
+		width: 100px;
+		position: relative;
+		top: auto;
+		left: auto;
+	}
+	.video-container :global(.vjs-controls-disabled .vjs-big-play-button),
+	.video-container :global(.vjs-has-started .vjs-big-play-button),
+	.video-container :global(.vjs-using-native-controls .vjs-big-play-button),
+	.video-container :global(.vjs-error .vjs-big-play-button) {
+		display: none;
 	}
 	.video-container :global(.vjs-control-bar) {
 		--progress-bar-height: 30px;
@@ -222,5 +242,8 @@
 	}
 	.video-container :global(.vjs-volume-bar.vjs-slider-vertical .vjs-volume-level:before) {
 		display: none;
+	}
+	.video-container :global(.vjs-poster img) {
+		opacity: 0.6;
 	}
 </style>

@@ -35,7 +35,7 @@
 			id="media-{media._key}"
 			{src}
 			title={media.name}
-			placeholder={media.image?.url ?? ''}
+			placeholder={media.image?.url || undefined}
 		/>
 	</div>
 {:else if isStaticImage || isBgVideo}

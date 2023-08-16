@@ -21,6 +21,7 @@
 		const player = videojs(videoEl!);
 		player.on('playing', onPlaying);
 		player.on('pause', onPaused);
+		player.volume(0);
 		return () => {
 			player.off('playing', onPlaying);
 			player.off('pause', onPaused);
