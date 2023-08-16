@@ -253,7 +253,7 @@
 		transition: border-color 180ms linear;
 	}
 	.isBorderAnimating .border {
-		border-color: var(--text-light-15);
+		border-color: var(--text-light-40);
 		visibility: visible;
 	}
 	.isBorderAnimating.isOverCurrent .border {
