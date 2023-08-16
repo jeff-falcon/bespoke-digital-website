@@ -58,6 +58,7 @@ export interface Page {
 	name: string;
 	bgColor?: 'default' | 'rust' | 'olive',
 	slug: string;
+	footerHasContactForm: boolean;
 	description?: string;
 	hero?: Hero;
 	components?: PageComponents;

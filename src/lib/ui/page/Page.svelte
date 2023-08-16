@@ -4,7 +4,7 @@
 	import { onMount } from 'svelte';
 	import LogoGrid from '../logos/LogoGrid.svelte';
 	import Hero from './Hero.svelte';
-	import { bgColor, pageHasHero } from '$lib/store';
+	import { bgColor, footerHasContactForm, pageHasHero } from '$lib/store';
 	import ProjectMediaComponent from '../project/ProjectMediaComponent.svelte';
 	import TextOnly from '../content/TextOnly.svelte';
 	import ColumnedText from '../content/ColumnedText.svelte';
@@ -17,7 +17,11 @@
 		pageHasHero.set(data.hero != null);
 		bgColor.set(data.bgColor || 'default');
 		document.body.className = `bg-${$bgColor}`;
-		console.log({ bgColor: data.bgColor || 'default' });
+		footerHasContactForm.set(data.footerHasContactForm);
+		console.log({
+			bgColor: data.bgColor || 'default',
+			footerHasContactForm: data.footerHasContactForm
+		});
 	});
 </script>
 

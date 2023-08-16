@@ -1,6 +1,8 @@
 <script lang="ts">
 	import type { Form } from '$lib/types';
 	import { PortableText } from '@portabletext/svelte';
+	import Contact from './Contact.svelte';
+	import JobSubmission from './JobSubmission.svelte';
 	export let data: Form;
 </script>
 
@@ -11,9 +13,18 @@
 			<PortableText value={data.body} />
 		</div>
 
-		<form>
-			<h3>Form {data.form} goes here</h3>
-		</form>
+		<div class="form">
+			{#if data.form === 'contact'}
+				{#key data._id}
+					<Contact mode="long" />
+				{/key}
+			{/if}
+			{#if data.form === 'job'}
+				{#key data._id}
+					<JobSubmission mode="long" />
+				{/key}
+			{/if}
+		</div>
 	</div>
 </section>
 
@@ -29,6 +40,9 @@
 	.body :global(p) {
 		font-size: inherit;
 		line-height: inherit;
+	}
+	.form {
+		margin-top: 48px;
 	}
 	@media (min-width: 560px) {
 		section {

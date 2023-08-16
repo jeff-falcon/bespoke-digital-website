@@ -155,9 +155,10 @@ li {
 }
 
 input,
+textarea,
 button {
 	font-size: inherit;
-	font-family: inherit;
+	font-family: var(--font-body);
 }
 
 button:focus:not(:focus-visible) {

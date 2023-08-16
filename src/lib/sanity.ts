@@ -19,6 +19,7 @@ export async function getPage(slug: string): Promise<Page | HttpError> {
 		"slug": slug.current,
 		description,
 		"bgColor": bg_color,
+		"footerHasContactForm": footer_contact,
 		hero->{...,project->},
 		components[]{
 			_type == 'logo_grid_ref' => @->{..., "desktop": desktop.asset->url, "mobile": mobile.asset->url},
@@ -41,6 +42,7 @@ export async function getPage(slug: string): Promise<Page | HttpError> {
 			bgColor: pageData.bgColor,
 			slug: pageData.slug,
 			description: pageData.description,
+			footerHasContactForm: Boolean(pageData.footerHasContactForm ?? true),
 			hero: pageData.hero
 				? ({
 					_type: 'hero',

@@ -17,7 +17,7 @@
 	let email: string = '';
 	let name: string = '';
 	let message: string = '';
-	let company: string = '';
+	let portfolio: string = '';
 	let phone: string = '';
 	let disabled = true;
 	let wasEmailTested = false;
@@ -78,7 +78,7 @@
 			<div class="message">
 				<TextArea
 					name="message"
-					label="Tell us about your project"
+					label="Tell us about yourself"
 					id="message"
 					bind:value={message}
 					error={messageError}
@@ -106,15 +106,15 @@
 				/>
 			</div>
 			{#if mode === 'long'}
-				<div class="company-phone">
+				<div class="phone-portfolio">
+					<TextField name="phone" type="text" label="Phone number" id="phone" bind:value={phone} />
 					<TextField
-						name="company"
+						name="portfolio"
 						type="text"
-						label="Your company"
-						id="company"
-						bind:value={company}
+						label="LinkedIn or portfolio site"
+						id="portfolio"
+						bind:value={portfolio}
 					/>
-					<TextField name="phone" type="text" label="Your phone" id="phone" bind:value={phone} />
 				</div>
 			{/if}
 			<button type="submit" disabled={formResultMessage != '' || !isValid}>Send</button>
@@ -150,7 +150,7 @@
 			grid-template-areas:
 				'message'
 				'name-email'
-				'company-phone'
+				'phone-portfolio'
 				'submit';
 		}
 		.message {
@@ -168,9 +168,9 @@
 			grid-area: name-email;
 			gap: 16px;
 		}
-		.company-phone {
+		.phone-portfolio {
 			display: flex;
-			grid-area: company-phone;
+			grid-area: phone-portfolio;
 			gap: 16px;
 		}
 		.long :global(.textfield-container) {
@@ -178,7 +178,7 @@
 			max-width: 100%;
 		}
 		.short .name-email :global(.textfield-container),
-		.short .company-phone :global(.textfield-container) {
+		.short .phone-portfolio :global(.textfield-container) {
 			width: 100%;
 			max-width: 248px;
 		}
