@@ -11,7 +11,7 @@
 	const check = v.compile({
 		email: { type: 'email', normalize: true, label: 'Email address' },
 		name: { type: 'string', label: 'Your name', min: 1, trim: true },
-		message: { type: 'string', label: 'Message', empty: true, trim: true, min: 10, max: 5000 }
+		message: { type: 'string', label: 'Message', trim: true, min: 10, max: 5000 }
 	});
 
 	let email: string = '';
@@ -45,13 +45,19 @@
 	$: isValid = validation === true;
 
 	function onEmailBlur(e: { detail: string }) {
-		wasEmailTested = Boolean(e.detail.length);
+		if (email.length) {
+			wasEmailTested = true;
+		}
 	}
 	function onNameBlur(e: { detail: string }) {
-		wasNameTested = Boolean(e.detail.length);
+		if (name.length) {
+			wasNameTested = true;
+		}
 	}
 	function onMessageBlur(e: { detail: string }) {
-		wasMessageTested = Boolean(e.detail.length);
+		if (message.length) {
+			wasMessageTested = true;
+		}
 	}
 
 	function onUseForm(): ReturnType<SubmitFunction> {
@@ -126,11 +132,6 @@
 	form {
 		display: flex;
 		flex-direction: column;
-	}
-	.short form {
-		gap: 24px;
-	}
-	.long form {
 		gap: 16px;
 	}
 	.title {
@@ -138,6 +139,16 @@
 	}
 	.title.isComplete {
 		color: var(--text-highlight);
+	}
+	.name-email {
+		display: flex;
+		flex-direction: column;
+		gap: 16px;
+	}
+	.company-phone {
+		display: flex;
+		flex-direction: column;
+		gap: 16px;
 	}
 	@media (min-width: 768px) {
 		form {
@@ -164,14 +175,12 @@
 			min-height: 80px;
 		}
 		.name-email {
-			display: flex;
+			flex-direction: row;
 			grid-area: name-email;
-			gap: 16px;
 		}
 		.company-phone {
-			display: flex;
+			flex-direction: row;
 			grid-area: company-phone;
-			gap: 16px;
 		}
 		.long :global(.textfield-container) {
 			width: 100%;

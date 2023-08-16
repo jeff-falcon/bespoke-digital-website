@@ -30,6 +30,7 @@
 		font-size: var(--18pt);
 		line-height: var(--24pt);
 		opacity: 0.6;
+		columns: 2;
 	}
 	.clients p {
 		font-size: inherit;
@@ -40,7 +41,6 @@
 			margin: 8rem 0;
 		}
 		.clients {
-			columns: 2;
 			font-size: var(--20pt);
 			line-height: var(--32pt);
 		}
