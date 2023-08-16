@@ -87,6 +87,7 @@
 	.description :global(li) {
 		font-size: inherit;
 		line-height: inherit;
+		margin: 1.25em 0;
 	}
 	.description :global(> p:first-of-type),
 	.description :global(> p:first-of-type) {

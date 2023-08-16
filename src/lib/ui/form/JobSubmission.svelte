@@ -117,7 +117,7 @@
 					<TextField
 						name="portfolio"
 						type="text"
-						label="LinkedIn or portfolio site"
+						label="Portfolio URL"
 						id="portfolio"
 						bind:value={portfolio}
 					/>
