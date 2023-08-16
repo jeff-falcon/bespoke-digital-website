@@ -11,6 +11,7 @@
 	let videoEl: HTMLVideoElement | null = null;
 
 	function onPlaying() {
+		console.log('video is now playing');
 		dispatch('isPlaying', true);
 	}
 	function onPaused() {
@@ -18,15 +19,21 @@
 	}
 
 	onMount(() => {
-		const player = videojs(videoEl!);
-		player.on('playing', onPlaying);
-		player.on('pause', onPaused);
-		player.volume(0);
-		return () => {
-			player.off('playing', onPlaying);
-			player.off('pause', onPaused);
-			player.dispose();
-		};
+		if (videoEl) {
+			const player = videojs(videoEl);
+			player.on('playing', onPlaying);
+			player.on('pause', onPaused);
+			player.volume(0);
+			setTimeout(() => {
+				console.log('play video dammit');
+				player.play();
+			}, 1000);
+			return () => {
+				player.off('playing', onPlaying);
+				player.off('pause', onPaused);
+				player.dispose();
+			};
+		}
 	});
 </script>
 

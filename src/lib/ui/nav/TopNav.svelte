@@ -8,6 +8,8 @@
 
 	let isBorderAnimating = false;
 	let scrollY = 0;
+	let changeBgTimeout = 0;
+	let hasBg = false;
 
 	interface BorderPosition {
 		x: number;
@@ -21,6 +23,20 @@
 	$: if ($navigating?.type === 'popstate' || $navigating?.type === 'link') {
 		if ($menuState === 'open') {
 			menuState.set('closed');
+		}
+	}
+
+	$: if ($pageHasHero) {
+		clearTimeout(changeBgTimeout);
+		hasBg = scrollY > 120;
+		console.log('yes hero');
+	} else {
+		clearTimeout(changeBgTimeout);
+		if (typeof window !== 'undefined') {
+			changeBgTimeout = window.setTimeout(() => {
+				hasBg = true;
+				console.log('no hero');
+			}, 150);
 		}
 	}
 
@@ -78,7 +94,7 @@
 
 <svelte:window bind:scrollY />
 
-<header class:isMenuOpen class="gutter" class:hasBg={!($pageHasHero && scrollY < 120)}>
+<header class:isMenuOpen class="gutter" class:hasBg>
 	<div class="logo">
 		<a href="/">
 			<BespokeAnimatedLogo />

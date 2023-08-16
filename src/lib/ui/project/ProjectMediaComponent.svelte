@@ -20,7 +20,10 @@
 	$: isVideoEmbed = media.kind === 'video-player' && Boolean(media.videoPlayerSrc) && hasVideoId;
 
 	function onVideoPlaying(e: { detail: boolean }) {
-		isVideoPlaying = e.detail;
+		window.requestAnimationFrame(() => {
+			isVideoPlaying = e.detail;
+			console.log({ isVideoPlaying, isBgVideo, isIntersecting });
+		});
 	}
 </script>
 
@@ -48,7 +51,7 @@
 			bind:this={figureEl}
 			class:isIntersecting
 			class:scaleOnReveal
-			data-data={JSON.stringify(media)}
+			data-is-video-playing={isVideoPlaying}
 		>
 			{#if isBgVideo}
 				<VimeoBG
