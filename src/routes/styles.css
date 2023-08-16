@@ -128,21 +128,22 @@ a:hover {
 }
 
 h1 {
-	font-size: var(--24pt);
-}
-h1.display {
-	font-size: 2rem;
+	font-size: var(--40pt);
 }
 
 h2 {
+	font-size: var(--24pt);
+}
+
+h3 {
 	font-size: var(--22pt);
 }
 
-h3,
 h4,
 h5,
 h6 {
 	font-size: var(--18pt);
+	line-height: var(--24pt);
 }
 
 p,
@@ -212,14 +213,16 @@ form button:disabled {
 	}
 
 	h1 {
-		font-size: var(--26pt);
+		font-size: var(--40pt);
 	}
 
 	h2 {
-		font-size: var(--24pt);
+		font-size: var(--26pt);
 	}
 
-	h3,
+	h3 {
+		font-size: var(--24pt);
+	}
 	h4,
 	h5,
 	h6 {
