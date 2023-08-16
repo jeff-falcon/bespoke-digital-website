@@ -44,7 +44,7 @@
 	.form {
 		margin-top: 48px;
 	}
-	@media (min-width: 560px) {
+	@media (min-width: 720px) {
 		section {
 			margin: 8rem 0;
 			display: grid;

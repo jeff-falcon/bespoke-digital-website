@@ -49,10 +49,12 @@
 		padding-top: 40px;
 		border-top: 1px solid var(--text-light-15);
 	}
-	.contact + .signup-socials-row {
-		padding-top: 40px;
-		margin-top: 48px;
+	.signup-socials-row {
 		border-top: 1px solid var(--text-light-15);
+		padding-top: 40px;
+	}
+	.contact + .signup-socials-row {
+		margin-top: 48px;
 	}
 	footer :global(h3.title) {
 		font-size: var(--18pt);
@@ -114,7 +116,7 @@
 	.newsletter {
 		margin-bottom: 40px;
 	}
-	@media (min-width: 768px) {
+	@media (min-width: 960px) {
 		footer {
 			margin-top: 128px;
 		}

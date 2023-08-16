@@ -137,7 +137,7 @@
 		width: 186px;
 		fill: white;
 	}
-	@media (min-width: 560px) {
+	@media (min-width: 720px) {
 		svg {
 			height: 34px;
 			width: 213px;

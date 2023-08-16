@@ -44,7 +44,7 @@
 		align-items: center;
 		margin-bottom: 24px;
 	}
-	@media (min-width: 560px) {
+	@media (min-width: 720px) {
 		.projects {
 			display: grid;
 			grid-template-columns: repeat(2, 1fr);

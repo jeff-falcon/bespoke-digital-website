@@ -74,7 +74,7 @@
 		white-space: nowrap;
 		margin: 0;
 	}
-	@media (min-width: 560px) {
+	@media (min-width: 720px) {
 		.project {
 			--aspect-pct: 81.78%;
 		}

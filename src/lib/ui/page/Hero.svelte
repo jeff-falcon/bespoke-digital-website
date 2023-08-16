@@ -100,7 +100,7 @@
 	.name-client .client {
 		font-size: var(--14pt);
 	}
-	@media (min-width: 560px) {
+	@media (min-width: 720px) {
 		.info {
 			padding-left: calc(50% + var(--gutter-lg) * 0.5);
 			padding-bottom: 72px;

@@ -64,10 +64,10 @@
 			{#if media.image}
 				{#if media.image.sizes}
 					<picture>
-						<source srcset={media.image.sizes.sm} media="(max-width: 559px)" />
+						<source srcset={media.image.sizes.sm} media="(max-width: 719px)" />
 						<source
 							srcset={media.image.sizes.md}
-							media="(min-width: 560px) and (max-width: 1199px)"
+							media="(min-width: 720px) and (max-width: 1199px)"
 						/>
 						<source srcset={media.image.sizes.lg} media="(min-width: 1200px)" />
 						<img

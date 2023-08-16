@@ -150,7 +150,7 @@
 		flex-direction: column;
 		gap: 16px;
 	}
-	@media (min-width: 768px) {
+	@media (min-width: 960px) {
 		form {
 			display: grid;
 		}

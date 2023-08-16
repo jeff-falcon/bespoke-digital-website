@@ -56,7 +56,7 @@
 		font-size: var(--18pt);
 		line-height: var(--24pt);
 	}
-	@media (min-width: 560px) {
+	@media (min-width: 720px) {
 		section {
 			margin: 8rem 0;
 		}
@@ -70,7 +70,7 @@
 		font-size: var(--20pt);
 		line-height: var(--32pt);
 	}
-	@media (min-width: 768px) {
+	@media (min-width: 960px) {
 		.columns {
 			display: grid;
 			grid-template-columns: repeat(var(--max-columns), 1fr);

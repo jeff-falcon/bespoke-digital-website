@@ -19,7 +19,7 @@
 	section {
 		margin: 6rem 0;
 	}
-	@media (min-width: 560px) {
+	@media (min-width: 720px) {
 		section {
 			margin: 8rem 0;
 		}

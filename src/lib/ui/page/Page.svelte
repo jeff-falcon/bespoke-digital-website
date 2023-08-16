@@ -73,7 +73,7 @@
 	.project-media-single {
 		margin: var(--section-spacing) 0;
 	}
-	@media (min-width: 560px) {
+	@media (min-width: 720px) {
 		.page {
 			--section-spacing: 8rem;
 		}

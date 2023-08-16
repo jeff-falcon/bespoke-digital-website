@@ -154,6 +154,10 @@ li {
 	margin: 1rem 0;
 }
 
+ol {
+	padding-left: 1.125rem;
+}
+
 input,
 textarea,
 button {
@@ -200,7 +204,7 @@ form button:disabled {
 
 /* Desktop sizing */
 
-@media (min-width: 560px) {
+@media (min-width: 720px) {
 	:root {
 		--column-width: calc((100vw - var(--gutter-lg)) * (1 / 12));
 	}

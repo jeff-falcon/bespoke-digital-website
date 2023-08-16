@@ -36,7 +36,7 @@
 		font-size: inherit;
 		line-height: inherit;
 	}
-	@media (min-width: 560px) {
+	@media (min-width: 720px) {
 		section {
 			margin: 8rem 0;
 		}
@@ -49,7 +49,7 @@
 			margin-bottom: 50px;
 		}
 	}
-	@media (min-width: 768px) {
+	@media (min-width: 960px) {
 		.clients {
 			columns: 4;
 		}

@@ -110,7 +110,7 @@
 		margin-top: var(--24pt);
 	}
 
-	@media (min-width: 560px) {
+	@media (min-width: 720px) {
 		.medias {
 			gap: var(--gutter-lg);
 		}
@@ -120,7 +120,7 @@
 			gap: var(--gutter-lg);
 		}
 	}
-	@media (min-width: 768px) {
+	@media (min-width: 960px) {
 		.project-info {
 			grid-template-areas:
 				'description project-name'

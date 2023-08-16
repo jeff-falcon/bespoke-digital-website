@@ -12,8 +12,8 @@
 <section class="logo-grid gutter" style="--bg-color: {bgColor}; --text-color: {textColor}">
 	<h3 class="title">{data.title}</h3>
 	<picture>
-		<source srcset={data.mobile} media="(max-width: 559px)" />
-		<source srcset={data.desktop} media="(min-width: 560px)" />
+		<source srcset={data.mobile} media="(max-width: 719px)" />
+		<source srcset={data.desktop} media="(min-width: 720px)" />
 		<img style="filter: {iconColor}" src={data.mobile} alt={data.title} />
 	</picture>
 </section>
@@ -44,7 +44,7 @@
 		width: 100%;
 		height: auto;
 	}
-	@media (min-width: 768px) {
+	@media (min-width: 960px) {
 		section {
 			padding-top: 136px;
 			padding-bottom: 160px;

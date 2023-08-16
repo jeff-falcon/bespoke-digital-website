@@ -22,7 +22,7 @@
 	:global(.btn:hover) .icon {
 		box-shadow: 0 0 0 1px inset var(--text-light);
 	}
-	@media (min-width: 560px) {
+	@media (min-width: 720px) {
 		.icon {
 			width: 36px;
 			height: 36px;
