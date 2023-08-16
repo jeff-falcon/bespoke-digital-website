@@ -63,10 +63,13 @@ export async function getPage(slug: string): Promise<Page | HttpError> {
 							_type: 'project_grid',
 							name: component.name,
 							title: component.title,
+							moreLink: component.more_link?.url ? {
+								buttonTitle: component.more_link.button_title,
+								url: component.more_link.url
+							} : undefined,
 							useFeature: component.feature_first ?? false,
 							projects: component.projects?.map((data: any) => parseProjectFromData(data)) ?? []
 						};
-						console.log(grid)
 						return grid;
 					} else if (component._type === 'project_media') {
 						return parseProjectMediaFromData(component);

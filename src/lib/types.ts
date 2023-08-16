@@ -36,6 +36,10 @@ export interface ProjectGrid {
 	name: string;
 	title?: string;
 	useFeature: boolean;
+	moreLink?: {
+		buttonTitle: string;
+		url: string
+	}
 	projects: Project[];
 }
 export interface Hero {

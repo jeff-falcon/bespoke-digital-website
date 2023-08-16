@@ -1,13 +1,24 @@
 <script lang="ts">
-	import type { Project, ProjectGrid } from '$lib/types';
+	import type { ProjectGrid } from '$lib/types';
+	import ArrowButton from '../button/ArrowButton.svelte';
 
 	import ProjectThumb from './ProjectThumb.svelte';
 	export let data: ProjectGrid;
 </script>
 
 <section class="project-grid gutter">
-	{#if data.title}
-		<h2 class="title">{data.title}</h2>
+	{#if data.title || data.moreLink}
+		<div class="header">
+			{#if data.title}
+				<h2 class="title">{data.title}</h2>
+			{/if}
+			{#if data.moreLink?.url}
+				<ArrowButton
+					href={data.moreLink.url}
+					title={data.moreLink?.buttonTitle ?? 'See more work'}
+				/>
+			{/if}
+		</div>
 	{/if}
 	<div class="projects">
 		{#each data.projects as project, index}
@@ -25,7 +36,13 @@
 	.title {
 		font-size: var(--22pt);
 		line-height: var(--32pt);
-		margin: 0 0 24px;
+		margin: 0;
+	}
+	.header {
+		display: flex;
+		justify-content: space-between;
+		align-items: center;
+		margin-bottom: 24px;
 	}
 	@media (min-width: 560px) {
 		.projects {
@@ -35,6 +52,8 @@
 		}
 		.title {
 			font-size: var(--26pt);
+		}
+		.header {
 			margin-bottom: 44px;
 		}
 	}

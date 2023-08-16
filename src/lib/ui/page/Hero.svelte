@@ -32,7 +32,7 @@
 					<p class="client">{data.project.client}</p>
 				</div>
 				<div class="arrow">
-					<ArrowButton title="View Project" isTitleHiddenOnMobile={true} />
+					<ArrowButton title="View Project" isTitleHiddenOnMobile={true} isOverSolid={false} />
 				</div>
 			</a>
 		{/if}
