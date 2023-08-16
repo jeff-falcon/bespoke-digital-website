@@ -24,6 +24,7 @@ export interface Project {
 	pageTitle?: string;
 	kind?: 'image' | 'video-bg';
 	description?: InputValue;
+	descriptionIntro?: InputValue;
 	client?: string;
 	credits?: Credit[],
 	image?: CloudinaryImage;

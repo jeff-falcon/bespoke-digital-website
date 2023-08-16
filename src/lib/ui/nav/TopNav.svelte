@@ -112,11 +112,11 @@
 			{/each}
 			<div class="border" bind:this={borderEl} />
 		</nav>
+		<a class="insta-btn" href="https://www.instagram.com/bespoke__digital/"><InstagramLogo /></a>
 		<button class="menu-btn" on:click={toggleMenu}>
 			<div class="line line1" />
 			<div class="line line2" />
 		</button>
-		<a class="insta-btn" href="https://www.instagram.com/bespoke__digital/"><InstagramLogo /></a>
 	</div>
 </header>
 <div class="nav-overlay" class:isMenuOpen>
@@ -156,8 +156,7 @@
 		display: flex;
 		align-items: center;
 	}
-	.h-menu,
-	.insta-btn {
+	.h-menu {
 		display: none;
 	}
 	.h-menu a {
@@ -215,7 +214,7 @@
 		width: 16px;
 		height: 2px;
 		background: white;
-		transition: 220ms var(--cubic-ease-in-out) all;
+		transition: 220ms var(--ease-in-out-cubic) all;
 		position: absolute;
 		left: calc(50% - 8px);
 		top: calc(50% - 1px);
@@ -231,6 +230,10 @@
 	}
 	header.isMenuOpen .menu-btn .line2 {
 		transform: translateY(0) rotate(-45deg);
+	}
+	header.isMenuOpen .insta-btn {
+		opacity: 0;
+		pointer-events: none;
 	}
 	.nav-overlay {
 		position: fixed;
@@ -261,14 +264,14 @@
 		color: white;
 	}
 	.insta-btn {
-		margin-left: 32px;
-		border: 1px solid var(--text-light-40);
-		border-radius: 80px;
-		width: var(--button-height-large);
-		height: var(--button-height-large);
+		display: flex;
+		margin: 0 6px 0 0;
+		width: 40px;
+		height: 40px;
 		justify-content: center;
 		align-items: center;
-		transition: linear 180ms border-color;
+		transition: linear 180ms;
+		transition-property: border-color, opacity;
 	}
 	.insta-btn:hover {
 		border-color: var(--text-light);
@@ -278,8 +281,13 @@
 			display: flex;
 		}
 		.insta-btn {
-			display: flex;
+			margin: 0 0 0 32px;
+			border: 1px solid var(--text-light-40);
+			border-radius: 80px;
+			width: var(--button-height-large);
+			height: var(--button-height-large);
 		}
+
 		.menu-btn {
 			display: none;
 		}

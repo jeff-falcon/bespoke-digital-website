@@ -59,6 +59,7 @@ export function parseProjectFromData(data: any) {
 		shortName: data.short_name ?? '',
 		slug: data.slug.current ?? '',
 		description: data.description,
+		descriptionIntro: data.description_intro,
 		client: data.client,
 		kind: data.kind,
 		image: parseCloudinaryImage(data.image),

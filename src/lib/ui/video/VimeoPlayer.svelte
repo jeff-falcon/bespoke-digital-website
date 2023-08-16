@@ -80,7 +80,6 @@
 			{id}
 			class="video-js vjs-fill vjs-16-9"
 			bind:this={videoEl}
-			playsinline
 			loop
 			controls
 			preload="auto"

@@ -8,7 +8,7 @@ import { parseCloudinaryImage, parseProjectMediaFromData } from '$lib/parse';
 // it so that it gets served as a static asset in production
 export const prerender = true;
 
-export const load: PageServerLoad = async ({ params }) => {
+export const load: PageServerLoad = async ({ params }): Promise<{ project?: Project }> => {
 	if (params.page === 'work') {
 		console.log('loading work/' + params.slug);
 
@@ -32,6 +32,7 @@ export const load: PageServerLoad = async ({ params }) => {
 			name: projectData.name,
 			shortName: projectData.short_name ?? '',
 			slug: projectData.slug.current,
+			descriptionIntro: projectData.description_intro,
 			description: projectData.description,
 			client: projectData.client,
 			credits: projectData.credits ?? [],
