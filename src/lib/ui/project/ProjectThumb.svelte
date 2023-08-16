@@ -25,7 +25,7 @@
 <article class="project" class:isFull>
 	<a href="/work/{project.slug}">
 		<div class="thumbnail">
-			<ProjectMediaComponent {media} cover={true} />
+			<ProjectMediaComponent {media} cover={true} isFullWidth={isFull} />
 		</div>
 		<div class="info">
 			<h2 class="title">{name}</h2>

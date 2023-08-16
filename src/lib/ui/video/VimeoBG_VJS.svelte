@@ -48,6 +48,7 @@
 		muted
 		preload="auto"
 		poster={placeholder}
+		crossorigin="anonymous"
 	>
 		<source {src} />
 	</video>

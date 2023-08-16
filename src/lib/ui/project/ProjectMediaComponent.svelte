@@ -8,11 +8,12 @@
 	export let media: ProjectMedia;
 	export let cover = false;
 	export let scaleOnReveal = true;
+	export let isFullWidth = true;
 
 	let figureEl: HTMLElement;
 	let isIntersecting = false;
 	let isVideoPlaying = false;
-	$: videoBgSrc = media.videoBgSrc || media.videoBgSrcHd;
+	$: videoBgSrc = isFullWidth ? media.videoBgSrcHd || media.videoBgSrc : media.videoBgSrc;
 	$: isBgVideo = media.kind === 'video-bg' && Boolean(videoBgSrc);
 	$: isStaticImage = media.kind === 'image' && Boolean(media.image?.url);
 	$: hasVideoId = !isNaN(Number(media.videoPlayerSrc));
@@ -48,6 +49,7 @@
 			class:cover
 			class:isBgVideo
 			class:isVideoPlaying
+			class:isFullWidth
 			bind:this={figureEl}
 			class:isIntersecting
 			class:scaleOnReveal
