@@ -36,6 +36,7 @@
 	}
 	picture {
 		margin-top: 48px;
+		display: block;
 	}
 	img {
 		margin-left: auto;
@@ -50,7 +51,8 @@
 			padding-bottom: 160px;
 		}
 		picture {
-			margin-top: 64px;
+			max-width: 1320px;
+			margin: 64px auto 0;
 		}
 		h3 {
 			font-size: var(--24pt);
