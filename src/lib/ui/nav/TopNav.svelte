@@ -5,6 +5,7 @@
 	import InstagramLogo from '$lib/ui/logos/InstagramLogo.svelte';
 
 	import anime from 'animejs';
+	export let usePillFollower = true;
 
 	let isBorderAnimating = false;
 	let scrollY = 0;
@@ -19,6 +20,8 @@
 	let borderEl: HTMLDivElement;
 	let linkElements: { [key: string]: HTMLAnchorElement } = {};
 	let fromToAnim = { from: { x: 0, width: 0 }, to: { x: 0, width: 0 } };
+	let currentLinkHover: HTMLAnchorElement | null = null;
+	let hoverTimeout = 0;
 
 	$: if ($navigating?.type === 'popstate' || $navigating?.type === 'link') {
 		if ($menuState === 'open') {
@@ -60,35 +63,75 @@
 
 	$: currentRoute = $page.url.pathname ?? '';
 	$: isMenuOpen = $menuState === 'open';
+	$: isOverCurrent = currentLinkHover?.getAttribute('href') === currentRoute;
 
 	function toggleMenu() {
 		console.log('toggleMenu', $menuState);
 		menuState.update((state) => (state === 'open' ? 'closed' : 'open'));
 	}
-	function drawBorder(url: string) {
-		const prevLink = menuLinks.find((link) => link.isActive);
-		if (prevLink) {
-			isBorderAnimating = true;
-			const fromEl = linkElements[prevLink.url];
-			const toEl = linkElements[url];
-			const fromBox = fromEl.getBoundingClientRect();
-			const toBox = toEl.getBoundingClientRect();
-			const left = Math.min(fromBox.left, toBox.left);
-			const right = Math.max(fromBox.right, toBox.right);
-			anime({
-				targets: borderEl,
-				keyframes: [
-					{ duration: 0, left: `${fromBox.left}px`, width: `${fromBox.width}px` },
-					{ duration: 150, left: `${left}px`, width: `${right - left}px` },
-					{ duration: 300, left: `${toBox.left}px`, width: `${toBox.width}px` }
-				],
-				duration: 450,
-				easing: 'easeOutElastic(1, .9)',
-				complete: () => {
-					isBorderAnimating = false;
+	function removeBorder() {
+		clearTimeout(hoverTimeout);
+		currentLinkHover = null;
+		isBorderAnimating = false;
+	}
+	function mouseOut(e: MouseEvent) {
+		clearTimeout(hoverTimeout);
+		hoverTimeout = window.setTimeout(() => {
+			if (!isOverCurrent) {
+				const prevLink = menuLinks.find((link) => link.isActive);
+				if (prevLink) {
+					drawBorder(prevLink.url, true);
 				}
-			});
-		}
+			}
+		}, 350);
+	}
+	function drawBorder(url: string, removeOnComplete = false) {
+		clearTimeout(hoverTimeout);
+		hoverTimeout = window.setTimeout(() => {
+			let prevLink = menuLinks.find((link) => link.isActive)?.url;
+			if (currentLinkHover) {
+				prevLink = currentLinkHover.getAttribute('href') ?? undefined;
+			}
+			if (prevLink && usePillFollower) {
+				isBorderAnimating = true;
+				const fromEl = linkElements[prevLink];
+				const toEl = linkElements[url];
+				const fromBox = fromEl.getBoundingClientRect();
+				const toBox = toEl.getBoundingClientRect();
+				const left = Math.min(fromBox.left, toBox.left);
+				const right = Math.max(fromBox.right, toBox.right);
+				currentLinkHover = toEl;
+				anime({
+					targets: borderEl,
+					keyframes: [
+						{
+							duration: 0,
+							left: `${fromBox.left}px`,
+							width: `${fromBox.width}px`,
+							easing: 'easeOutCubic'
+						},
+						{
+							duration: 220,
+							left: `${left}px`,
+							width: `${right - left}px`,
+							easing: 'easeOutCubic'
+						},
+						{
+							duration: 300,
+							left: `${toBox.left}px`,
+							width: `${toBox.width}px`,
+							easing: 'easeOutCubic'
+						}
+					],
+					complete: () => {
+						if (removeOnComplete) {
+							currentLinkHover = null;
+							isBorderAnimating = false;
+						}
+					}
+				});
+			}
+		}, 150);
 	}
 </script>
 
@@ -101,13 +144,15 @@
 		</a>
 	</div>
 	<div class="right">
-		<nav class="h-menu" class:isBorderAnimating>
+		<nav class="h-menu" class:isBorderAnimating class:isOverCurrent>
 			{#each menuLinks as link (link.url)}
 				<a
 					href={link.url}
-					class:active={link.isActive}
+					class:active={link.isActive && !currentLinkHover}
 					bind:this={linkElements[link.url]}
-					on:click={(e) => drawBorder(link.url)}>{link.name}</a
+					on:click={removeBorder}
+					on:mouseleave={mouseOut}
+					on:mouseenter={(e) => drawBorder(link.url)}>{link.name}</a
 				>
 			{/each}
 			<div class="border" bind:this={borderEl} />
@@ -172,7 +217,6 @@
 	}
 	.h-menu a:hover {
 		text-decoration: none;
-		opacity: 0.6;
 	}
 	.h-menu a.active {
 		border-color: var(--text-light);
@@ -206,9 +250,14 @@
 		height: var(--button-height-large);
 		pointer-events: none;
 		visibility: hidden;
+		transition: border-color 180ms linear;
 	}
 	.isBorderAnimating .border {
+		border-color: var(--text-light-15);
 		visibility: visible;
+	}
+	.isBorderAnimating.isOverCurrent .border {
+		border-color: var(--text-light);
 	}
 	.menu-btn .line {
 		width: 16px;

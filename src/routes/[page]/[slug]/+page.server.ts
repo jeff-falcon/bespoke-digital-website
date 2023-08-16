@@ -2,13 +2,13 @@
 import type { PageServerLoad } from './$types';
 import { getClient } from '$lib/sanity';
 import type { Project, ProjectMedia, ProjectMediaPair } from '$lib/types';
-import { error } from '@sveltejs/kit';
+import { error, type HttpError } from '@sveltejs/kit';
 import { parseCloudinaryImage, parseProjectMediaFromData } from '$lib/parse';
 
 // it so that it gets served as a static asset in production
 export const prerender = true;
 
-export const load: PageServerLoad = async ({ params }): Promise<{ project?: Project }> => {
+export const load: PageServerLoad = async ({ params }): Promise<{ project?: Project } | HttpError> => {
 	if (params.page === 'work') {
 		console.log('loading work/' + params.slug);
 
@@ -40,25 +40,24 @@ export const load: PageServerLoad = async ({ params }): Promise<{ project?: Proj
 			videoBgSrc: projectData.thumb_vimeo_src,
 			videoBgSrcHd: projectData.thumb_vimeo_src_hd,
 			media:
-				projectData.media
-					?.map((media: any) => {
-						if (media === null) return null;
+				projectData.media?.map((media: any) => {
+					if (media === null) return null;
 
-						if (media._type === 'project_media') {
-							return parseProjectMediaFromData(media);
-						}
-						if (media._type === 'item_pair') {
-							const left = parseProjectMediaFromData(media.left)
-							const right = parseProjectMediaFromData(media.right)
-							if (!left && !right) return null;
-							if (!left || !right) return left ?? right;
-							return <ProjectMediaPair>{
-								_type: 'item_pair',
-								left,
-								right
-							};
-						}
-					})
+					if (media._type === 'project_media') {
+						return parseProjectMediaFromData(media);
+					}
+					if (media._type === 'item_pair') {
+						const left = parseProjectMediaFromData(media.left)
+						const right = parseProjectMediaFromData(media.right)
+						if (!left && !right) return null;
+						if (!left || !right) return left ?? right;
+						return <ProjectMediaPair>{
+							_type: 'item_pair',
+							left,
+							right
+						};
+					}
+				})
 					.filter((media: ProjectMedia | null) => media != null) ?? []
 		};
 		return { project };
