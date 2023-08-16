@@ -49,7 +49,7 @@
 			margin: 8rem 0;
 			display: grid;
 			grid-template-columns: repeat(12, 1fr);
-			gap: var(--gutter-sm);
+			gap: var(--gutter-lg);
 		}
 		.wrap {
 			grid-column: 2 / span 10;
