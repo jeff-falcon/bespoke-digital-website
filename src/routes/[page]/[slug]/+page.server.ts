@@ -35,7 +35,7 @@ export const load: PageServerLoad = async ({ params }) => {
 			description: projectData.description,
 			client: projectData.client,
 			credits: projectData.credits ?? [],
-			image: parseCloudinaryImage(projectData.image),
+			image: parseCloudinaryImage(projectData.image, projectData.image_mobile),
 			videoBgSrc: projectData.thumb_vimeo_src,
 			videoBgSrcHd: projectData.thumb_vimeo_src_hd,
 			media:
