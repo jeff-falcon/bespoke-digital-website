@@ -149,9 +149,7 @@ p,
 li {
 	font-size: var(--16pt);
 	line-height: 1.5rem;
-}
-li {
-	margin: 1rem 0;
+	margin: 1.25em 0;
 }
 
 ol {

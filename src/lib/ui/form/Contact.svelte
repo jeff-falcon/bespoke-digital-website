@@ -150,7 +150,10 @@
 		flex-direction: column;
 		gap: 16px;
 	}
-	@media (min-width: 960px) {
+	.long button {
+		margin-top: 8px;
+	}
+	@media (min-width: 720px) {
 		form {
 			display: grid;
 		}
@@ -191,7 +194,7 @@
 			width: 100%;
 			max-width: 248px;
 		}
-		button {
+		.short button {
 			grid-area: submit;
 			width: max-content;
 			padding-left: 40px;

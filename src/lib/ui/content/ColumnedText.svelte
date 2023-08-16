@@ -39,7 +39,7 @@
 		background: var(--text-light);
 		opacity: 0.15;
 		border: 0;
-		margin: var(--16pt) 0 var(--24pt);
+		margin: var(--16pt) 0;
 	}
 	.body {
 		opacity: 0.6;
@@ -56,6 +56,20 @@
 		font-size: var(--18pt);
 		line-height: var(--24pt);
 	}
+	.columns {
+		display: grid;
+		grid-template-columns: repeat(1, 1fr);
+		gap: 40px;
+	}
+	.column .title {
+		margin-top: 0;
+	}
+	.column .body :global(p:first-of-type) {
+		margin-top: 0;
+	}
+	.column .body :global(p:last-of-type) {
+		margin-bottom: 0;
+	}
 	@media (min-width: 720px) {
 		section {
 			margin: 8rem 0;
@@ -63,7 +77,10 @@
 		.columns {
 			display: grid;
 			grid-template-columns: repeat(2, 1fr);
-			grid-gap: var(--gutter-lg);
+			gap: var(--gutter-lg);
+		}
+		.column hr {
+			margin: var(--16pt) 0 var(--24pt);
 		}
 	}
 	.hasBorderedTitle .columns :global(p) {
@@ -74,7 +91,7 @@
 		.columns {
 			display: grid;
 			grid-template-columns: repeat(var(--max-columns), 1fr);
-			grid-gap: var(--gutter-lg);
+			gap: var(--gutter-lg);
 		}
 	}
 </style>

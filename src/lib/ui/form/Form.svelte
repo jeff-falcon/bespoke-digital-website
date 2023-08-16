@@ -52,7 +52,7 @@
 			gap: var(--gutter-lg);
 		}
 		.wrap {
-			grid-column: 2 / span 10;
+			grid-column: 3 / span 8;
 		}
 		.body {
 			font-size: var(--18pt);

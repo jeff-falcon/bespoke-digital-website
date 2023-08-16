@@ -116,7 +116,7 @@
 	.newsletter {
 		margin-bottom: 40px;
 	}
-	@media (min-width: 960px) {
+	@media (min-width: 720px) {
 		footer {
 			margin-top: 128px;
 		}
@@ -152,6 +152,29 @@
 		.locations {
 			grid-template-columns: repeat(4, 1fr);
 			gap: 48px var(--gutter-lg);
+		}
+		.contact {
+			display: grid;
+			grid-template-columns: repeat(12, 1fr);
+			gap: var(--gutter-lg);
+		}
+		.contact :global(.contact-form) {
+			grid-column: 1 / span 12;
+		}
+	}
+	@media (min-width: 860px) {
+		.contact :global(.contact-form) {
+			grid-column: 1 / span 9;
+		}
+	}
+	@media (min-width: 1100px) {
+		.contact :global(.contact-form) {
+			grid-column: 1 / span 8;
+		}
+	}
+	@media (min-width: 1280px) {
+		.contact :global(.contact-form) {
+			grid-column: 1 / span 6;
 		}
 	}
 </style>
