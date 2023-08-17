@@ -150,7 +150,7 @@
 		flex-direction: column;
 		gap: 16px;
 	}
-	.long button {
+	button {
 		margin-top: 8px;
 	}
 	@media (min-width: 720px) {
@@ -159,6 +159,9 @@
 		}
 		.short form {
 			grid-template-areas: 'message message' 'name-email submit';
+		}
+		.short button {
+			margin-top: 0;
 		}
 		.long form {
 			grid-template-areas:
