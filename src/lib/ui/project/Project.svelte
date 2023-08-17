@@ -29,8 +29,12 @@
 					<div class="credits">
 						{#each project.credits as credit}
 							<div class="credit">
-								<h3 class="name">{credit.name}</h3>
-								<p class="value">{credit.credit}</p>
+								{#if credit.name}
+									<h3 class="name">{credit.name}</h3>
+								{/if}
+								{#if credit.credit}
+									<p class="value">{credit.credit}</p>
+								{/if}
 							</div>
 						{/each}
 					</div>

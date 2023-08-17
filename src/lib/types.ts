@@ -78,6 +78,7 @@ export interface ProjectMedia {
 	videoPlayerSrc?: string;
 	videoBgSrc?: string;
 	videoBgSrcHd?: string;
+	useOriginalQuality: boolean
 }
 
 export interface ProjectMediaPair {

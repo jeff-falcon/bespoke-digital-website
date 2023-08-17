@@ -1,7 +1,8 @@
 import type { Project, ProjectMedia, CloudinaryImage, Hero } from '$lib/types';
 
-export function parseCloudinaryImage(image: any, mobileImage?: any) {
+export function parseCloudinaryImage(image: any, mobileImage?: any, useOriginalQuality = false) {
 	if (!image) return undefined;
+	const originalUrl = image.derived?.[0]?.secure_url ?? image.secure_url;
 	const url: string =
 		image.derived?.[0]?.secure_url ??
 		image.secure_url.replace(/\/upload\/v/, '/upload/f_auto,q_auto:best/v');
@@ -16,7 +17,7 @@ export function parseCloudinaryImage(image: any, mobileImage?: any) {
 			md: matches?.length
 				? url
 				: url.replace(/\/upload\/(.*?)\/v(\d+)/, '/upload/$1,w_1600/v$2'),
-			lg: matches?.length
+			lg: useOriginalQuality ? originalUrl : matches?.length
 				? url
 				: url.replace(/\/upload\/(.*?)\/v(\d+)/, '/upload/$1,w_3200/v$2')
 		},
@@ -34,18 +35,20 @@ export function parseCloudinaryImage(image: any, mobileImage?: any) {
 	return img;
 }
 
-export function parseProjectMediaFromData(project: any) {
+export function parseProjectMediaFromData(project: any): ProjectMedia | undefined {
 	if (project?._type !== 'project_media') return undefined;
-	const image = parseCloudinaryImage(project.image, project.image_mobile);
+	const useOriginalQuality = project.use_original_quality ?? false;
+	const image = parseCloudinaryImage(project.image, project.image_mobile, useOriginalQuality);
 	const media: ProjectMedia = {
 		_type: 'project_media',
-		_key: project._id,
-		name: project.name,
+		_key: project._id as string,
+		name: project.name as string,
 		image,
-		kind: project.kind,
-		videoPlayerSrc: project.vimeo_player_src,
-		videoBgSrc: project.thumb_vimeo_src,
-		videoBgSrcHd: project.thumb_vimeo_src_hd
+		kind: project.kind as ProjectMedia['kind'],
+		videoPlayerSrc: project.vimeo_player_src as string,
+		videoBgSrc: project.thumb_vimeo_src as string,
+		videoBgSrcHd: project.thumb_vimeo_src_hd as string,
+		useOriginalQuality
 	};
 	return media;
 }

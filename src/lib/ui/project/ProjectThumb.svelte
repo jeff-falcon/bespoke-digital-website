@@ -17,7 +17,8 @@
 		kind: project.kind,
 		image: project.image,
 		videoBgSrc: project.videoBgSrc,
-		videoBgSrcHd: project.videoBgSrcHd
+		videoBgSrcHd: project.videoBgSrcHd,
+		useOriginalQuality: false
 	};
 	$: name = project.shortName || project.name;
 </script>

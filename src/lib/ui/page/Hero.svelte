@@ -5,6 +5,9 @@
 
 	export let data: Hero;
 
+	let scrollY = 0;
+	let innerHeight = 0;
+
 	let media: ProjectMedia;
 	$: media = {
 		_key: 'hero',
@@ -13,13 +16,29 @@
 		kind: data.kind,
 		image: data.image_desktop,
 		videoBgSrc: data.videoBgSrc,
-		vimeoBgSrcHd: data.videoBgSrcHd
+		vimeoBgSrcHd: data.videoBgSrcHd,
+		useOriginalQuality: false
 	};
+	$: scrollPct = Math.max(0, Math.min(1, scrollY / innerHeight));
+	$: canApplyTransform = Math.abs(scrollY) < innerHeight + 100;
+	$: bgStyle = canApplyTransform ? `transform: translateY(${scrollY * 0.75}px);` : '';
+	$: fgStyle = canApplyTransform
+		? `transform: translateY(${scrollY * 0.85}px); opacity: ${1 - scrollPct}; filter: blur(${
+				scrollPct * 8
+		  }px);)`
+		: '';
+	$: dimStyle = canApplyTransform ? `opacity: ${scrollPct * 0.7 + 0.3};` : '';
 </script>
 
-<section class="hero">
+<svelte:window bind:scrollY bind:innerHeight />
+<section
+	class="hero"
+	data-scroll-pct={scrollPct}
+	data-scroll-y={scrollY}
+	data-inner-height={innerHeight}
+>
 	<div class="info gutter">
-		<div class="wrap">
+		<div class="wrap" style={fgStyle}>
 			{#if data.name}
 				<h1 class="title">{data.name}</h1>
 			{/if}
@@ -39,7 +58,8 @@
 			{/if}
 		</div>
 	</div>
-	<div class="bg">
+	<div class="dim" style={dimStyle} />
+	<div class="bg" style={bgStyle}>
 		<ProjectMediaComponent {media} cover={true} scaleOnReveal={false} isFullWidth={true} />
 	</div>
 </section>
@@ -48,19 +68,27 @@
 	section {
 		position: relative;
 		height: 100svh;
+		overflow: hidden;
 	}
-	.bg {
-		z-index: 0;
+	.bg,
+	.dim {
 		position: absolute;
 		top: 0;
 		left: 0;
 		width: 100%;
 		height: 100%;
-		opacity: 0.7;
+	}
+	.bg {
+		z-index: 0;
+	}
+	.dim {
+		background: black;
+		z-index: 1;
+		opacity: 0.3;
 	}
 	.info {
 		position: relative;
-		z-index: 1;
+		z-index: 2;
 		display: flex;
 		flex-direction: column;
 		justify-content: flex-end;
