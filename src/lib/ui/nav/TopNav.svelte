@@ -21,6 +21,7 @@
 		width: number;
 	}
 
+	let bespokeLogo: BespokeAnimatedLogo;
 	let borderEl: HTMLDivElement;
 	let linkElements: { [key: string]: HTMLAnchorElement } = {};
 	let fromToAnim = { from: { x: 0, width: 0 }, to: { x: 0, width: 0 } };
@@ -143,8 +144,12 @@
 
 <header class:isMenuOpen class="gutter" class:hasBg>
 	<div class="logo">
-		<a href="/">
-			<BespokeAnimatedLogo />
+		<a
+			href="/"
+			on:mouseenter={(e) => bespokeLogo.play(true)}
+			on:focus={(e) => bespokeLogo.play(true)}
+		>
+			<BespokeAnimatedLogo bind:this={bespokeLogo} />
 		</a>
 	</div>
 	<div class="right">
@@ -274,18 +279,35 @@
 		align-items: center;
 		color: white;
 		z-index: var(--level10);
-		transition: var(--ease-in-out-sine) 300ms background-color;
 	}
-	header.hasBg {
+	header:after {
+		content: '';
+		position: absolute;
+		top: 0;
+		left: 0;
+		width: 100%;
+		height: 100%;
+		z-index: -1;
+		opacity: 0;
+		transition: opacity 300ms var(--ease-in-out-sine);
+		background: linear-gradient(
+			45deg,
+			rgb(38 38 38 / 70%) 11%,
+			rgb(38 38 38 / 30%) 40%,
+			rgb(38 38 38 / 30%) 45%,
+			rgb(38 38 38 / 80%) 63%
+		);
 		backdrop-filter: blur(14px);
 		-webkit-backdrop-filter: blur(14px);
-		background-color: rgba(38, 38, 38, 0.8);
 	}
-	:global(body.bg-rust) header.hasBg {
-		background-color: rgba(108, 51, 51, 0.8);
+	header.hasBg:after {
+		opacity: 1;
 	}
-	:global(body.bg-olive) header.hasBg {
-		background-color: rgba(63, 66, 57, 0.8);
+	:global(body.bg-rust) header.hasBg:after {
+		background: rgba(108, 51, 51, 0.8);
+	}
+	:global(body.bg-olive) header.hasBg:after {
+		background: rgba(63, 66, 57, 0.8);
 	}
 	.right {
 		display: flex;

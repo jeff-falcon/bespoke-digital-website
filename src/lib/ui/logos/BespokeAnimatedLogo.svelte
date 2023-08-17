@@ -3,30 +3,37 @@
 	import { cubicInOut } from 'svelte/easing';
 	import { fly } from 'svelte/transition';
 
-	let svgEl: SVGSVGElement;
 	let part = 1;
+	let animInt = 0;
+	let isPlaying = false;
 
 	const duration = 350;
 
 	onMount(() => {
-		let animInt = 0;
+		play();
+	});
+
+	export function play(immediate = false) {
+		if (immediate && isPlaying) return;
+		clearInterval(animInt);
+		isPlaying = true;
+		if (immediate) {
+			part = 2;
+		} else {
+			part = 1;
+		}
 		animInt = window.setInterval(() => {
 			part += 1;
-			if (part === 5) {
+			if (part === 6) {
 				clearInterval(animInt);
+				part = 1;
+				isPlaying = false;
 			}
 		}, 1000);
-	});
+	}
 </script>
 
-<svg
-	bind:this={svgEl}
-	width="213"
-	height="34"
-	viewBox="0 0 213 34"
-	fill="none"
-	xmlns="http://www.w3.org/2000/svg"
->
+<svg width="213" height="34" viewBox="0 0 213 34" fill="none" xmlns="http://www.w3.org/2000/svg">
 	{#if part === 1 || part === 5}
 		<g
 			id="Spoke"
