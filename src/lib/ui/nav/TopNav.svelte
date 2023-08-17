@@ -86,6 +86,13 @@
 				const prevLink = menuLinks.find((link) => link.isActive);
 				if (prevLink) {
 					drawBorder(prevLink.url, true);
+				} else {
+					anime({
+						targets: borderEl,
+						opacity: 0,
+						duration: 300,
+						easing: 'easeInOutSine'
+					});
 				}
 			}
 		}, 350);
@@ -97,6 +104,7 @@
 			if (currentLinkHover) {
 				prevLink = currentLinkHover.getAttribute('href') ?? undefined;
 			}
+			if (!prevLink) prevLink = url;
 			if (prevLink && usePillFollower) {
 				isBorderAnimating = true;
 				const fromEl = linkElements[prevLink];
@@ -106,6 +114,12 @@
 				const left = Math.min(fromBox.left, toBox.left);
 				const right = Math.max(fromBox.right, toBox.right);
 				currentLinkHover = toEl;
+				anime({
+					targets: borderEl,
+					opacity: 1,
+					duration: 300,
+					easing: 'easeInOutSine'
+				});
 				anime({
 					targets: borderEl,
 					keyframes: [
@@ -289,7 +303,7 @@
 		height: 100%;
 		z-index: -1;
 		opacity: 0;
-		transition: opacity 300ms var(--ease-in-out-sine);
+		transition: opacity var(--bg-color-timing) var(--ease-in-out-sine);
 		background: linear-gradient(
 			45deg,
 			rgb(38 38 38 / 70%) 11%,
@@ -338,6 +352,12 @@
 	.h-menu.isBorderAnimating a.active {
 		border-color: transparent;
 	}
+	/* .h-menu:not(.isBorderAnimating) a {
+		transition-property: border-color, opacity;
+	}
+	.h-menu:not(.isBorderAnimating) a:hover {
+		border-color: var(--text-light-40);
+	} */
 	.menu-btn {
 		display: block;
 		position: relative;
@@ -363,6 +383,7 @@
 		pointer-events: none;
 		visibility: hidden;
 		transition: border-color 180ms linear;
+		opacity: 0;
 	}
 	.isBorderAnimating .border {
 		border-color: var(--text-light-40);
