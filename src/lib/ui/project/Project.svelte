@@ -2,8 +2,12 @@
 	import ProjectMediaComponent from '$lib/ui/project/ProjectMediaComponent.svelte';
 	import { PortableText } from '@portabletext/svelte';
 	import type { Project } from '$lib/types';
+	import { fly, type FlyParams } from 'svelte/transition';
+	import { cubicOut, expoOut } from 'svelte/easing';
 
 	export let project: Project;
+
+	const flyProps: FlyParams = { opacity: 0, y: 30, easing: expoOut, duration: 1500 };
 
 	$: hasDescription = project.description || project.descriptionIntro;
 </script>
@@ -13,22 +17,22 @@
 		<section class="gutter project-info">
 			{#if hasDescription}
 				{#if project.descriptionIntro}
-					<div class="description intro">
+					<div class="description intro" in:fly|global={{ ...flyProps }}>
 						<PortableText value={project.descriptionIntro} />
 					</div>
 				{/if}
 				{#if project.description}
-					<div class="description extra">
+					<div class="description extra" in:fly|global={{ ...flyProps, delay: 200 }}>
 						<PortableText value={project.description} />
 					</div>
 				{/if}
 			{/if}
 			<div class="name-credits">
-				<h3 class="project-name">{project.name}</h3>
+				<h3 class="project-name" in:fly|global={{ ...flyProps, delay: 75 }}>{project.name}</h3>
 				{#if project.credits}
 					<div class="credits">
-						{#each project.credits as credit}
-							<div class="credit">
+						{#each project.credits as credit, index (credit)}
+							<div class="credit" in:fly|global={{ ...flyProps, delay: index * 60 + 140 }}>
 								{#if credit.name}
 									<h3 class="name">{credit.name}</h3>
 								{/if}

@@ -15,6 +15,7 @@
 	let containerEl: HTMLElement;
 	let videoEl: HTMLVideoElement | null = null;
 	let isIntersecting = false;
+	let shouldReveal = false;
 	let startedPlaying = false;
 	let vjsPlayer: Player | null = null;
 	let wasPlaying = false;
@@ -28,6 +29,10 @@
 	function onPaused() {
 		dispatch('isPlaying', false);
 		console.log('video paused');
+	}
+
+	$: if (isIntersecting && !shouldReveal) {
+		shouldReveal = true;
 	}
 
 	$: if ((isIntersecting || !isIntersecting) && startedPlaying) {
@@ -78,7 +83,7 @@
 </script>
 
 <IntersectionObserver element={containerEl} bind:intersecting={isIntersecting}>
-	<div class="video-container" bind:this={containerEl}>
+	<div class="video-container" bind:this={containerEl} class:shouldReveal>
 		<!-- svelte-ignore a11y-media-has-caption -->
 		<video
 			{id}
@@ -95,6 +100,13 @@
 </IntersectionObserver>
 
 <style>
+	.video-container {
+		opacity: 0;
+		transition: opacity 1200ms linear;
+	}
+	.shouldReveal.video-container {
+		opacity: 1;
+	}
 	.video-container :global(.vjs-big-play-button) {
 		border: 0;
 		border-radius: 0;
