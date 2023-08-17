@@ -100,10 +100,16 @@
 	.name-client .client {
 		font-size: var(--14pt);
 	}
+	.hero :global(+ section.text-only) {
+		padding-top: 6rem;
+	}
 	@media (min-width: 720px) {
 		.info {
 			padding-left: calc(50% + var(--gutter-lg) * 0.5);
 			padding-bottom: 72px;
+		}
+		.hero :global(+ section.text-only) {
+			padding-top: 8rem;
 		}
 	}
 </style>

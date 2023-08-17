@@ -5,9 +5,9 @@
 	export let data: ClientList;
 </script>
 
-<section class="client-list gutter">
+<section class="client-list gutter bg-{data.bgColor ?? 'transparent'}">
 	{#if data.title}
-		<h1 class="title">{data.title}</h1>
+		<h2 class="title">{data.title}</h2>
 	{/if}
 
 	<div class="clients">
@@ -19,12 +19,13 @@
 
 <style>
 	section {
-		margin: 6rem 0;
+		padding-top: 3rem;
+		padding-bottom: 3rem;
 	}
 	.title {
 		border-bottom: 1px solid var(--text-light-15);
-		padding-bottom: 32px;
-		margin-bottom: 32px;
+		padding-bottom: var(--32pt);
+		margin: 0 0 var(--32pt);
 	}
 	.clients {
 		font-size: var(--18pt);
@@ -38,7 +39,8 @@
 	}
 	@media (min-width: 720px) {
 		section {
-			margin: 8rem 0;
+			padding-top: 4rem;
+			padding-bottom: 4rem;
 		}
 		.clients {
 			font-size: var(--20pt);
@@ -46,7 +48,7 @@
 		}
 		.title {
 			padding-bottom: 40px;
-			margin-bottom: 50px;
+			margin-bottom: 56px;
 		}
 	}
 	@media (min-width: 960px) {

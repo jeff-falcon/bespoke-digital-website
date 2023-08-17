@@ -5,10 +5,10 @@
 	export let data: TextOnly;
 </script>
 
-<section class="text-only gutter">
+<section class="text-only gutter bg-{data.bgColor ?? 'transparent'}">
 	<div class="wrap">
 		{#if data.title}
-			<h1>{data.title}</h1>
+			<h2 class="title">{data.title}</h2>
 		{/if}
 
 		<PortableText value={data.body} />
@@ -17,11 +17,22 @@
 
 <style>
 	section {
-		margin: 6rem 0;
+		padding-top: 3rem;
+		padding-bottom: 3rem;
+	}
+	.wrap :global(> :first-child) {
+		margin-top: 0;
+	}
+	.wrap :global(> :last-child) {
+		margin-bottom: 0;
+	}
+	.title {
+		margin: 0 0 var(--16pt);
 	}
 	@media (min-width: 720px) {
 		section {
-			margin: 8rem 0;
+			padding-top: 4rem;
+			padding-bottom: 4rem;
 		}
 		.text-only {
 			display: grid;
@@ -30,6 +41,9 @@
 		}
 		.wrap {
 			grid-column: 1 / span 10;
+		}
+		.title {
+			margin-bottom: var(--32pt);
 		}
 	}
 </style>

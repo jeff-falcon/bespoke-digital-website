@@ -65,20 +65,21 @@
 
 <style>
 	.page {
-		--section-spacing: 6rem;
+		--section-spacing: 3rem;
 	}
 	.page:not(.hasHero) {
 		padding-top: var(--top-nav-height);
 	}
 	.project-media-single {
-		margin: var(--section-spacing) 0;
+		padding-top: var(--section-spacing);
+		padding-bottom: var(--section-spacing);
 	}
 	@media (min-width: 720px) {
 		.page {
-			--section-spacing: 8rem;
+			--section-spacing: 4rem;
 		}
 	}
-	.page :global(.project-grid + section) {
-		margin-top: var(--section-spacing);
+	.page :global(section:first-of-type[class*='project-grid']) {
+		padding-top: 0;
 	}
 </style>

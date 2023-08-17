@@ -119,6 +119,7 @@ export interface TextOnly {
 	_type: 'text_only';
 	title: string;
 	body: InputValue;
+	bgColor: SectionBackgroundColor
 }
 
 export interface ColumnedText {
@@ -129,12 +130,14 @@ export interface ColumnedText {
 		title: string;
 		body: InputValue;
 	}[];
+	bgColor: SectionBackgroundColor
 }
 
 export interface ClientList {
 	_type: 'client_list';
 	title: string;
 	clients: string[];
+	bgColor: SectionBackgroundColor
 }
 
 export interface Form {
@@ -142,7 +145,9 @@ export interface Form {
 	_id: string;
 	title: string;
 	body: InputValue;
-	form: FormType
+	form: FormType;
+	bgColor: SectionBackgroundColor
 }
 
 export type FormType = 'contact' | 'job'
+export type SectionBackgroundColor = 'transparent' | 'dark' | 'darker'

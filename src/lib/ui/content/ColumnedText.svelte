@@ -4,13 +4,14 @@
 
 	export let data: ColumnedText;
 
-	$: hasBorderedTitle = data.title && data.title.length > 0 && data.borderedTitle;
+	$: hasTitle = data.title && data.title.length > 0;
+	$: hasBorderedTitle = hasTitle && data.borderedTitle;
 </script>
 
-<section class="columned-text gutter" class:hasBorderedTitle>
+<section class="columned-text gutter bg-{data.bgColor ?? 'transparent'}" class:hasBorderedTitle>
 	<div class="wrap">
-		{#if data.title}
-			<h1 class="title">{data.title}</h1>
+		{#if hasTitle}
+			<h2 class="title">{data.title}</h2>
 		{/if}
 	</div>
 
@@ -18,7 +19,11 @@
 		<div class="columns" style="--max-columns: {data.body.length}">
 			{#each data.body as column (column)}
 				<div class="column">
-					<h2 class="title">{column.title}</h2>
+					{#if hasTitle}
+						<h3 class="title">{column.title}</h3>
+					{:else}
+						<h2 class="title">{column.title}</h2>
+					{/if}
 					<hr />
 					<div class="body">
 						<PortableText value={column.body} />
@@ -31,7 +36,8 @@
 
 <style>
 	section {
-		margin: 6rem 0;
+		padding-top: 3rem;
+		padding-bottom: 3rem;
 	}
 	.column hr {
 		width: 48px;
@@ -44,10 +50,13 @@
 	.body {
 		opacity: 0.6;
 	}
+	.wrap .title {
+		margin: 0 0 var(--16pt);
+	}
 	.hasBorderedTitle .wrap .title {
 		border-bottom: 1px solid var(--text-light-15);
-		padding-bottom: 32px;
-		margin-bottom: 32px;
+		padding-bottom: var(--32pt);
+		margin: 0 0 var(--32pt);
 	}
 	.hasBorderedTitle hr {
 		display: none;
@@ -72,7 +81,8 @@
 	}
 	@media (min-width: 720px) {
 		section {
-			margin: 8rem 0;
+			padding-top: 4rem;
+			padding-bottom: 4rem;
 		}
 		.columns {
 			display: grid;
@@ -82,10 +92,18 @@
 		.column hr {
 			margin: var(--16pt) 0 var(--24pt);
 		}
-	}
-	.hasBorderedTitle .columns :global(p) {
-		font-size: var(--20pt);
-		line-height: var(--32pt);
+		.wrap .title {
+			margin: 0 0 48px;
+			margin-bottom: var(--32pt);
+		}
+		.hasBorderedTitle .columns :global(p) {
+			font-size: var(--20pt);
+			line-height: var(--32pt);
+		}
+		.hasBorderedTitle .wrap .title {
+			margin-bottom: 56px;
+			padding-bottom: 48px;
+		}
 	}
 	@media (min-width: 960px) {
 		.columns {

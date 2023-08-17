@@ -28,6 +28,10 @@
 </section>
 
 <style>
+	section {
+		padding-top: 3rem;
+		padding-bottom: 3rem;
+	}
 	.projects {
 		display: flex;
 		gap: 36px var(--gutter-sm);
@@ -45,6 +49,10 @@
 		margin-bottom: 24px;
 	}
 	@media (min-width: 720px) {
+		section {
+			padding-top: 4rem;
+			padding-bottom: 4rem;
+		}
 		.projects {
 			display: grid;
 			grid-template-columns: repeat(2, 1fr);

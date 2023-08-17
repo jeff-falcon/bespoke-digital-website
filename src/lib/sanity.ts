@@ -25,10 +25,10 @@ export async function getPage(slug: string): Promise<Page | HttpError> {
 			_type == 'logo_grid_ref' => @->{..., "desktop": desktop.asset->url, "mobile": mobile.asset->url},
 			_type == 'projects' => @->{...,projects[]->},
 			_type == 'project_media_ref' => @->,
-			_type == 'text_only_ref' => @->,
-			_type == 'columned_text_ref' => @->{..., "borderedTitle": bordered_title},
-			_type == 'client_list_ref' => @->,
-			_type == 'form_ref' => @->,
+			_type == 'text_only_ref' => @->{..., "bgColor": background_color},
+			_type == 'columned_text_ref' => @->{..., "borderedTitle": bordered_title, "bgColor": background_color},
+			_type == 'client_list_ref' => @->{..., "bgColor": background_color},
+			_type == 'form_ref' => @->{..., "bgColor": background_color},
 		}
 	}`;
 	try {
@@ -84,6 +84,7 @@ export async function getPage(slug: string): Promise<Page | HttpError> {
 							_type: 'client_list',
 							title: component.title,
 							clients: component.clients.replace(/\n\s*\n+/g, '\n').split('\n'),
+							bgColor: component.bg_color
 						}
 						return clients
 					} else if (component._type === 'form') {

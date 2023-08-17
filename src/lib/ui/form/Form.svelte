@@ -6,7 +6,7 @@
 	export let data: Form;
 </script>
 
-<section class="gutter">
+<section class="gutter bg-{data.bgColor ?? 'transparent'}">
 	<div class="wrap">
 		<h2 class="title">{data.title}</h2>
 		<div class="body">
@@ -30,7 +30,8 @@
 
 <style>
 	section {
-		margin: 6rem 0;
+		padding-top: 3rem;
+		padding-bottom: 3rem;
 	}
 	.body {
 		opacity: 0.6;
@@ -44,9 +45,13 @@
 	.form {
 		margin-top: 48px;
 	}
+	.title {
+		margin: 0 0 var(--16pt);
+	}
 	@media (min-width: 720px) {
 		section {
-			margin: 8rem 0;
+			padding-top: 4rem;
+			padding-bottom: 4rem;
 			display: grid;
 			grid-template-columns: repeat(12, 1fr);
 			gap: var(--gutter-lg);
@@ -56,6 +61,9 @@
 		}
 		.body {
 			font-size: var(--18pt);
+		}
+		.title {
+			margin-bottom: var(--24pt);
 		}
 	}
 	@media (min-width: 1024px) {

@@ -22,14 +22,11 @@
 	section {
 		background-color: var(--bg-color);
 		color: var(--text-color);
-		padding-top: 90px;
-		padding-bottom: 90px;
+		padding-top: 96px;
+		padding-bottom: 96px;
 	}
 	h3 {
 		margin: 0 0 48px;
-		font-size: var(--22pt);
-		line-height: var(--32pt);
-		font-weight: normal;
 		width: 75%;
 		padding-bottom: 16px;
 		border-bottom: 1px solid var(--text-light-15);
@@ -45,17 +42,16 @@
 		width: 100%;
 		height: auto;
 	}
-	@media (min-width: 960px) {
+	@media (min-width: 720px) {
 		section {
-			padding-top: 136px;
-			padding-bottom: 160px;
+			padding-top: 128px;
+			padding-bottom: 128px;
 		}
 		picture {
 			max-width: 1320px;
 			margin: 64px auto 0;
 		}
 		h3 {
-			font-size: var(--24pt);
 			width: 100%;
 			padding-bottom: 48px;
 			margin-bottom: 64px;

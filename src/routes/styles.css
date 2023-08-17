@@ -201,6 +201,23 @@ form button:disabled {
 	white-space: nowrap;
 }
 
+/* Section background colors */
+.bg-transparent {
+	background: transparent;
+}
+.bg-dark {
+	background: rgba(0, 0, 0, 0.2);
+}
+.bg-darker {
+	background: rgba(0, 0, 0, 0.41);
+}
+.bg-rust .bg-dark {
+	background-color: #582a2c;
+}
+.bg-rust .bg-darker {
+	background-color: #432023;
+}
+
 /* Desktop sizing */
 
 @media (min-width: 720px) {
