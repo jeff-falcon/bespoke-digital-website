@@ -19,23 +19,25 @@
 
 <section class="hero">
 	<div class="info gutter">
-		{#if data.name}
-			<h1 class="title">{data.name}</h1>
-		{/if}
-		{#if data.subtitle}
-			<p class="subtitle">{data.subtitle}</p>
-		{/if}
-		{#if data.project}
-			<a href="/work/{data.project.slug}" class="project">
-				<div class="name-client">
-					<h4 class="name">{data.project.name}</h4>
-					<p class="client">{data.project.client}</p>
-				</div>
-				<div class="arrow">
-					<ArrowButton title="View Project" isTitleHiddenOnMobile={true} isOverSolid={false} />
-				</div>
-			</a>
-		{/if}
+		<div class="wrap">
+			{#if data.name}
+				<h1 class="title">{data.name}</h1>
+			{/if}
+			{#if data.subtitle}
+				<p class="subtitle">{data.subtitle}</p>
+			{/if}
+			{#if data.project}
+				<a href="/work/{data.project.slug}" class="project">
+					<div class="name-client">
+						<h4 class="name">{data.project.name}</h4>
+						<p class="client">{data.project.client}</p>
+					</div>
+					<div class="arrow">
+						<ArrowButton title="View Project" isTitleHiddenOnMobile={true} isOverSolid={false} />
+					</div>
+				</a>
+			{/if}
+		</div>
 	</div>
 	<div class="bg">
 		<ProjectMediaComponent {media} cover={true} scaleOnReveal={false} />
@@ -103,13 +105,27 @@
 	.hero :global(+ section.text-only) {
 		padding-top: 6rem;
 	}
+	.arrow {
+		white-space: nowrap;
+	}
 	@media (min-width: 720px) {
 		.info {
-			padding-left: calc(50% + var(--gutter-lg) * 0.5);
+			display: grid;
+			grid-template-columns: repeat(4, 1fr);
+			gap: var(--gutter-lg);
+			align-items: end;
 			padding-bottom: 72px;
+		}
+		.wrap {
+			grid-column: 2 / span 3;
 		}
 		.hero :global(+ section.text-only) {
 			padding-top: 8rem;
+		}
+	}
+	@media (min-width: 1024px) {
+		.wrap {
+			grid-column: 3 / span 2;
 		}
 	}
 </style>
