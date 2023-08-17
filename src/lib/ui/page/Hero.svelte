@@ -21,11 +21,9 @@
 	};
 	$: scrollPct = Math.max(0, Math.min(1, scrollY / innerHeight));
 	$: canApplyTransform = Math.abs(scrollY) < innerHeight + 100;
-	$: bgStyle = canApplyTransform ? `transform: translateY(${scrollY * 0.75}px);` : '';
+	$: bgStyle = canApplyTransform ? `transform: translateY(${scrollY * 0.55}px);` : '';
 	$: fgStyle = canApplyTransform
-		? `transform: translateY(${scrollY * 0.85}px); opacity: ${1 - scrollPct}; filter: blur(${
-				scrollPct * 8
-		  }px);)`
+		? `transform: translateY(${scrollY * 0.65}px); opacity: ${1 - scrollPct};`
 		: '';
 	$: dimStyle = canApplyTransform ? `opacity: ${scrollPct * 0.7 + 0.3};` : '';
 </script>
