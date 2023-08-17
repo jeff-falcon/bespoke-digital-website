@@ -1,18 +1,31 @@
 <script lang="ts">
 	import { onMount, createEventDispatcher } from 'svelte';
-	import videojs from 'video.js';
 
 	const dispatch = createEventDispatcher<{ isPlaying: boolean }>();
 
 	export let src: string;
 	export let placeholder: string = '';
 	export let id: string;
+	export let isIntersecting = false;
 
 	let isPlaying = false;
+	let isReady = false;
+	let playerTimeout: number | NodeJS.Timeout = 0;
 
 	let videoEl: HTMLVideoElement | null = null;
 
-	$: srcType = src.includes('file.mp4') ? 'video/mp4' : 'application/x-mpegURL';
+	$: if (isIntersecting || !isIntersecting) {
+		clearTimeout(playerTimeout);
+		if (isIntersecting && isReady && !isPlaying) {
+			videoEl?.play();
+			console.log('isIntersecting', isIntersecting);
+		} else if (!isIntersecting && isPlaying) {
+			playerTimeout = setTimeout(() => {
+				console.log('isIntersecting', isIntersecting);
+				videoEl?.pause();
+			}, 50);
+		}
+	}
 
 	function onPlaying() {
 		console.log('video is now playing');
@@ -24,47 +37,37 @@
 		isPlaying = false;
 	}
 
+	function onReady() {
+		isReady = true;
+		console.log('isReady', src);
+	}
+
 	onMount(() => {
-		if (videoEl) {
-			const player = videojs(videoEl, {
-				html5: {
-					hls: {
-						withCredentials: true,
-						overrideNative: true
-					}
-				}
-			});
-			player.on('playing', onPlaying);
-			player.on('pause', onPaused);
-			player.volume(0);
-			setTimeout(() => {
-				console.log('play video dammit');
-				player.play();
-			}, 1000);
-			return () => {
-				player.off('playing', onPlaying);
-				player.off('pause', onPaused);
-				player.dispose();
-			};
-		}
+		videoEl?.addEventListener('playing', onPlaying);
+		videoEl?.addEventListener('pause', onPaused);
+		videoEl?.addEventListener('canplay', onReady);
+		videoEl!.src = src;
+		return () => {
+			videoEl?.removeEventListener('playing', onPlaying);
+			videoEl?.removeEventListener('pause', onPaused);
+			videoEl?.removeEventListener('canplay', onReady);
+		};
 	});
 </script>
 
-<div class="video-container" class:isPlaying>
+<div class="video-container" class:isPlaying class:isIntersecting>
 	<video
 		{id}
-		class="video-js vjs-fill"
 		bind:this={videoEl}
 		playsinline
 		loop
-		autoplay
 		muted
-		preload="auto"
+		autoplay
 		poster={placeholder}
 		crossorigin="anonymous"
-	>
-		<source {src} type={srcType} />
-	</video>
+		disablepictureinpicture
+		disableremoteplayback
+	/>
 </div>
 
 <style>

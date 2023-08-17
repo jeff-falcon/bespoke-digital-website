@@ -16,9 +16,23 @@
 	$: videoBgSrc = isFullWidth ? media.videoBgSrcHd || media.videoBgSrc : media.videoBgSrc;
 	$: isBgVideo = media.kind === 'video-bg' && Boolean(videoBgSrc);
 	$: isStaticImage = media.kind === 'image' && Boolean(media.image?.url);
-	$: hasVideoId = !isNaN(Number(media.videoPlayerSrc));
+	$: hasVideoId = !isNaN(Number(videoBgSrc));
 	$: isVideoPlayer = media.kind === 'video-player' && Boolean(media.videoPlayerSrc) && !hasVideoId;
-	$: isVideoEmbed = media.kind === 'video-player' && Boolean(media.videoPlayerSrc) && hasVideoId;
+	$: isVideoEmbed = media.kind === 'video-bg' && Boolean(videoBgSrc) && hasVideoId;
+
+	$: {
+		if (typeof window !== 'undefined') {
+			console.log({
+				isVideoPlaying,
+				isBgVideo,
+				isIntersecting,
+				isVideoEmbed,
+				videoBgSrc,
+				hasVideoId,
+				media
+			});
+		}
+	}
 
 	function onVideoPlaying(e: { detail: boolean }) {
 		window.requestAnimationFrame(() => {
@@ -28,11 +42,7 @@
 	}
 </script>
 
-{#if isVideoEmbed}
-	<div class="video-embed">
-		<VimeoEmbed vimeoId={Number(media.videoPlayerSrc)} title={media.name} />
-	</div>
-{:else if isVideoPlayer}
+{#if isVideoPlayer}
 	{@const src = media.videoPlayerSrc ?? ''}
 	<div class="video-player">
 		<VimeoPlayer
@@ -42,7 +52,7 @@
 			placeholder={media.image?.url || undefined}
 		/>
 	</div>
-{:else if isStaticImage || isBgVideo}
+{:else if isStaticImage || isBgVideo || isVideoEmbed}
 	<IntersectionObserver element={figureEl} bind:intersecting={isIntersecting} once={true}>
 		<figure
 			class="media"
@@ -54,16 +64,21 @@
 			class:isIntersecting
 			class:scaleOnReveal
 			data-is-video-playing={isVideoPlaying}
+			data-has-video-id={hasVideoId}
+			data-is-video-embed={isVideoEmbed}
 		>
-			{#if isBgVideo}
+			{#if isVideoEmbed}
+				<VimeoEmbed vimeoId={Number(videoBgSrc)} title={media.name} />
+			{:else if isBgVideo}
 				<VimeoBG
 					id="media-{media._key}"
 					src={videoBgSrc || ''}
 					placeholder={media.image?.url ?? ''}
+					bind:isIntersecting
 					on:isPlaying={onVideoPlaying}
 				/>
 			{/if}
-			{#if media.image}
+			{#if !isVideoEmbed && media.image}
 				{#if media.image.sizes}
 					<picture>
 						<source srcset={media.image.sizes.sm} media="(max-width: 719px)" />

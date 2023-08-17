@@ -7,7 +7,6 @@ export function parseCloudinaryImage(image: any, mobileImage?: any, useOriginalQ
 		image.derived?.[0]?.secure_url ??
 		image.secure_url.replace(/\/upload\/v/, '/upload/f_auto,q_auto:best/v');
 	const matches = url.match(/\/upload\/(.*?)(w_\d+)(.*)\/v/);
-	console.log({ matches })
 	const img: CloudinaryImage = {
 		url,
 		sizes: {
@@ -31,11 +30,10 @@ export function parseCloudinaryImage(image: any, mobileImage?: any, useOriginalQ
 			img.sizes.sm = mobileUrl;
 		}
 	}
-	console.log({ img })
 	return img;
 }
 
-export function parseProjectMediaFromData(project: any): ProjectMedia | undefined {
+export async function parseProjectMediaFromData(project: any): Promise<ProjectMedia | undefined> {
 	if (project?._type !== 'project_media') return undefined;
 	const useOriginalQuality = project.use_original_quality ?? false;
 	const image = parseCloudinaryImage(project.image, project.image_mobile, useOriginalQuality);
@@ -50,10 +48,11 @@ export function parseProjectMediaFromData(project: any): ProjectMedia | undefine
 		videoBgSrcHd: project.thumb_vimeo_src_hd as string,
 		useOriginalQuality
 	};
+	console.log('project media: ', { media });
 	return media;
 }
 
-export function parseProjectFromData(data: any) {
+export async function parseProjectFromData(data: any) {
 	if (data?._type !== 'project') return undefined;
 	const project: Project = {
 		_type: 'project',

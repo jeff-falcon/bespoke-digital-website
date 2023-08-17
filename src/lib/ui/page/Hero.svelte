@@ -16,7 +16,7 @@
 		kind: data.kind,
 		image: data.image_desktop,
 		videoBgSrc: data.videoBgSrc,
-		vimeoBgSrcHd: data.videoBgSrcHd,
+		videoBgSrcHd: data.videoBgSrcHd,
 		useOriginalQuality: false
 	};
 	$: scrollPct = Math.max(0, Math.min(1, scrollY / innerHeight));
@@ -60,7 +60,9 @@
 	</div>
 	<div class="dim" style={dimStyle} />
 	<div class="bg" style={bgStyle}>
-		<ProjectMediaComponent {media} cover={true} scaleOnReveal={false} isFullWidth={true} />
+		{#key media._key}
+			<ProjectMediaComponent {media} cover={true} scaleOnReveal={false} isFullWidth={true} />
+		{/key}
 	</div>
 </section>
 

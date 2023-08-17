@@ -26,6 +26,33 @@ export const load: PageServerLoad = async ({ params }): Promise<{ project?: Proj
 		}`;
 		const data = await client.fetch(groq);
 		const projectData = data[0];
+		let mediaList: Array<ProjectMedia | ProjectMediaPair> = []
+		if (projectData.media) {
+			for (const media of projectData.media) {
+				if (media._type === 'project_media') {
+					const item = await parseProjectMediaFromData(media);
+					if (item) mediaList.push(item)
+				}
+				if (media._type === 'item_pair') {
+					const left = await parseProjectMediaFromData(media.left)
+					const right = await parseProjectMediaFromData(media.right)
+					if (!left && !right) {
+						continue;
+					}
+					if (!left || !right) {
+						const item = left ?? right;
+						if (item) mediaList.push(item)
+					} else {
+						mediaList.push(<ProjectMediaPair>{
+							_type: 'item_pair',
+							left,
+							right
+						});
+					}
+				}
+			}
+
+		}
 		const project: Project = {
 			_type: 'project',
 			pageTitle: projectData.name + ' | Work | Bespoke Digital',
@@ -39,26 +66,7 @@ export const load: PageServerLoad = async ({ params }): Promise<{ project?: Proj
 			image: parseCloudinaryImage(projectData.image, projectData.image_mobile),
 			videoBgSrc: projectData.thumb_vimeo_src,
 			videoBgSrcHd: projectData.thumb_vimeo_src_hd,
-			media:
-				projectData.media?.map((media: any) => {
-					if (media === null) return null;
-
-					if (media._type === 'project_media') {
-						return parseProjectMediaFromData(media);
-					}
-					if (media._type === 'item_pair') {
-						const left = parseProjectMediaFromData(media.left)
-						const right = parseProjectMediaFromData(media.right)
-						if (!left && !right) return null;
-						if (!left || !right) return left ?? right;
-						return <ProjectMediaPair>{
-							_type: 'item_pair',
-							left,
-							right
-						};
-					}
-				})
-					.filter((media: ProjectMedia | null) => media != null) ?? []
+			media: mediaList
 		};
 		return { project };
 	}
