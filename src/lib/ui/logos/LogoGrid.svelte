@@ -10,7 +10,7 @@
 </script>
 
 <section class="logo-grid gutter" style="--bg-color: {bgColor}; --text-color: {textColor}">
-	<h3 class="title">{data.title}</h3>
+	<h2 class="title">{data.title}</h2>
 	<picture>
 		<source srcset={data.mobile} media="(max-width: 719px)" />
 		<source srcset={data.desktop} media="(min-width: 720px)" />
@@ -25,9 +25,8 @@
 		padding-top: 96px;
 		padding-bottom: 96px;
 	}
-	h3 {
+	.title {
 		margin: 0 0 48px;
-		width: 75%;
 		padding-bottom: 16px;
 		border-bottom: 1px solid var(--text-light-15);
 	}
@@ -51,8 +50,8 @@
 			max-width: 1320px;
 			margin: 64px auto 0;
 		}
-		h3 {
-			width: 100%;
+		.title {
+			padding-right: 0;
 			padding-bottom: 48px;
 			margin-bottom: 64px;
 		}

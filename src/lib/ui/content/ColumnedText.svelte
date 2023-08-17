@@ -79,15 +79,20 @@
 	.column .body :global(p:last-of-type) {
 		margin-bottom: 0;
 	}
+	@media (min-width: 560px) {
+		.columns {
+			display: grid;
+			grid-template-columns: repeat(2, 1fr);
+			gap: 40px var(--gutter-sm);
+		}
+	}
 	@media (min-width: 720px) {
 		section {
 			padding-top: 4rem;
 			padding-bottom: 4rem;
 		}
 		.columns {
-			display: grid;
-			grid-template-columns: repeat(2, 1fr);
-			gap: var(--gutter-lg);
+			gap: 56px var(--gutter-lg);
 		}
 		.column hr {
 			margin: var(--16pt) 0 var(--24pt);
@@ -105,11 +110,9 @@
 			padding-bottom: 48px;
 		}
 	}
-	@media (min-width: 960px) {
+	@media (min-width: 768px) {
 		.columns {
-			display: grid;
 			grid-template-columns: repeat(var(--max-columns), 1fr);
-			gap: var(--gutter-lg);
 		}
 	}
 </style>
