@@ -8,19 +8,32 @@
 	export let placeholder: string = '';
 	export let id: string;
 
+	let isPlaying = false;
+
 	let videoEl: HTMLVideoElement | null = null;
+
+	$: srcType = src.includes('file.mp4') ? 'video/mp4' : 'application/x-mpegURL';
 
 	function onPlaying() {
 		console.log('video is now playing');
 		dispatch('isPlaying', true);
+		isPlaying = true;
 	}
 	function onPaused() {
 		dispatch('isPlaying', false);
+		isPlaying = false;
 	}
 
 	onMount(() => {
 		if (videoEl) {
-			const player = videojs(videoEl);
+			const player = videojs(videoEl, {
+				html5: {
+					hls: {
+						withCredentials: true,
+						overrideNative: true
+					}
+				}
+			});
 			player.on('playing', onPlaying);
 			player.on('pause', onPaused);
 			player.volume(0);
@@ -37,7 +50,7 @@
 	});
 </script>
 
-<div class="video-container">
+<div class="video-container" class:isPlaying>
 	<video
 		{id}
 		class="video-js vjs-fill"
@@ -50,7 +63,7 @@
 		poster={placeholder}
 		crossorigin="anonymous"
 	>
-		<source {src} />
+		<source {src} type={srcType} />
 	</video>
 </div>
 
@@ -65,5 +78,8 @@
 	}
 	.video-container :global(video) {
 		object-fit: cover;
+	}
+	.isPlaying :global(.vjs-poster) {
+		opacity: 0;
 	}
 </style>

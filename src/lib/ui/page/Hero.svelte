@@ -40,7 +40,7 @@
 		</div>
 	</div>
 	<div class="bg">
-		<ProjectMediaComponent {media} cover={true} scaleOnReveal={false} />
+		<ProjectMediaComponent {media} cover={true} scaleOnReveal={false} isFullWidth={true} />
 	</div>
 </section>
 
