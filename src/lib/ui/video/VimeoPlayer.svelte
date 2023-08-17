@@ -63,6 +63,10 @@
 		});
 		player.on('playing', onPlaying);
 		player.on('pause', onPaused);
+		player.on('volumechange', () => {
+			localStorage.setItem('video-volume', player.volume().toString());
+		});
+		player.volume(Number(localStorage.getItem('video-volume') ?? 1));
 		vjsPlayer = player;
 		return () => {
 			vjsPlayer = null;
