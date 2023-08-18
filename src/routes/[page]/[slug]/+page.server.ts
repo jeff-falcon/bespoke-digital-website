@@ -1,12 +1,8 @@
-// since there's no dynamic data here, we can prerender
 import type { PageServerLoad } from './$types';
 import { getClient } from '$lib/sanity';
 import type { Project, ProjectMedia, ProjectMediaPair } from '$lib/types';
 import { error, type HttpError } from '@sveltejs/kit';
 import { parseCloudinaryImage, parseProjectMediaFromData } from '$lib/parse';
-
-// it so that it gets served as a static asset in production
-export const prerender = true;
 
 export const load: PageServerLoad = async ({ params }): Promise<{ project?: Project } | HttpError> => {
 	if (params.page === 'work') {
@@ -26,7 +22,7 @@ export const load: PageServerLoad = async ({ params }): Promise<{ project?: Proj
 		}`;
 		const data = await client.fetch(groq);
 		const projectData = data[0];
-		let mediaList: Array<ProjectMedia | ProjectMediaPair> = []
+		const mediaList: Array<ProjectMedia | ProjectMediaPair> = []
 		if (projectData.media) {
 			for (const media of projectData.media) {
 				if (media._type === 'project_media') {

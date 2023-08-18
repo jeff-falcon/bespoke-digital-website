@@ -1,6 +1,12 @@
 import { getClient } from "$lib/sanity";
 import type { Config } from "$lib/types";
 
+export const config = {
+  isr: {
+    expiration: 60,
+  }
+}
+
 export async function load() {
   const client = getClient();
   const groq = `*[_type == "config"]{
