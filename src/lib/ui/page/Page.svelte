@@ -1,5 +1,5 @@
 <script lang="ts">
-	import type { Page } from '$lib/types';
+	import type { Page, ProjectMedia } from '$lib/types';
 	import ProjectGrid from '$lib/ui/project/ProjectGrid.svelte';
 	import { onMount } from 'svelte';
 	import LogoGrid from '../logos/LogoGrid.svelte';
@@ -23,6 +23,10 @@
 			footerHasContactForm: data.footerHasContactForm
 		});
 	});
+
+	function isVideoPlayer(component: ProjectMedia) {
+		return component._type === 'project_media' && component.kind === 'video-player';
+	}
 </script>
 
 <svelte:head>
@@ -43,7 +47,9 @@
 				<LogoGrid data={component} />
 			{/if}
 			{#if component._type === 'project_media'}
-				<section class="project-media-single gutter">
+				<section
+					class="project-media-single gutter {isVideoPlayer(component) ? 'is-video-player' : ''}"
+				>
 					<ProjectMediaComponent media={component} />
 				</section>
 			{/if}
@@ -77,6 +83,12 @@
 	@media (min-width: 720px) {
 		.page {
 			--section-spacing: 4rem;
+		}
+	}
+	@media (max-width: 719px) {
+		.is-video-player.gutter {
+			padding-left: 0;
+			padding-right: 0;
 		}
 	}
 	.page :global(section:first-of-type[class*='project-grid']) {
