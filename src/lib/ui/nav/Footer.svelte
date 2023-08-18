@@ -172,7 +172,7 @@
 			grid-column: 1 / span 12;
 		}
 	}
-	@media (min-width: 860px) {
+	/* @media (min-width: 860px) {
 		.contact :global(.contact-form) {
 			grid-column: 1 / span 9;
 		}
@@ -186,5 +186,5 @@
 		.contact :global(.contact-form) {
 			grid-column: 1 / span 6;
 		}
-	}
+	} */
 </style>
