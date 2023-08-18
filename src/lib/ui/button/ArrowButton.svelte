@@ -6,6 +6,7 @@
 	export let isTitleBefore = true;
 	export let href = '';
 	export let isOverSolid = true;
+	export let style: 'capsule' | 'default' = 'default';
 
 	$: sanitizedHref = href.replace(/^http(s):\/\/(.*?)bespokedigital\.com/, '') ?? '';
 	$: isLinkExternal = sanitizedHref.startsWith('http');
@@ -21,6 +22,7 @@
 		class:isTitleHiddenOnMobile
 		class:isTitleBefore
 		class:isOverSolid
+		class:isCapsule={style === 'capsule'}
 	>
 		{#if title}
 			<span class="title"
@@ -29,7 +31,7 @@
 				{/each}</span
 			>
 		{/if}
-		<ArrowIcon />
+		<ArrowIcon isBordered={style === 'default'} />
 	</a>
 {:else}
 	<button
@@ -40,6 +42,7 @@
 		class:isTitleHiddenOnMobile
 		class:isTitleBefore
 		class:isOverSolid
+		class:isCapsule={style === 'capsule'}
 	>
 		{#if title}
 			<span class="title"
@@ -48,7 +51,7 @@
 				{/each}</span
 			>
 		{/if}
-		<ArrowIcon />
+		<ArrowIcon isBordered={style === 'default'} />
 	</button>
 {/if}
 
@@ -94,6 +97,19 @@
 	.title .word:nth-child(1),
 	.title .word:nth-child(2) {
 		display: inline;
+	}
+	.isCapsule {
+		border-radius: 40px;
+		border: 1px solid var(--text-light-30);
+		padding: 0 32px;
+		height: 48px;
+		transition: border-color 180ms linear;
+	}
+	.isCapsule .title {
+		opacity: 1;
+	}
+	.isCapsule:hover {
+		border-color: var(--text-light);
 	}
 	@media (min-width: 560px) {
 		button {

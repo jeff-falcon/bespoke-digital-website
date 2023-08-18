@@ -12,12 +12,6 @@
 			{#if data.title}
 				<h2 class="title">{data.title}</h2>
 			{/if}
-			{#if data.moreLink?.url}
-				<ArrowButton
-					href={data.moreLink.url}
-					title={data.moreLink?.buttonTitle ?? 'See more work'}
-				/>
-			{/if}
 		</div>
 	{/if}
 	<div class="projects">
@@ -25,6 +19,15 @@
 			<ProjectThumb {project} size={index === 0 && data.useFeature ? 'full' : 'half'} />
 		{/each}
 	</div>
+	{#if data.moreLink?.url}
+		<div class="footer">
+			<ArrowButton
+				href={data.moreLink.url}
+				title={data.moreLink?.buttonTitle ?? 'See more work'}
+				style="capsule"
+			/>
+		</div>
+	{/if}
 </section>
 
 <style>
@@ -48,6 +51,14 @@
 		align-items: center;
 		margin-bottom: 24px;
 	}
+	.footer {
+		margin-top: 48px;
+		display: flex;
+		justify-content: center;
+	}
+	section:global(:has(+ section.logo-grid)) {
+		padding-bottom: 6rem;
+	}
 	@media (min-width: 720px) {
 		section {
 			padding-top: 4rem;
@@ -63,6 +74,12 @@
 		}
 		.header {
 			margin-bottom: 44px;
+		}
+		.footer {
+			margin-top: 80px;
+		}
+		section:global(:has(+ section.logo-grid)) {
+			padding-bottom: 8rem;
 		}
 	}
 </style>
