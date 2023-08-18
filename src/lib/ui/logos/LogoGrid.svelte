@@ -47,8 +47,7 @@
 			padding-bottom: 128px;
 		}
 		picture {
-			max-width: 1320px;
-			margin: 64px auto 0;
+			margin: 64px 0 0;
 		}
 		.title {
 			padding-right: 0;
