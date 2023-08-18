@@ -5,14 +5,14 @@
 	import './styles.css';
 	import Footer from '$lib/ui/nav/Footer.svelte';
 	import type { LayoutData } from './$types';
-	import { footerHasContactForm } from '$lib/store';
+	import { footerHasContactForm, isMenuOpenComplete } from '$lib/store';
 
 	export let data: LayoutData;
 </script>
 
 <TopNav config={data.config} usePillFollower={true} />
 
-<main>
+<main class:isDisabled={$isMenuOpenComplete}>
 	<slot />
 </main>
 
@@ -46,5 +46,8 @@
 		width: 100%;
 		overflow-x: hidden;
 		overflow-y: auto;
+	}
+	main.isDisabled {
+		visibility: hidden;
 	}
 </style>

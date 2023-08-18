@@ -1,13 +1,14 @@
 <script lang="ts">
 	import { page, navigating } from '$app/stores';
-	import { menuState, pageHasHero } from '$lib/store';
+	import { isMenuOpenComplete, menuState, pageHasHero } from '$lib/store';
 	import type { Config } from '$lib/types';
 	import BespokeAnimatedLogo from '$lib/ui/logos/BespokeAnimatedLogo.svelte';
 	import InstagramLogo from '$lib/ui/logos/InstagramLogo.svelte';
 
 	import anime from 'animejs';
-	import { cubicIn, cubicOut, expoOut, sineInOut } from 'svelte/easing';
-	import { fly } from 'svelte/transition';
+	import { cubicIn, cubicOut, expoOut, linear, sineInOut } from 'svelte/easing';
+	import { fade, fly } from 'svelte/transition';
+
 	export let usePillFollower = true;
 	export let config: Config;
 
@@ -16,17 +17,13 @@
 	let changeBgTimeout = 0;
 	let hasBg = false;
 
-	interface BorderPosition {
-		x: number;
-		width: number;
-	}
-
 	let bespokeLogo: BespokeAnimatedLogo;
 	let borderEl: HTMLDivElement;
 	let linkElements: { [key: string]: HTMLAnchorElement } = {};
 	let fromToAnim = { from: { x: 0, width: 0 }, to: { x: 0, width: 0 } };
 	let currentLinkHover: HTMLAnchorElement | null = null;
 	let hoverTimeout = 0;
+	let menuStateTimeout = 0;
 
 	$: if ($navigating?.type === 'popstate' || $navigating?.type === 'link') {
 		if ($menuState === 'open') {
@@ -72,7 +69,18 @@
 
 	function toggleMenu() {
 		console.log('toggleMenu', $menuState);
-		menuState.update((state) => (state === 'open' ? 'closed' : 'open'));
+		menuState.update((state) => {
+			const newState = state === 'open' ? 'closed' : 'open';
+			clearTimeout(menuStateTimeout);
+			if (newState === 'closed') {
+				isMenuOpenComplete.set(false);
+			} else {
+				menuStateTimeout = window.setTimeout(() => {
+					isMenuOpenComplete.set(true);
+				}, 500);
+			}
+			return newState;
+		});
 	}
 	function removeBorder() {
 		clearTimeout(hoverTimeout);
@@ -156,7 +164,7 @@
 
 <svelte:window bind:scrollY />
 
-<header class:isMenuOpen class="gutter" class:hasBg>
+<header class:isMenuOpen id="global-header" class="gutter" class:hasBg>
 	<div class="logo">
 		<a
 			href="/"
@@ -180,14 +188,20 @@
 			{/each}
 			<div class="border" bind:this={borderEl} />
 		</nav>
-		<a class="insta-btn" href="https://www.instagram.com/bespoke__digital/"><InstagramLogo /></a>
+		{#if !isMenuOpen}
+			<a
+				transition:fade={{ duration: 300, easing: linear }}
+				class="insta-btn"
+				href="https://www.instagram.com/bespoke__digital/"><InstagramLogo /></a
+			>
+		{/if}
 		<button class="menu-btn" on:click={toggleMenu}>
 			<div class="line line1" />
 			<div class="line line2" />
 		</button>
 	</div>
 </header>
-<div class="nav-overlay" class:isMenuOpen>
+<div id="mobile-nav" class:isMenuOpen>
 	{#if isMenuOpen}
 		<div
 			class="bg"
@@ -413,11 +427,8 @@
 	header.isMenuOpen .menu-btn .line2 {
 		transform: translateY(0) rotate(-45deg);
 	}
-	header.isMenuOpen .insta-btn {
-		opacity: 0;
-		pointer-events: none;
-	}
-	.nav-overlay {
+
+	#mobile-nav {
 		position: fixed;
 		top: 0;
 		left: 0;
@@ -429,7 +440,7 @@
 		grid-template-columns: repeat(4, 1fr);
 		gap: 40px var(--gutter-sm);
 	}
-	.nav-overlay .bg {
+	#mobile-nav .bg {
 		position: absolute;
 		top: 0;
 		left: 0;
@@ -439,31 +450,31 @@
 		background: var(--bg-dark);
 	}
 
-	:global(.bg-rust) .nav-overlay .bg {
+	:global(.bg-rust) #mobile-nav .bg {
 		background: var(--bg-rust);
 	}
-	:global(.bg-olive) .nav-overlay .bg {
+	:global(.bg-olive) #mobile-nav .bg {
 		background: var(--bg-olive);
 	}
-	.nav-overlay.isMenuOpen {
+	#mobile-nav.isMenuOpen {
 		pointer-events: all;
 		overflow-x: hidden;
 		overflow-y: auto;
 		overscroll-behavior: contain;
 	}
-	.nav-overlay .wrap {
+	#mobile-nav .wrap {
 		grid-column: 3 / span 2;
 		display: flex;
 		flex-direction: column;
 		position: relative;
 		z-index: 1;
 	}
-	.nav-overlay .copyright {
+	#mobile-nav .copyright {
 		font-size: var(--12pt);
 		opacity: 0.4;
 		margin: 24px 0 0;
 	}
-	.nav-overlay footer {
+	#mobile-nav footer {
 		padding-bottom: 40px;
 	}
 	.v-menu {
@@ -477,6 +488,8 @@
 		font-size: var(--24pt);
 		line-height: 1;
 		color: white;
+		width: min-content;
+		white-space: nowrap;
 	}
 	.v-menu a:hover,
 	.v-menu a:focus,
@@ -491,7 +504,7 @@
 		justify-content: center;
 		align-items: center;
 		transition: linear 180ms;
-		transition-property: border-color, opacity;
+		transition-property: border-color;
 	}
 	.insta-btn:hover {
 		border-color: var(--text-light);
@@ -524,7 +537,7 @@
 		.menu-btn {
 			display: none;
 		}
-		.nav-overlay {
+		#mobile-nav {
 			display: none;
 		}
 	}

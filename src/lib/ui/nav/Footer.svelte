@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { isMenuOpenComplete } from '$lib/store';
 	import type { Config } from '$lib/types';
 	import Contact from '../form/Contact.svelte';
 	import NewsletterSignup from '../form/NewsletterSignup.svelte';
@@ -9,7 +10,13 @@
 	export let hasDivider = false;
 </script>
 
-<footer class="gutter" class:hasDivider class:hasContactForm>
+<footer
+	class="gutter"
+	id="footer"
+	class:hasDivider
+	class:hasContactForm
+	class:isDisabled={$isMenuOpenComplete}
+>
 	{#if hasContactForm}
 		<div class="contact">
 			<Contact />
@@ -44,6 +51,9 @@
 <style>
 	footer {
 		margin-top: 88px;
+	}
+	footer.isDisabled {
+		visibility: hidden;
 	}
 	footer.hasDivider {
 		padding-top: 40px;

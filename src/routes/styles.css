@@ -185,7 +185,7 @@ form button:hover {
 	border-color: var(--text-light);
 }
 form button:disabled {
-	border-color: var(--text-light-15);
+	border-color: var(--text-light-30);
 	color: var(--text-light-30);
 	cursor: default;
 }
