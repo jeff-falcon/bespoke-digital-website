@@ -13,20 +13,15 @@
 
 	export let data: Page;
 
-	$: hasHero = data.heros?.heros != null && data.heros?.heros.length > 0;
-
-	$: randomHeroIndex = Math.floor(Math.random() * (data.heros?.heros.length ?? 0));
-	$: hero = hasHero ? data.heros!.heros[randomHeroIndex] : null;
+	const randomHeroIndex = Math.floor(Math.random() * (data.heros?.heros.length ?? 0));
+	const hasHero = data.heros?.heros != null && data.heros?.heros.length > 0;
+	const hero = hasHero ? data.heros!.heros[randomHeroIndex] : null;
 
 	onMount(() => {
 		pageHasHero.set(hasHero);
 		bgColor.set(data.bgColor || 'default');
 		document.body.className = `bg-${$bgColor}`;
 		footerHasContactForm.set(data.footerHasContactForm);
-		console.log({
-			bgColor: data.bgColor || 'default',
-			footerHasContactForm: data.footerHasContactForm
-		});
 	});
 
 	function isVideoPlayer(component: ProjectMedia) {
