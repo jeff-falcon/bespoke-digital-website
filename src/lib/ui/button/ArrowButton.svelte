@@ -99,7 +99,7 @@
 		display: inline;
 	}
 	.isCapsule {
-		border-radius: 40px;
+		border-radius: var(--input-border-radius);
 		border: 1px solid var(--text-light-30);
 		padding: 0 32px;
 		height: 48px;

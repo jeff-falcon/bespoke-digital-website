@@ -1,8 +1,8 @@
 import { createClient } from '@sanity/client';
 import { SANITY_TOKEN, SANITY_DATASET, SANITY_PROJECT_ID } from '$env/static/private';
-import type { TextOnly, ClientList, ColumnedText, Form, Hero, LogoGrid, Page, PageComponents, Project, ProjectGrid, ProjectMedia, MultiHero } from '$lib/types';
+import type { TextOnly, ClientList, ColumnedText, Form, LogoGrid, Page, PageComponents, Project, ProjectGrid } from '$lib/types';
 import { type HttpError, error } from '@sveltejs/kit';
-import { parseCloudinaryImage, parseHeroFromData, parseMultiHeroFromData, parseProjectFromData, parseProjectMediaFromData } from './parse';
+import { parseMultiHeroFromData, parseProjectFromData, parseProjectMediaFromData } from './parse';
 
 export function getClient() {
 	return client;

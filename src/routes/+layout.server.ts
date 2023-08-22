@@ -18,7 +18,8 @@ export async function load() {
         url,
         "icon": icon.asset->url
       }
-    }
+    },
+    "borderRadius": border_radius
   }`;
   const data = await client.fetch(groq);
   const configData = data[0] as Config;

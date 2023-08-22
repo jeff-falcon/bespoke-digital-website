@@ -114,7 +114,8 @@ export interface Location {
 export interface Config {
 	_type: 'config';
 	socials: { name: string, links: Social[] }
-	locations: Location[]
+	locations: Location[],
+	borderRadius: number
 }
 
 export interface LogoGrid {

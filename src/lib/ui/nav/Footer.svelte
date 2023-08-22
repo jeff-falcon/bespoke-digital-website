@@ -8,6 +8,8 @@
 	export let config: Config;
 	export let hasContactForm = false;
 	export let hasDivider = false;
+
+	const style = config.borderRadius ? `--input-border-radius: ${config.borderRadius}px` : '';
 </script>
 
 <footer
@@ -16,6 +18,7 @@
 	class:hasDivider
 	class:hasContactForm
 	class:isDisabled={$isMenuOpenComplete}
+	{style}
 >
 	{#if hasContactForm}
 		<div class="contact">

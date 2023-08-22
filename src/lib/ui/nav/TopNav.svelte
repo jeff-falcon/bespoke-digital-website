@@ -25,6 +25,8 @@
 	let hoverTimeout = 0;
 	let menuStateTimeout = 0;
 
+	const style = config.borderRadius ? `--input-border-radius: ${config.borderRadius}px` : '';
+
 	$: if ($navigating?.type === 'popstate' || $navigating?.type === 'link') {
 		if ($menuState === 'open') {
 			menuState.set('closed');
@@ -164,7 +166,7 @@
 
 <svelte:window bind:scrollY />
 
-<header class:isMenuOpen id="global-header" class="gutter" class:hasBg>
+<header class:isMenuOpen id="global-header" class="gutter" class:hasBg {style}>
 	<div class="logo">
 		<a
 			href="/"
@@ -347,7 +349,7 @@
 	}
 	.h-menu a {
 		display: flex;
-		border-radius: 50px;
+		border-radius: var(--input-border-radius);
 		border: 1px solid transparent;
 		padding: 0 36px;
 		height: var(--button-height-large);
@@ -392,7 +394,7 @@
 		z-index: 0;
 		background: transparent;
 		border: 1px solid var(--text-light);
-		border-radius: 80px;
+		border-radius: var(--input-border-radius);
 		width: 0;
 		height: var(--button-height-large);
 		pointer-events: none;

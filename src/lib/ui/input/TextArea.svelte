@@ -117,7 +117,7 @@
 	label {
 		position: absolute;
 		top: 12px;
-		left: 24px;
+		left: max(12px, var(--input-border-radius));
 		pointer-events: none;
 		font-size: var(--16pt);
 		transition: 180ms all var(--ease-in-out-cubic);
@@ -135,7 +135,7 @@
 		border: 0;
 		height: max(var(--height), var(--button-height-large));
 		position: relative;
-		padding: 13px 24px 0;
+		padding: 13px max(12px, var(--input-border-radius)) 0;
 		background: transparent;
 		color: var(--text-light);
 		font-size: var(--16pt);

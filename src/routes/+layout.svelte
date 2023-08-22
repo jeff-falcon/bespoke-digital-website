@@ -8,11 +8,15 @@
 	import { footerHasContactForm, isMenuOpenComplete } from '$lib/store';
 
 	export let data: LayoutData;
+
+	const style = data.config.borderRadius
+		? `--input-border-radius: ${data.config.borderRadius}px`
+		: '';
 </script>
 
 <TopNav config={data.config} usePillFollower={true} />
 
-<main class:isDisabled={$isMenuOpenComplete}>
+<main class:isDisabled={$isMenuOpenComplete} {style}>
 	<slot />
 </main>
 
