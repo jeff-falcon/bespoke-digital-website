@@ -20,7 +20,7 @@
 		useOriginalQuality: false,
 		autoplay: true
 	};
-	$: scrollPct = Math.max(0, Math.min(1, scrollY / innerHeight));
+	$: scrollPct = innerHeight ? Math.max(0, Math.min(1, scrollY / innerHeight)) : 0;
 	$: canApplyTransform = Math.abs(scrollY) < innerHeight + 100;
 	$: bgStyle = canApplyTransform ? `transform: translateY(${scrollY * 0.55}px);` : '';
 	$: fgStyle = canApplyTransform
