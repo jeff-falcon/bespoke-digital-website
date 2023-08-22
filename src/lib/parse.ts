@@ -49,7 +49,6 @@ export async function parseProjectMediaFromData(project: any): Promise<ProjectMe
 		useOriginalQuality,
 		autoplay: project.autoplay ?? false,
 	};
-	console.log('project media: ', { media });
 	return media;
 }
 

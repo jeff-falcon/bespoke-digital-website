@@ -19,7 +19,10 @@ export async function getPage(slug: string): Promise<Page | HttpError> {
 		description,
 		"bgColor": bg_color,
 		"footerHasContactForm": footer_contact,
-		hero->{...,project->},
+		"hero": hero->{
+			_type == 'hero' => @{..., project->},
+			_type == 'multi_hero' => @{..., heros[]->{..., project->}},
+		},
 		components[]{
 			_type == 'logo_grid_ref' => @->{..., "desktop": desktop.asset->url, "mobile": mobile.asset->url, "desktopMaxWidth": desktop_max_width, "mobileMaxWidth": mobile_max_width},
 			_type == 'projects' => @->{...,projects[]->},
@@ -34,6 +37,23 @@ export async function getPage(slug: string): Promise<Page | HttpError> {
 		const result = await client.fetch(groq);
 		if (!result || !result.length) return error(404, 'Page not found');
 		const pageData = result[0];
+		console.log({ hero: pageData.hero })
+		const randHeroIndex = Math.floor(Math.random() * (Array.isArray(pageData.heros) ? pageData.heros.length : 0));
+		const isMultiHero = pageData.hero._type === 'multi_hero';
+		const heroData = isMultiHero ? pageData.hero.heros[randHeroIndex] : pageData.hero;
+		const heroTitle = isMultiHero && pageData.hero.override_title ? pageData.hero.title : heroData.title;
+		const heroSubtitle = isMultiHero && pageData.hero.override_title ? pageData.hero.subtitle : heroData.subtitle;
+		const hero: Hero | undefined = heroData ? {
+			_type: 'hero',
+			name: heroTitle,
+			subtitle: heroSubtitle,
+			image_desktop: parseCloudinaryImage(heroData.image_desktop),
+			image_mobile: parseCloudinaryImage(heroData.image_mobile),
+			kind: heroData.kind,
+			videoBgSrc: heroData.thumb_vimeo_src,
+			videoBgSrcHd: heroData.thumb_vimeo_src_hd,
+			project: heroData.project ? await parseProjectFromData(heroData.project) : undefined
+		} : undefined;
 		const page: Page = {
 			_type: 'page',
 			_id: pageData._id,
@@ -42,19 +62,7 @@ export async function getPage(slug: string): Promise<Page | HttpError> {
 			slug: pageData.slug,
 			description: pageData.description,
 			footerHasContactForm: Boolean(pageData.footerHasContactForm ?? true),
-			hero: pageData.hero
-				? ({
-					_type: 'hero',
-					name: pageData.hero.name,
-					subtitle: pageData.hero.subtitle,
-					image_desktop: parseCloudinaryImage(pageData.hero.image_desktop),
-					image_mobile: parseCloudinaryImage(pageData.hero.image_mobile),
-					kind: pageData.hero.kind,
-					videoBgSrc: pageData.hero.thumb_vimeo_src,
-					videoBgSrcHd: pageData.hero.thumb_vimeo_src_hd,
-					project: pageData.hero.project ? await parseProjectFromData(pageData.hero.project) : undefined
-				} satisfies Hero)
-				: undefined,
+			hero,
 			components: await getComponents(pageData.components)
 
 		};
