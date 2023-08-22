@@ -192,7 +192,8 @@
 			<a
 				transition:fade={{ duration: 300, easing: linear }}
 				class="insta-btn"
-				href="https://www.instagram.com/bespoke__digital/"><InstagramLogo /></a
+				href="https://www.instagram.com/bespoke__digital/"
+				target="_blank"><InstagramLogo /></a
 			>
 		{/if}
 		<button class="menu-btn" on:click={toggleMenu}>

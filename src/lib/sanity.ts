@@ -21,7 +21,7 @@ export async function getPage(slug: string): Promise<Page | HttpError> {
 		"footerHasContactForm": footer_contact,
 		hero->{...,project->},
 		components[]{
-			_type == 'logo_grid_ref' => @->{..., "desktop": desktop.asset->url, "mobile": mobile.asset->url},
+			_type == 'logo_grid_ref' => @->{..., "desktop": desktop.asset->url, "mobile": mobile.asset->url, "desktopMaxWidth": desktop_max_width, "mobileMaxWidth": mobile_max_width},
 			_type == 'projects' => @->{...,projects[]->},
 			_type == 'project_media_ref' => @->,
 			_type == 'text_only_ref' => @->{..., "bgColor": background_color},

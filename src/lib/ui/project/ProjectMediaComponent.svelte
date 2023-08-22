@@ -50,6 +50,7 @@
 			{src}
 			title={media.name}
 			placeholder={media.image?.url || undefined}
+			autoplay={media.autoplay}
 		/>
 	</div>
 {:else if isStaticImage || isBgVideo || isVideoEmbed}

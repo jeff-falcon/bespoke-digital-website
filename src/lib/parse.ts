@@ -46,7 +46,8 @@ export async function parseProjectMediaFromData(project: any): Promise<ProjectMe
 		videoPlayerSrc: project.vimeo_player_src as string,
 		videoBgSrc: project.thumb_vimeo_src as string,
 		videoBgSrcHd: project.thumb_vimeo_src_hd as string,
-		useOriginalQuality
+		useOriginalQuality,
+		autoplay: project.autoplay ?? false,
 	};
 	console.log('project media: ', { media });
 	return media;

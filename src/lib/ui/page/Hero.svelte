@@ -17,7 +17,8 @@
 		image: data.image_desktop,
 		videoBgSrc: data.videoBgSrc,
 		videoBgSrcHd: data.videoBgSrcHd,
-		useOriginalQuality: false
+		useOriginalQuality: false,
+		autoplay: true
 	};
 	$: scrollPct = Math.max(0, Math.min(1, scrollY / innerHeight));
 	$: canApplyTransform = Math.abs(scrollY) < innerHeight + 100;

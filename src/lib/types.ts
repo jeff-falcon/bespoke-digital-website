@@ -78,7 +78,8 @@ export interface ProjectMedia {
 	videoPlayerSrc?: string;
 	videoBgSrc?: string;
 	videoBgSrcHd?: string;
-	useOriginalQuality: boolean
+	useOriginalQuality: boolean;
+	autoplay: boolean;
 }
 
 export interface ProjectMediaPair {
@@ -114,6 +115,8 @@ export interface LogoGrid {
 	desktop: string;
 	mobile: string;
 	color: string;
+	mobileMaxWidth: number
+	desktopMaxWidth: number
 }
 
 export interface TextOnly {

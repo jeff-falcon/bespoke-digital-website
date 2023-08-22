@@ -1,13 +1,14 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
-	import { cubicInOut } from 'svelte/easing';
+	import { cubicInOut, quintInOut } from 'svelte/easing';
 	import { fly } from 'svelte/transition';
 
 	let part = 1;
 	let animInt = 0;
 	let isPlaying = false;
 
-	const duration = 350;
+	const duration = 1200;
+	const easing = quintInOut;
 
 	onMount(() => {
 		play();
@@ -29,7 +30,7 @@
 				part = 1;
 				isPlaying = false;
 			}
-		}, 1000);
+		}, 1500);
 	}
 </script>
 
@@ -37,8 +38,8 @@
 	{#if part === 1 || part === 5}
 		<g
 			id="Spoke"
-			in:fly={{ y: part === 5 ? '-100%' : '100%', opacity: 0, easing: cubicInOut, duration }}
-			out:fly={{ y: '-100%', opacity: 0, easing: cubicInOut, duration }}
+			in:fly={{ y: part === 5 ? '-100%' : '100%', opacity: 0, easing, duration }}
+			out:fly={{ y: '-100%', opacity: 0, easing, duration }}
 		>
 			<path
 				d="M70.6126 23.8861C70.6126 28.8421 66.3286 33.7561 59.4406 33.7561C55.2826 33.7561 51.0406 32.2021 48.0586 27.5401L52.9306 23.0041C54.6526 25.8181 57.0046 27.0361 59.3146 27.0361C61.6666 27.0361 63.3046 25.9441 63.3046 23.8021C63.3046 19.2661 49.1926 21.5761 49.1926 10.8661C49.1926 5.9941 53.0146 1.0381 59.5666 1.0381C63.5566 1.0381 67.7146 2.8861 70.4866 7.4221L65.6146 11.9581C63.8506 9.1021 61.7506 7.6741 59.6086 7.6741C57.8446 7.6741 56.2486 8.6821 56.2486 10.8241C56.2486 15.2761 70.6546 13.3861 70.6126 23.8861Z"
@@ -60,8 +61,8 @@
 	{#if part === 4}
 		<g
 			id="Daring"
-			in:fly={{ y: '100%', opacity: 0, easing: cubicInOut, duration }}
-			out:fly={{ y: '100%', opacity: 0, easing: cubicInOut, duration }}
+			in:fly={{ y: '100%', opacity: 0, easing, duration }}
+			out:fly={{ y: '100%', opacity: 0, easing, duration }}
 		>
 			<path
 				d="M76.3663 17.2501C76.3663 25.9441 69.3523 33.0001 60.6583 33.0001H49.7383V1.5001H60.6583C69.3523 1.5001 76.3663 8.5981 76.3663 17.2501ZM69.1423 17.2501C69.1423 12.3781 65.1943 8.3881 60.2803 8.3881H56.9623V26.1121H60.2803C65.1943 26.1121 69.1423 22.1641 69.1423 17.2501Z"
@@ -84,8 +85,8 @@
 	{#if part === 2}
 		<g
 			id="Fresh"
-			in:fly={{ y: '100%', opacity: 0, easing: cubicInOut, duration }}
-			out:fly={{ y: '-100%', opacity: 0, easing: cubicInOut, duration }}
+			in:fly={{ y: '100%', opacity: 0, easing, duration }}
+			out:fly={{ y: '-100%', opacity: 0, easing, duration }}
 		>
 			<path
 				d="M69.1003 1.462V8.35H56.9623V13.81H68.0083V20.656H56.9623V32.962H49.7383V1.462H69.1003Z"
@@ -107,8 +108,8 @@
 	{#if part === 3}
 		<g
 			id="Known"
-			in:fly={{ y: '100%', opacity: 0, easing: cubicInOut, duration }}
-			out:fly={{ y: '-100%', opacity: 0, easing: cubicInOut, duration }}
+			in:fly={{ y: '100%', opacity: 0, easing, duration }}
+			out:fly={{ y: '-100%', opacity: 0, easing, duration }}
 		>
 			<path
 				d="M65.3623 1.5001H74.4763L61.0363 17.2921L74.3923 33.0001H65.2783L56.9623 23.2141V33.0001H49.7383V1.5001H56.9623V11.4121L65.3623 1.5001Z"

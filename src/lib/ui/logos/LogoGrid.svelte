@@ -7,9 +7,14 @@
 	$: bgColor = colors[0] ? `var(--${colors[0]})` : 'transparent';
 	$: iconColor = `url(#colorizer-${colors[1] || 'white'})`;
 	$: textColor = colors[0] ? `var(--${colors[1]})` : 'white';
+	$: mobileMaxWidth = data.mobileMaxWidth ? `${data.mobileMaxWidth}px` : '100%';
+	$: desktopMaxWidth = data.desktopMaxWidth ? `${data.desktopMaxWidth}px` : '100%';
 </script>
 
-<section class="logo-grid gutter" style="--bg-color: {bgColor}; --text-color: {textColor}">
+<section
+	class="logo-grid gutter"
+	style="--bg-color: {bgColor}; --text-color: {textColor}; --mobile-max-width: {mobileMaxWidth}; --desktop-max-width: {desktopMaxWidth};"
+>
 	<h2 class="title">{data.title}</h2>
 	<picture>
 		<source srcset={data.mobile} media="(max-width: 719px)" />
@@ -40,6 +45,7 @@
 		display: block;
 		width: 100%;
 		height: auto;
+		max-width: var(--mobile-max-width);
 	}
 	@media (min-width: 720px) {
 		section {
@@ -53,6 +59,9 @@
 			padding-right: 0;
 			padding-bottom: 48px;
 			margin-bottom: 64px;
+		}
+		img {
+			max-width: var(--desktop-max-width);
 		}
 	}
 </style>

@@ -9,6 +9,7 @@
 	export let placeholder: string = '';
 	export let id: string;
 	export let title: string | null = null;
+	export let autoplay = false;
 
 	type Player = ReturnType<typeof videojs>;
 
@@ -92,6 +93,8 @@
 			loop
 			controls
 			preload="auto"
+			autoplay={autoplay || undefined}
+			muted={autoplay || undefined}
 			poster={placeholder || undefined}
 		>
 			<source {src} />
@@ -215,7 +218,8 @@
 		content: '';
 	}
 	.video-container :global(.vjs-picture-in-picture-control),
-	.video-container :global(.vjs-remaining-time) {
+	.video-container :global(.vjs-remaining-time),
+	.video-container :global(.vjs-subs-caps-button) {
 		display: none;
 	}
 	.video-container :global(.vjs-progress-control:hover .vjs-time-tooltip),
