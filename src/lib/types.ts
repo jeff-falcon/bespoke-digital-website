@@ -16,6 +16,14 @@ export interface Credit {
 	credit: string;
 }
 
+export interface MultiHero {
+	_type: 'multi_hero';
+	name: string;
+	title?: string;
+	subtitle?: string;
+	heros: Hero[];
+}
+
 export interface Project {
 	_type: 'project';
 	name: string;
@@ -65,7 +73,7 @@ export interface Page {
 	slug: string;
 	footerHasContactForm: boolean;
 	description?: string;
-	hero?: Hero;
+	heros?: MultiHero;
 	components?: PageComponents;
 }
 

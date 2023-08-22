@@ -1,4 +1,4 @@
-import type { Project, ProjectMedia, CloudinaryImage, Hero } from '$lib/types';
+import type { Project, ProjectMedia, CloudinaryImage, Hero, MultiHero } from '$lib/types';
 
 export function parseCloudinaryImage(image: any, mobileImage?: any, useOriginalQuality = false) {
 	if (!image) return undefined;
@@ -52,7 +52,7 @@ export async function parseProjectMediaFromData(project: any): Promise<ProjectMe
 	return media;
 }
 
-export async function parseProjectFromData(data: any) {
+export function parseProjectFromData(data: any) {
 	if (data?._type !== 'project') return undefined;
 	const project: Project = {
 		_type: 'project',
@@ -71,17 +71,30 @@ export async function parseProjectFromData(data: any) {
 	return project;
 }
 
-export function parseHeroFromData(data: any) {
-	if (data?._type !== 'hero') return undefined;
-	return <Hero>{
+export function parseHeroFromData(data: any, title?: string, subtitle?: string) {
+	if (Boolean(data?._type) === false) return undefined;
+	const hero: Hero = {
 		_type: 'hero',
-		name: data.name,
-		subtitle: data.subtitle,
+		name: title || data.title,
+		subtitle: subtitle || data.subtitle,
 		image_desktop: parseCloudinaryImage(data.image_desktop),
 		image_mobile: parseCloudinaryImage(data.image_mobile),
 		kind: data.kind,
-		thumb_vimeo_src: data.thumb_vimeo_src,
-		thumb_vimeo_src_hd: data.thumb_vimeo_src_hd,
+		videoBgSrc: data.thumb_vimeo_src,
+		videoBgSrcHd: data.thumb_vimeo_src_hd,
 		project: data.project ? parseProjectFromData(data.project) : undefined
 	}
+	return hero;
+}
+
+export function parseMultiHeroFromData(data: any) {
+	if (Boolean(data?._type) === false) return undefined;
+	const isMultiHero = data?._type === 'multi_hero';
+	const hero: MultiHero = {
+		_type: 'multi_hero',
+		name: data.title,
+		subtitle: data.subtitle,
+		heros: isMultiHero ? data.heros.map((h: any) => parseHeroFromData(h, data.override_title ? data.title : '', data.override_title ? data.subtitle : '')) : [parseHeroFromData(data)]
+	}
+	return hero;
 }

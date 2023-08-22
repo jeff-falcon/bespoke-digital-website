@@ -13,8 +13,13 @@
 
 	export let data: Page;
 
+	$: hasHero = data.heros?.heros != null && data.heros?.heros.length > 0;
+
+	$: randomHeroIndex = Math.floor(Math.random() * (data.heros?.heros.length ?? 0));
+	$: hero = hasHero ? data.heros!.heros[randomHeroIndex] : null;
+
 	onMount(() => {
-		pageHasHero.set(data.hero != null);
+		pageHasHero.set(hasHero);
 		bgColor.set(data.bgColor || 'default');
 		document.body.className = `bg-${$bgColor}`;
 		footerHasContactForm.set(data.footerHasContactForm);
@@ -34,9 +39,9 @@
 	<meta name="description" content={data.description ?? 'Bespoke Digital'} />
 </svelte:head>
 
-<div class="page" class:hasHero={data.hero != null}>
-	{#if data.hero}
-		<Hero data={data.hero} />
+<div class="page" class:hasHero>
+	{#if hero}
+		<Hero data={hero} />
 	{/if}
 	{#if data.components}
 		{#each data.components as component (component)}

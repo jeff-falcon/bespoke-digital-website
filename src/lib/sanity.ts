@@ -1,8 +1,8 @@
 import { createClient } from '@sanity/client';
 import { SANITY_TOKEN, SANITY_DATASET, SANITY_PROJECT_ID } from '$env/static/private';
-import type { TextOnly, ClientList, ColumnedText, Form, Hero, LogoGrid, Page, PageComponents, Project, ProjectGrid, ProjectMedia } from '$lib/types';
+import type { TextOnly, ClientList, ColumnedText, Form, Hero, LogoGrid, Page, PageComponents, Project, ProjectGrid, ProjectMedia, MultiHero } from '$lib/types';
 import { type HttpError, error } from '@sveltejs/kit';
-import { parseCloudinaryImage, parseProjectFromData, parseProjectMediaFromData } from './parse';
+import { parseCloudinaryImage, parseHeroFromData, parseMultiHeroFromData, parseProjectFromData, parseProjectMediaFromData } from './parse';
 
 export function getClient() {
 	return client;
@@ -38,22 +38,6 @@ export async function getPage(slug: string): Promise<Page | HttpError> {
 		if (!result || !result.length) return error(404, 'Page not found');
 		const pageData = result[0];
 		console.log({ hero: pageData.hero })
-		const randHeroIndex = Math.floor(Math.random() * (Array.isArray(pageData.heros) ? pageData.heros.length : 0));
-		const isMultiHero = pageData.hero._type === 'multi_hero';
-		const heroData = isMultiHero ? pageData.hero.heros[randHeroIndex] : pageData.hero;
-		const heroTitle = isMultiHero && pageData.hero.override_title ? pageData.hero.title : heroData.title;
-		const heroSubtitle = isMultiHero && pageData.hero.override_title ? pageData.hero.subtitle : heroData.subtitle;
-		const hero: Hero | undefined = heroData ? {
-			_type: 'hero',
-			name: heroTitle,
-			subtitle: heroSubtitle,
-			image_desktop: parseCloudinaryImage(heroData.image_desktop),
-			image_mobile: parseCloudinaryImage(heroData.image_mobile),
-			kind: heroData.kind,
-			videoBgSrc: heroData.thumb_vimeo_src,
-			videoBgSrcHd: heroData.thumb_vimeo_src_hd,
-			project: heroData.project ? await parseProjectFromData(heroData.project) : undefined
-		} : undefined;
 		const page: Page = {
 			_type: 'page',
 			_id: pageData._id,
@@ -62,9 +46,8 @@ export async function getPage(slug: string): Promise<Page | HttpError> {
 			slug: pageData.slug,
 			description: pageData.description,
 			footerHasContactForm: Boolean(pageData.footerHasContactForm ?? true),
-			hero,
+			heros: parseMultiHeroFromData(pageData.hero),
 			components: await getComponents(pageData.components)
-
 		};
 
 		return page;
