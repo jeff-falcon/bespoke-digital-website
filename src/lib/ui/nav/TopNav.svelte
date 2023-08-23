@@ -25,7 +25,8 @@
 	let hoverTimeout = 0;
 	let menuStateTimeout = 0;
 
-	const style = config.borderRadius ? `--input-border-radius: ${config.borderRadius}px` : '';
+	const style =
+		config.borderRadius != null ? `--input-border-radius: ${config.borderRadius}px` : '';
 
 	$: if ($navigating?.type === 'popstate' || $navigating?.type === 'link') {
 		if ($menuState === 'open') {

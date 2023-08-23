@@ -9,9 +9,8 @@
 
 	export let data: LayoutData;
 
-	const style = data.config.borderRadius
-		? `--input-border-radius: ${data.config.borderRadius}px`
-		: '';
+	const style =
+		data.config.borderRadius != null ? `--input-border-radius: ${data.config.borderRadius}px` : '';
 </script>
 
 <TopNav config={data.config} usePillFollower={true} />

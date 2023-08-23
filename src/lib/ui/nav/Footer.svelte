@@ -9,7 +9,8 @@
 	export let hasContactForm = false;
 	export let hasDivider = false;
 
-	const style = config.borderRadius ? `--input-border-radius: ${config.borderRadius}px` : '';
+	const style =
+		config.borderRadius != null ? `--input-border-radius: ${config.borderRadius}px` : '';
 </script>
 
 <footer
