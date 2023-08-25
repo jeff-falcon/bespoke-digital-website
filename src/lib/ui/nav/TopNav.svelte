@@ -29,7 +29,7 @@
 
 	$: if ($navigating?.type === 'popstate' || $navigating?.type === 'link') {
 		if ($menuState === 'open') {
-			menuState.set('closed');
+			toggleMenu();
 		}
 	}
 
@@ -75,6 +75,7 @@
 	$: currentRoute = $page.url.pathname ?? '';
 	$: isMenuOpen = $menuState === 'open';
 	$: isOverCurrent = currentLinkHover?.getAttribute('href') === currentRoute;
+	$: mobileNavStyle = $bgColor ? `--bg-color: ${$bgColor};` : '';
 
 	function toggleMenu() {
 		console.log('toggleMenu', $menuState);
@@ -82,7 +83,9 @@
 			const newState = state === 'open' ? 'closed' : 'open';
 			clearTimeout(menuStateTimeout);
 			if (newState === 'closed') {
-				isMenuOpenComplete.set(false);
+				menuStateTimeout = window.setTimeout(() => {
+					isMenuOpenComplete.set(false);
+				}, 10);
 			} else {
 				menuStateTimeout = window.setTimeout(() => {
 					isMenuOpenComplete.set(true);
@@ -211,7 +214,7 @@
 		</button>
 	</div>
 </header>
-<div id="mobile-nav" class:isMenuOpen>
+<div id="mobile-nav" class:isMenuOpen style={mobileNavStyle}>
 	{#if isMenuOpen}
 		<div
 			class="bg"
@@ -460,15 +463,9 @@
 		width: 100%;
 		height: 100%;
 		z-index: 0;
-		background: var(--bg-dark);
+		background: var(--bg-color);
 	}
 
-	:global(.bg-rust) #mobile-nav .bg {
-		background: var(--bg-rust);
-	}
-	:global(.bg-olive) #mobile-nav .bg {
-		background: var(--bg-olive);
-	}
 	#mobile-nav.isMenuOpen {
 		pointer-events: all;
 		overflow-x: hidden;
