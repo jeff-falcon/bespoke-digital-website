@@ -22,7 +22,7 @@
 
 <svelte:head>
 	<title>{data.project?.pageTitle ?? 'Work | Bespoke Digital'}</title>
-	<meta name="description" content="Bespoke Digital" />
+	<meta name="description" content={data.project?.metaDescription || 'Bespoke Digital'} />
 </svelte:head>
 
 {#if data.project}
