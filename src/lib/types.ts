@@ -27,7 +27,9 @@ export interface MultiHero {
 export interface Project {
 	_type: 'project';
 	name: string;
+	title: string;
 	shortName: string;
+	metaDescription: string;
 	slug: string;
 	pageTitle?: string;
 	kind?: 'image' | 'video-bg';
@@ -73,7 +75,7 @@ export interface Page {
 	bgColor?: string,
 	slug: string;
 	footerHasContactForm: boolean;
-	description?: string;
+	metaDescription?: string;
 	heros?: MultiHero;
 	components?: PageComponents;
 }

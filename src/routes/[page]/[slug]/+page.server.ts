@@ -49,11 +49,14 @@ export const load: PageServerLoad = async ({ params }): Promise<{ project?: Proj
 			}
 
 		}
+		const title = projectData.title || projectData.name;
 		const project: Project = {
 			_type: 'project',
-			pageTitle: projectData.name + ' | Work | Bespoke Digital',
+			pageTitle: title + ' | Work | Bespoke Digital',
 			name: projectData.name,
-			shortName: projectData.short_name ?? '',
+			title: title,
+			metaDescription: projectData.meta_description,
+			shortName: projectData.short_name || title || '',
 			slug: projectData.slug.current,
 			descriptionIntro: projectData.description_intro,
 			description: projectData.description,

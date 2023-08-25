@@ -38,7 +38,7 @@
 
 <svelte:head>
 	<title>{data.name ?? 'Home'} | Bespoke Digital</title>
-	<meta name="description" content={data.description ?? 'Bespoke Digital'} />
+	<meta name="description" content={data.metaDescription ?? 'Bespoke Digital'} />
 </svelte:head>
 
 <div class="page" class:hasHero>

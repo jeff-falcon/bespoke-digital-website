@@ -44,7 +44,7 @@ export async function getPage(slug: string): Promise<Page | HttpError> {
 			name: pageData.name,
 			bgColor: pageData.bgColor?.value,
 			slug: pageData.slug,
-			description: pageData.description,
+			metaDescription: pageData.description,
 			footerHasContactForm: Boolean(pageData.footerHasContactForm ?? true),
 			heros: parseMultiHeroFromData(pageData.hero),
 			components: await getComponents(pageData.components)
