@@ -1,4 +1,5 @@
 import type { Project, ProjectMedia, CloudinaryImage, Hero, MultiHero } from '$lib/types';
+import { bgColor } from './store';
 
 export function parseCloudinaryImage(image: any, mobileImage?: any, useOriginalQuality = false) {
 	if (!image) return undefined;
@@ -66,7 +67,8 @@ export function parseProjectFromData(data: any) {
 		kind: data.kind,
 		image: parseCloudinaryImage(data.image),
 		videoBgSrc: data.thumb_vimeo_src,
-		videoBgSrcHd: data.thumb_vimeo_src_hd
+		videoBgSrcHd: data.thumb_vimeo_src_hd,
+		bgColor: data.bg_color?.value
 	}
 	return project;
 }

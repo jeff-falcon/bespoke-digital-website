@@ -124,8 +124,11 @@
 		justify-content: center;
 		transition: border-color 180ms linear;
 	}
+	:global(.bg-is-light) .socials .links a img {
+		filter: invert(1);
+	}
 	.socials .links a:hover {
-		border-color: white;
+		border-color: var(--text-light);
 	}
 	.newsletter {
 		margin-bottom: 40px;

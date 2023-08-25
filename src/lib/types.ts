@@ -39,6 +39,7 @@ export interface Project {
 	videoBgSrc?: string;
 	videoBgSrcHd?: string;
 	media?: Array<ProjectMedia | ProjectMediaPair>;
+	bgColor?: string
 }
 export interface ProjectGrid {
 	_type: 'project_grid';
@@ -69,7 +70,7 @@ export interface Page {
 	_type: 'page';
 	_id: string;
 	name: string;
-	bgColor?: 'default' | 'rust' | 'olive',
+	bgColor?: string,
 	slug: string;
 	footerHasContactForm: boolean;
 	description?: string;

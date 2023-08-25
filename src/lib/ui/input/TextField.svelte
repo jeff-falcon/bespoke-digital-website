@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { inputBorderIsRounded } from '$lib/store';
 	import { createEventDispatcher } from 'svelte';
 	import { fade } from 'svelte/transition';
 
@@ -36,6 +37,7 @@
 	class:hasValue={value.trim().length > 0}
 	class:isFocused={readonly ? false : isFocused}
 	class:hasError
+	class:inputBorderIsRounded={$inputBorderIsRounded}
 >
 	<div class="textfield">
 		{#if label}
@@ -104,10 +106,14 @@
 		left: 0;
 		width: 100%;
 		height: calc(100% - 2px);
-		border: 1px solid var(--text-light-15);
+		border: 1px solid var(--text-light-5);
+		border-bottom-color: var(--text-light-60);
 		border-radius: var(--input-border-radius);
 		pointer-events: none;
 		transition: 180ms linear border-color;
+	}
+	.inputBorderIsRounded .textfield:after {
+		border-color: var(--text-light-15);
 	}
 	.hasError .textfield:after {
 		border-color: var(--error-text);

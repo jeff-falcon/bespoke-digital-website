@@ -42,7 +42,7 @@ export async function getPage(slug: string): Promise<Page | HttpError> {
 			_type: 'page',
 			_id: pageData._id,
 			name: pageData.name,
-			bgColor: pageData.bgColor,
+			bgColor: pageData.bgColor?.value,
 			slug: pageData.slug,
 			description: pageData.description,
 			footerHasContactForm: Boolean(pageData.footerHasContactForm ?? true),

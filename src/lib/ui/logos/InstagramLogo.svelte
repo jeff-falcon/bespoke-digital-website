@@ -6,7 +6,7 @@
 
 <style>
 	svg {
-		color: white;
+		color: var(--text-light);
 		fill: currentColor;
 	}
 </style>

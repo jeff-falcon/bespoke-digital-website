@@ -143,7 +143,7 @@
 		display: block;
 		height: 28px;
 		width: 186px;
-		fill: white;
+		fill: var(--text-light);
 	}
 	@media (min-width: 720px) {
 		svg {

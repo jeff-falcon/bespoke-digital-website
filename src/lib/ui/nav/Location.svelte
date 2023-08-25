@@ -33,8 +33,7 @@
 		width: 48px;
 		height: 1px;
 		border: 0;
-		background: white;
-		opacity: 0.15;
+		background: var(--text-light-15);
 		margin: 6px 0 12px;
 	}
 	.address,

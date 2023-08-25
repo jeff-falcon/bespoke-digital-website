@@ -10,6 +10,7 @@
 	import ColumnedText from '../content/ColumnedText.svelte';
 	import ClientList from '../content/ClientList.svelte';
 	import Form from '../form/Form.svelte';
+	import { getContrastYIQFromColor } from '$lib/color';
 
 	export let data: Page;
 
@@ -19,8 +20,14 @@
 
 	onMount(() => {
 		pageHasHero.set(hasHero);
-		bgColor.set(data.bgColor || 'default');
-		document.body.className = `bg-${$bgColor}`;
+		const defaultBg = getComputedStyle(document.documentElement).getPropertyValue('--bg-dark');
+		const color = data.bgColor || defaultBg;
+		console.log('page background color', data.bgColor || defaultBg);
+		bgColor.set(color);
+		document.body.className = `bg-is-${
+			getContrastYIQFromColor($bgColor) === 'white' ? 'dark' : 'light'
+		}`;
+		document.body.style.backgroundColor = $bgColor;
 		footerHasContactForm.set(data.footerHasContactForm);
 	});
 

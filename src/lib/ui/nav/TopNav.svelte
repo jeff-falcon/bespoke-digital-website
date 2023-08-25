@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { page, navigating } from '$app/stores';
-	import { isMenuOpenComplete, menuState, pageHasHero } from '$lib/store';
+	import { isMenuOpenComplete, menuState, pageHasHero, bgColor } from '$lib/store';
 	import type { Config } from '$lib/types';
 	import BespokeAnimatedLogo from '$lib/ui/logos/BespokeAnimatedLogo.svelte';
 	import InstagramLogo from '$lib/ui/logos/InstagramLogo.svelte';
@@ -25,14 +25,20 @@
 	let hoverTimeout = 0;
 	let menuStateTimeout = 0;
 
-	const style =
-		config.borderRadius != null ? `--input-border-radius: ${config.borderRadius}px` : '';
+	const useUnderline = config.borderRadius === 0;
 
 	$: if ($navigating?.type === 'popstate' || $navigating?.type === 'link') {
 		if ($menuState === 'open') {
 			menuState.set('closed');
 		}
 	}
+
+	$: backgroundColor = $bgColor.startsWith('#')
+		? `${$bgColor}CC`
+		: `rgba(${$bgColor.replace('rgb(', '').replace(')', '')},0.8)`;
+	$: style = `--bg-color: ${backgroundColor}; ${
+		config.borderRadius != null ? `--input-border-radius: ${config.borderRadius}px` : ''
+	}`;
 
 	$: if ($pageHasHero) {
 		clearTimeout(changeBgTimeout);
@@ -167,7 +173,7 @@
 
 <svelte:window bind:scrollY />
 
-<header class:isMenuOpen id="global-header" class="gutter" class:hasBg {style}>
+<header class:isMenuOpen id="global-header" class="gutter" class:hasBg {style} class:useUnderline>
 	<div class="logo">
 		<a
 			href="/"
@@ -309,7 +315,7 @@
 		display: flex;
 		justify-content: space-between;
 		align-items: center;
-		color: white;
+		color: var(--text-light);
 		z-index: var(--level10);
 	}
 	header:after {
@@ -321,25 +327,15 @@
 		height: 100%;
 		z-index: -1;
 		opacity: 0;
-		transition: opacity var(--bg-color-timing) var(--ease-in-out-sine);
-		background: linear-gradient(
-			45deg,
-			rgb(38 38 38 / 70%) 11%,
-			rgb(38 38 38 / 30%) 40%,
-			rgb(38 38 38 / 30%) 45%,
-			rgb(38 38 38 / 80%) 63%
-		);
+		transition: var(--bg-color-timing) var(--ease-in-out-sine);
+		transition-property: opacity, background-color;
+		background: rgba(38, 38, 38, 0.8);
 		backdrop-filter: blur(14px);
 		-webkit-backdrop-filter: blur(14px);
 	}
 	header.hasBg:after {
 		opacity: 1;
-	}
-	:global(body.bg-rust) header.hasBg:after {
-		background: rgba(108, 51, 51, 0.8);
-	}
-	:global(body.bg-olive) header.hasBg:after {
-		background: rgba(63, 66, 57, 0.8);
+		background: var(--bg-color);
 	}
 	.right {
 		display: flex;
@@ -365,6 +361,15 @@
 	.h-menu a.active {
 		border-color: var(--text-light);
 		opacity: 1;
+	}
+	.useUnderline .h-menu,
+	.useUnderline .border {
+		--button-height-large: 32px;
+	}
+	.useUnderline .h-menu a {
+		padding: 0;
+		border-width: 0;
+		border-bottom-width: 1px;
 	}
 	.h-menu.isBorderAnimating a,
 	.h-menu.isBorderAnimating a.active {
@@ -403,6 +408,10 @@
 		transition: border-color 180ms linear;
 		opacity: 0;
 	}
+	.useUnderline .border {
+		border-width: 0;
+		border-bottom-width: 1px;
+	}
 	.isBorderAnimating .border {
 		border-color: var(--text-light-40);
 		visibility: visible;
@@ -413,7 +422,7 @@
 	.menu-btn .line {
 		width: 16px;
 		height: 2px;
-		background: white;
+		background: var(--text-light);
 		transition: 220ms var(--ease-in-out-cubic) all;
 		position: absolute;
 		left: calc(50% - 8px);
@@ -491,7 +500,7 @@
 	.v-menu a {
 		font-size: var(--24pt);
 		line-height: 1;
-		color: white;
+		color: var(--text-light);
 		width: min-content;
 		white-space: nowrap;
 	}
@@ -509,6 +518,7 @@
 		align-items: center;
 		transition: linear 180ms;
 		transition-property: border-color;
+		color: var(--text-light);
 	}
 	.insta-btn:hover {
 		border-color: var(--text-light);
@@ -529,6 +539,11 @@
 	@media (min-width: 760px) {
 		.h-menu {
 			display: flex;
+		}
+		.useUnderline .h-menu {
+			gap: 48px;
+			margin-right: 16px;
+			align-items: center;
 		}
 		.insta-btn {
 			margin: 0 0 0 32px;

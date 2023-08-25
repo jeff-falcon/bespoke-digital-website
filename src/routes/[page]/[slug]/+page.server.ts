@@ -62,7 +62,8 @@ export const load: PageServerLoad = async ({ params }): Promise<{ project?: Proj
 			image: parseCloudinaryImage(projectData.image, projectData.image_mobile),
 			videoBgSrc: projectData.thumb_vimeo_src,
 			videoBgSrcHd: projectData.thumb_vimeo_src_hd,
-			media: mediaList
+			media: mediaList,
+			bgColor: projectData.bg_color?.value
 		};
 		return { project };
 	}

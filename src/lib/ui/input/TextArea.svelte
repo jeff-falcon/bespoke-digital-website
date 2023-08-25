@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { inputBorderIsRounded } from '$lib/store';
 	import { createEventDispatcher } from 'svelte';
 	import { fade } from 'svelte/transition';
 
@@ -37,6 +38,7 @@
 	class:hasError
 	class:isTaller
 	class:isScrollable
+	class:inputBorderIsRounded={$inputBorderIsRounded}
 	style="--height: {scrollHeight < actualScrollHeight && !isScrollable
 		? actualScrollHeight
 		: scrollHeight}px"
@@ -103,11 +105,16 @@
 		left: 0;
 		width: 100%;
 		height: calc(100% - 2px);
-		border: 1px solid var(--text-light-15);
+		border: 1px solid var(--text-light-5);
+		border-bottom-color: var(--text-light-60);
 		border-radius: var(--input-border-radius);
 		pointer-events: none;
 		transition: 180ms linear border-color;
 	}
+	.textarea-container.inputBorderIsRounded .textarea:after {
+		border-color: var(--text-light-15);
+	}
+
 	.hasError .textarea:after {
 		border-color: var(--error-text);
 	}

@@ -26,9 +26,11 @@
 	--bg-rust: #6d3434;
 	--bg-olive: #3f4239;
 	--text-light: #fefefe;
+	--text-light-60: hsla(0, 0%, 100%, 0.6);
 	--text-light-40: hsla(0, 0%, 100%, 0.4);
 	--text-light-30: hsla(0, 0%, 100%, 0.3);
 	--text-light-15: hsla(0, 0%, 100%, 0.15);
+	--text-light-5: hsla(0, 0%, 100%, 0.05);
 	--text-dark: var(--bg-dark);
 	--text-highlight: #ebffbf;
 	--gray-mid: #373636;
@@ -90,6 +92,14 @@ body.bg-rust {
 }
 body.bg-olive {
 	background: var(--bg-olive);
+}
+body.bg-is-light {
+	--text-light: var(--bg-dark);
+	--text-light-60: hsla(0, 0%, 15%, 0.6);
+	--text-light-40: hsla(0, 0%, 15%, 0.4);
+	--text-light-30: hsla(0, 0%, 15%, 0.3);
+	--text-light-15: hsla(0, 0%, 15%, 0.15);
+	--text-light-5: hsla(0, 0%, 15%, 0.05);
 }
 
 * {
