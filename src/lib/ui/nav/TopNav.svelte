@@ -532,6 +532,9 @@
 		align-items: center;
 		justify-content: center;
 	}
+	.bg-is-light .socials a {
+		filter: invert(1);
+	}
 
 	@media (min-width: 760px) {
 		.h-menu {
