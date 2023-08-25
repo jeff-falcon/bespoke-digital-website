@@ -53,7 +53,14 @@
 					<ProjectMediaComponent media={item} scaleOnReveal={index === 0} />
 				{/if}
 				{#if item._type === 'item_pair'}
-					<div class="pair">
+					{@const leftRatio = (item.left.image?.height ?? 100) / (item.left.image?.width ?? 100)}
+					{@const rightRatio = (item.right.image?.height ?? 100) / (item.right.image?.width ?? 100)}
+
+					<div
+						class="pair"
+						class:isLeftLarger={leftRatio > rightRatio}
+						class:isRightLarger={leftRatio < rightRatio}
+					>
 						<ProjectMediaComponent media={item.left} scaleOnReveal={index === 0} />
 						<ProjectMediaComponent media={item.right} scaleOnReveal={index === 0} />
 					</div>
@@ -144,6 +151,25 @@
 			display: grid;
 			grid-template-columns: repeat(2, 1fr);
 			gap: var(--gutter-lg);
+		}
+		.isRightLarger :global(.media:nth-of-type(1)),
+		.isLeftLarger :global(.media:nth-of-type(2)) {
+			position: relative;
+			height: 100%;
+		}
+		.isRightLarger :global(.media:nth-of-type(1) img),
+		.isRightLarger :global(.media:nth-of-type(1) picture),
+		.isLeftLarger :global(.media:nth-of-type(2) img),
+		.isLeftLarger :global(.media:nth-of-type(2) picture) {
+			position: absolute;
+			top: 0;
+			left: 0;
+			height: 100%;
+			width: 100%;
+		}
+		.isRightLarger :global(.media:nth-of-type(1) img),
+		.isLeftLarger :global(.media:nth-of-type(2) img) {
+			object-fit: cover;
 		}
 	}
 	@media (min-width: 960px) {

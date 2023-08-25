@@ -7,6 +7,7 @@
 
 	export let media: ProjectMedia;
 	export let cover = false;
+	export let fillContainer = false;
 	export let scaleOnReveal = true;
 	export let isFullWidth = true;
 
@@ -57,13 +58,14 @@
 	<IntersectionObserver element={figureEl} bind:intersecting={isIntersecting} once={true}>
 		<figure
 			class="media"
-			class:cover
+			class:cover={cover && !fillContainer}
 			class:isBgVideo
 			class:isVideoPlaying
 			class:isFullWidth
 			bind:this={figureEl}
 			class:isIntersecting
 			class:scaleOnReveal
+			class:fillContainer={!cover && fillContainer}
 			data-is-video-playing={isVideoPlaying}
 			data-has-video-id={hasVideoId}
 			data-is-video-embed={isVideoEmbed}
@@ -131,7 +133,9 @@
 	}
 	.cover.media,
 	.cover img,
-	.cover picture {
+	.cover picture,
+	.fillContainer img,
+	.fillContainer picture {
 		position: absolute;
 		top: 0;
 		left: 0;
@@ -139,7 +143,11 @@
 		height: 100%;
 		display: block;
 	}
-	.cover img {
+	.fillContainer {
+		position: relative;
+	}
+	.cover img,
+	.fillContainer img {
 		object-fit: cover;
 	}
 	.cover.isBgVideo.isVideoPlaying picture {
