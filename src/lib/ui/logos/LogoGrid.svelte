@@ -15,7 +15,9 @@
 	class="logo-grid gutter"
 	style="--bg-color: {bgColor}; --text-color: {textColor}; --mobile-max-width: {mobileMaxWidth}; --desktop-max-width: {desktopMaxWidth};"
 >
-	<h2 class="title">{data.title}</h2>
+	{#if data.title}
+		<h2 class="title">{data.title}</h2>
+	{/if}
 	<picture>
 		<source srcset={data.mobile} media="(max-width: 719px)" />
 		<source srcset={data.desktop} media="(min-width: 720px)" />
