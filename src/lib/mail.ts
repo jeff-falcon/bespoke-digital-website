@@ -1,0 +1,34 @@
+import * as nodemailer from 'nodemailer'
+import { GOOGLE_APP_EMAIL, GOOGLE_APP_PASSWORD } from '$env/static/private'
+
+export function sendMail(email: string, name: string, message: string, fields?: { [key: string]: string }, subject?: string) {
+  const transporter = nodemailer.createTransport({
+    service: 'gmail',
+    auth: {
+      user: GOOGLE_APP_EMAIL,
+      pass: GOOGLE_APP_PASSWORD,
+    }
+  })
+
+  let html = `<p><b>New form submission from:</b><br/><span style="font-size: 1.5em; font-weight: bold;">${name} &lt;${email}&gt;</span></p><br/><br/><h3>Message:</h3><hr /><p>${message}</p>`
+  let text = `New form submission from:\n${name} <${email}>\n\nMessage:\n${message}\n`
+
+  if (fields && Object.keys(fields).length > 0) {
+    html += '<br/><br/><h3>Fields:</h3><hr />'
+    html += Object.entries(fields).map(([key, value]) => `<p><b>${key}:</b> ${value}</p>`).join('')
+    text += '\n------\n\nFields:\n------\n'
+    text += Object.entries(fields).map(([key, value]) => `${key}: ${value}\n`).join('')
+  }
+
+  return new Promise((resolve, reject) => {
+    transporter.sendMail({ from: GOOGLE_APP_EMAIL, to: GOOGLE_APP_EMAIL, subject: subject ?? 'Form Submission', html, text }, (err, info) => {
+      if (err) {
+        reject(err)
+        console.log({ err })
+      } else {
+        resolve(info)
+        console.log({ info })
+      }
+    });
+  })
+}

@@ -19,7 +19,7 @@
 	let message: string = '';
 	let portfolio: string = '';
 	let phone: string = '';
-	let disabled = true;
+	let isSending = false;
 	let wasEmailTested = false;
 	let wasNameTested = false;
 	let wasMessageTested = false;
@@ -61,12 +61,14 @@
 	}
 
 	function onUseForm(): ReturnType<SubmitFunction> {
+		isSending = true;
 		return async ({ result, update }) => {
 			if (result.type === 'success' && result.data) {
 				formResultMessage = result.data.message;
 			} else {
 				console.log('update', update);
 			}
+			isSending = false;
 		};
 	}
 </script>
@@ -81,6 +83,7 @@
 			<h3 class="title">Get In Touch</h3>
 		{/if}
 		<form method="POST" action="/forms/contact" use:enhance={onUseForm}>
+			<input type="hidden" name="type" value="job" />
 			<div class="message">
 				<TextArea
 					name="message"
@@ -123,7 +126,9 @@
 					/>
 				</div>
 			{/if}
-			<button type="submit" disabled={formResultMessage != '' || !isValid}>Send</button>
+			<button type="submit" disabled={isSending || formResultMessage != '' || !isValid}
+				>{isSending ? 'Sending...' : 'Send'}</button
+			>
 		</form>
 	{/if}
 </div>

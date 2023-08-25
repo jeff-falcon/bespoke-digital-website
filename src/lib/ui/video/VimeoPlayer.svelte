@@ -49,6 +49,8 @@
 	}
 
 	onMount(() => {
+		shouldAutoPlay = window.innerWidth < 560 ? true : autoplay;
+
 		const player = videojs(videoEl!, {
 			preferFullWindow: true,
 			controlBar: {
@@ -62,7 +64,8 @@
 					useDevicePixelRatio: true,
 					bandwidth: 1000000000
 				}
-			}
+			},
+			autoplay: shouldAutoPlay
 		});
 		player.debug(true);
 		player.on('load', () => {
@@ -75,8 +78,6 @@
 		});
 		player.volume(Number(localStorage.getItem('video-volume') ?? 1));
 		vjsPlayer = player;
-
-		shouldAutoPlay = window.innerWidth < 560 ? true : autoplay;
 
 		return () => {
 			vjsPlayer = null;
@@ -97,7 +98,6 @@
 			loop
 			controls
 			preload="auto"
-			autoplay={shouldAutoPlay || undefined}
 			muted={shouldAutoPlay || undefined}
 			poster={placeholder || undefined}
 		>
