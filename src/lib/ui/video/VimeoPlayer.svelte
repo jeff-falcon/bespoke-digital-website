@@ -20,6 +20,7 @@
 	let startedPlaying = false;
 	let vjsPlayer: Player | null = null;
 	let wasPlaying = false;
+	let shouldAutoPlay = false;
 
 	function onPlaying() {
 		dispatch('isPlaying', true);
@@ -74,6 +75,9 @@
 		});
 		player.volume(Number(localStorage.getItem('video-volume') ?? 1));
 		vjsPlayer = player;
+
+		shouldAutoPlay = window.innerWidth < 560 ? true : autoplay;
+
 		return () => {
 			vjsPlayer = null;
 			player.off('playing', onPlaying);
@@ -93,8 +97,8 @@
 			loop
 			controls
 			preload="auto"
-			autoplay={autoplay || undefined}
-			muted={autoplay || undefined}
+			autoplay={shouldAutoPlay || undefined}
+			muted={shouldAutoPlay || undefined}
 			poster={placeholder || undefined}
 		>
 			<source {src} />
