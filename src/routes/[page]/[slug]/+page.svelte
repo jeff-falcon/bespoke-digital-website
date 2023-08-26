@@ -13,6 +13,7 @@
 		const color = data.project?.bgColor || defaultBg;
 		console.log('project background color', color);
 		bgColor.set(color);
+		document.body.style.setProperty('--page-bg-color', color);
 		document.body.className = `bg-is-${
 			getContrastYIQFromColor($bgColor) === 'white' ? 'dark' : 'light'
 		}`;

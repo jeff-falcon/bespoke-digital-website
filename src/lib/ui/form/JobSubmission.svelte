@@ -145,6 +145,9 @@
 	.title.isComplete {
 		color: var(--text-highlight);
 	}
+	:global(.bg-is-light) .title.isComplete {
+		color: var(--text-light);
+	}
 	.name-email {
 		display: flex;
 		flex-direction: column;

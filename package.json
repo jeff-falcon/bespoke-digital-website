@@ -32,6 +32,8 @@
 		"eslint-config-prettier": "^8.10.0",
 		"eslint-plugin-svelte": "^2.32.4",
 		"fastest-validator": "^1.17.0",
+		"google-auth-library": "^9.0.0",
+		"google-spreadsheet": "^4.0.2",
 		"luxon": "^3.4.0",
 		"nodemailer": "^6.9.4",
 		"prettier": "^2.8.8",

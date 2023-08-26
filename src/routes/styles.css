@@ -96,10 +96,11 @@ body.bg-olive {
 body.bg-is-light {
 	--text-light: var(--bg-dark);
 	--text-light-60: hsla(0, 0%, 15%, 0.6);
-	--text-light-40: hsla(0, 0%, 15%, 0.4);
-	--text-light-30: hsla(0, 0%, 15%, 0.3);
-	--text-light-15: hsla(0, 0%, 15%, 0.15);
-	--text-light-5: hsla(0, 0%, 15%, 0.05);
+	--text-light-40: hsla(0, 0%, 15%, 0.5);
+	--text-light-30: hsla(0, 0%, 15%, 0.4);
+	--text-light-15: hsla(0, 0%, 15%, 0.25);
+	--text-light-5: hsla(0, 0%, 15%, 0.25);
+	--error-text: #c72797;
 }
 
 * {

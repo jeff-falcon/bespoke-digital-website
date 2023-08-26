@@ -147,15 +147,13 @@
 		color: var(--text-light);
 		font-size: var(--16pt);
 		line-height: var(--24pt);
-		--bg: var(--bg-dark);
+		--bg: var(--page-bg-color);
 		--text: var(--text-highlight);
 	}
-	:global(body.bg-olive) input {
-		--bg: var(--bg-olive);
+	:global(body.bg-is-light) input {
+		--text: var(--text-light);
 	}
-	:global(body.bg-rust) input {
-		--bg: var(--bg-rust);
-	}
+
 	input:-webkit-autofill,
 	input:-webkit-autofill:focus {
 		box-shadow: 0 0 0 1000px var(--bg) inset;

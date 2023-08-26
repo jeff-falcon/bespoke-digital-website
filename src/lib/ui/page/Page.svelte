@@ -24,6 +24,7 @@
 		const color = data.bgColor || defaultBg;
 		console.log('page background color', data.bgColor || defaultBg);
 		bgColor.set(color);
+		document.body.style.setProperty('--page-bg-color', color);
 		document.body.className = `bg-is-${
 			getContrastYIQFromColor($bgColor) === 'white' ? 'dark' : 'light'
 		}`;
