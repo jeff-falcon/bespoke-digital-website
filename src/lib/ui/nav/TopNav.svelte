@@ -57,17 +57,17 @@
 	$: menuLinks = [
 		{
 			name: 'Work',
-			url: '/work',
+			url: '/work/',
 			isActive: (currentRoute.indexOf('/work') ?? -1) > -1
 		},
 		{
 			name: 'About',
-			url: '/about',
+			url: '/about/',
 			isActive: (currentRoute.indexOf('/about') ?? -1) > -1
 		},
 		{
 			name: 'Connect',
-			url: '/connect',
+			url: '/connect/',
 			isActive: (currentRoute.indexOf('/connect') ?? -1) > -1
 		}
 	];

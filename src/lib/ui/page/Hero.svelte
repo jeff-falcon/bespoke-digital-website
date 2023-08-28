@@ -45,7 +45,7 @@
 				<p class="subtitle">{data.subtitle}</p>
 			{/if}
 			{#if data.project}
-				<a href="/work/{data.project.slug}" class="project">
+				<a href="/work/{data.project.slug}/" class="project">
 					<div class="name-client">
 						<h4 class="name">{data.project.name}</h4>
 						<p class="client">{data.project.client}</p>

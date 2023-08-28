@@ -18,13 +18,14 @@
 		image: project.image,
 		videoBgSrc: project.videoBgSrc,
 		videoBgSrcHd: project.videoBgSrcHd,
-		useOriginalQuality: false
+		useOriginalQuality: false,
+		autoplay: true
 	};
 	$: name = project.shortName || project.name;
 </script>
 
 <article class="project" class:isFull>
-	<a href="/work/{project.slug}">
+	<a href="/work/{project.slug}/">
 		<div class="thumbnail">
 			<ProjectMediaComponent {media} cover={true} isFullWidth={isFull} />
 		</div>
