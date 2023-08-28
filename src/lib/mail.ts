@@ -22,7 +22,7 @@ export function sendMail(email: string, name: string, message: string, fields?: 
   }
 
   return new Promise((resolve, reject) => {
-    transporter.sendMail({ from: GOOGLE_APP_EMAIL, to: GOOGLE_APP_EMAIL, subject: subject ?? 'Form Submission', html, text }, (err, info) => {
+    transporter.sendMail({ from: `Bespoke Digital <${GOOGLE_APP_EMAIL}>`, to: `${name} <${email}>, Bespoke Digital <${GOOGLE_APP_EMAIL}>`, subject: subject ?? 'Form Submission', html, text }, (err, info) => {
       if (err) {
         reject(err)
         console.log({ err })
