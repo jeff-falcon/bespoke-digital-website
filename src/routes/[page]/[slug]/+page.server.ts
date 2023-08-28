@@ -4,6 +4,8 @@ import type { Project, ProjectMedia, ProjectMediaPair } from '$lib/types';
 import { error, type HttpError } from '@sveltejs/kit';
 import { parseCloudinaryImage, parseProjectMediaFromData } from '$lib/parse';
 
+export const trailingSlash = 'always'
+
 export const load: PageServerLoad = async ({ params }): Promise<{ project?: Project } | HttpError> => {
 	if (params.page === 'work') {
 		console.log('loading work/' + params.slug);
