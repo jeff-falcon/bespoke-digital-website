@@ -7,6 +7,8 @@ export const config = {
   }
 }
 
+export const trailingSlash = 'never'
+
 export async function load() {
   const client = getClient();
   const groq = `*[_type == "config"]{

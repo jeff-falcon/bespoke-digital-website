@@ -4,5 +4,3 @@ import { getPage } from '$lib/sanity';
 export const load: PageServerLoad = async ({ params }) => {
 	return await getPage(params.page);
 };
-
-export const trailingSlash = 'always'
