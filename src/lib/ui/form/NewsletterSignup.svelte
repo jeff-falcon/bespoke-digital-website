@@ -10,9 +10,9 @@
 	});
 
 	let email: string = '';
-	let disabled = true;
 	let wasEmailTested = false;
 	let formResultMessage = '';
+	let isSending = false;
 
 	$: validation = check({ email });
 	$: emailError =
@@ -28,12 +28,14 @@
 	}
 
 	function onUseForm(): ReturnType<SubmitFunction> {
+		isSending = true;
 		return async ({ result, update }) => {
 			if (result.type === 'success' && result.data) {
 				formResultMessage = result.data.message;
 			} else {
 				console.log('update', update);
 			}
+			isSending = false;
 		};
 	}
 </script>
@@ -53,7 +55,9 @@
 			on:blur={onEmailBlur}
 			readonly={formResultMessage != ''}
 		/>
-		<button type="submit" disabled={formResultMessage != '' || !isValid}>Sign Up</button>
+		<button type="submit" disabled={isSending || formResultMessage != '' || !isValid}
+			>{isSending ? 'Subscribing...' : 'Sign Up'}</button
+		>
 	</form>
 </div>
 

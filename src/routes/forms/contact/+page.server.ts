@@ -1,7 +1,8 @@
 import { sendMail } from '$lib/mail.js';
 import sanitizeHtml from 'sanitize-html'
+import type { Actions } from '@sveltejs/kit';
 
-export const actions = {
+export const actions: Actions = {
   default: async ({ request }) => {
     const data = await request.formData();
     let email = data.get('email')?.toString();
