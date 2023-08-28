@@ -30,8 +30,17 @@ export const actions: Actions = {
       if (portfolio) {
         fields.portfolio = sanitizeHtml(portfolio.toString(), options);
       }
-      await sendMail(email, name, message, fields, type === 'job' ? `${name} would like to join our team` : 'New Project Inquiry');
-      return { message: `Thanks for reaching out! We'll get back to you.` }
+      try {
+        const result = await sendMail(email, name, message, fields, type === 'job' ? `${name} would like to join our team` : 'New Project Inquiry');
+        if (result[0].status === 'fulfilled' && result[1].status === 'fulfilled') {
+          return { message: `Thanks for reaching out! We'll get back to you.` }
+        } else {
+          return { error: 'There was an error sending an email. Try again.' }
+        }
+      } catch (error) {
+        console.log('error sending mail', error)
+        return { error: 'Something went wrong' }
+      }
     }
   }
 };
