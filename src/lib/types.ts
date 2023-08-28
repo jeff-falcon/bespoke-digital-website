@@ -42,6 +42,8 @@ export interface Project {
 	videoBgSrcHd?: string;
 	media?: Array<ProjectMedia | ProjectMediaPair>;
 	bgColor?: string
+	tags?: string[];
+	relatedProjects?: Project[];
 }
 export interface ProjectGrid {
 	_type: 'project_grid';

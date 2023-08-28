@@ -2,7 +2,7 @@ import type { PageServerLoad } from './$types';
 import { getClient } from '$lib/sanity';
 import type { Project, ProjectMedia, ProjectMediaPair } from '$lib/types';
 import { error, type HttpError } from '@sveltejs/kit';
-import { parseCloudinaryImage, parseProjectMediaFromData } from '$lib/parse';
+import { parseCloudinaryImage, parseProjectFromData, parseProjectMediaFromData } from '$lib/parse';
 
 export const load: PageServerLoad = async ({ params }): Promise<{ project?: Project } | HttpError> => {
 	if (params.page === 'work') {
@@ -18,6 +18,19 @@ export const load: PageServerLoad = async ({ params }): Promise<{ project?: Proj
 					left->,
 					right->
 				},
+			},
+			"tags": tags[]->,
+			"relatedProjects": *[_type == "project" && count(tags[@._ref in ^.^.tags[]._ref]) > 0 && slug.current != "${params.slug}"]{
+				_type,
+				_id,
+				image,
+				kind,
+				"videoBgSrc": thumb_vimeo_src,
+				"videoBgSrcHd": thumb_vimeo_src_hd,
+				"shortName": short_name,
+				"slug": slug.current,
+				"title": title,
+				"client": client,
 			}
 		}`;
 		const data = await client.fetch(groq);
@@ -47,7 +60,6 @@ export const load: PageServerLoad = async ({ params }): Promise<{ project?: Proj
 					}
 				}
 			}
-
 		}
 		const title = projectData.title || projectData.name;
 		const project: Project = {
@@ -66,8 +78,15 @@ export const load: PageServerLoad = async ({ params }): Promise<{ project?: Proj
 			videoBgSrc: projectData.thumb_vimeo_src,
 			videoBgSrcHd: projectData.thumb_vimeo_src_hd,
 			media: mediaList,
-			bgColor: projectData.bg_color?.value
+			bgColor: projectData.bg_color?.value,
+			relatedProjects: projectData.relatedProjects ?? []
 		};
+		if (project.relatedProjects?.length) {
+			project.relatedProjects.forEach(p => {
+				p.image = parseCloudinaryImage(p.image)
+			})
+		}
+
 		return { project };
 	}
 

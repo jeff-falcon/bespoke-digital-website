@@ -2,8 +2,6 @@
 	import type { Project, ProjectMedia } from '$lib/types';
 	import ProjectMediaComponent from '$lib/ui/project/ProjectMediaComponent.svelte';
 
-	const randomId = crypto.randomUUID().toString();
-
 	export let project: Project;
 	export let size: 'half' | 'full' = 'half';
 
@@ -13,7 +11,7 @@
 	$: media = {
 		_type: 'project_media',
 		_key: project.slug,
-		name: project.name,
+		name: project.title,
 		kind: project.kind,
 		image: project.image,
 		videoBgSrc: project.videoBgSrc,
@@ -21,10 +19,10 @@
 		useOriginalQuality: false,
 		autoplay: true
 	};
-	$: name = project.shortName || project.name;
+	$: name = project.shortName || project.title;
 </script>
 
-<article class="project" class:isFull>
+<article class="project" class:isFull data-media={JSON.stringify(media)}>
 	<a href="/work/{project.slug}/">
 		<div class="thumbnail">
 			<ProjectMediaComponent {media} cover={true} isFullWidth={isFull} />

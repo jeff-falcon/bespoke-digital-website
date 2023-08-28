@@ -1,15 +1,24 @@
 <script lang="ts">
 	import ProjectMediaComponent from '$lib/ui/project/ProjectMediaComponent.svelte';
 	import { PortableText } from '@portabletext/svelte';
-	import type { Project } from '$lib/types';
+	import type { Project, ProjectGrid } from '$lib/types';
 	import { fly, type FlyParams } from 'svelte/transition';
 	import { cubicOut, expoOut } from 'svelte/easing';
+	import ProjectGridComponent from './ProjectGrid.svelte';
 
 	export let project: Project;
 
 	const flyProps: FlyParams = { opacity: 0, y: 30, easing: expoOut, duration: 1500 };
 
 	$: hasDescription = project.description || project.descriptionIntro;
+	$: relatedProjects =
+		project.relatedProjects?.length || 0
+			? <ProjectGrid>{
+					title: 'Related Projects',
+					projects: project.relatedProjects,
+					_type: 'project_grid'
+			  }
+			: null;
 </script>
 
 <div class="project-view">
@@ -66,6 +75,11 @@
 					</div>
 				{/if}
 			{/each}
+		</section>
+	{/if}
+	{#if relatedProjects}
+		<section class="related">
+			<ProjectGridComponent data={relatedProjects} />
 		</section>
 	{/if}
 </div>
