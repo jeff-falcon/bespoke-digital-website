@@ -47,7 +47,7 @@
 			{#if data.project}
 				<a href="/work/{data.project.slug}/" class="project">
 					<div class="name-client">
-						<h4 class="name">{data.project.name}</h4>
+						<h4 class="name">{data.project.shortName}</h4>
 						<p class="client">{data.project.client}</p>
 					</div>
 					<div class="arrow">
