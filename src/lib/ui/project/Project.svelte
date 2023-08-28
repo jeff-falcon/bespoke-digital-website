@@ -28,7 +28,7 @@
 				{/if}
 			{/if}
 			<div class="name-credits">
-				<h3 class="project-name" in:fly|global={{ ...flyProps, delay: 75 }}>{project.name}</h3>
+				<h3 class="project-name" in:fly|global={{ ...flyProps, delay: 75 }}>{project.title}</h3>
 				{#if project.credits}
 					<div class="credits">
 						{#each project.credits as credit, index (credit)}
