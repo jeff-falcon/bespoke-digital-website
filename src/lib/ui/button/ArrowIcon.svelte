@@ -15,16 +15,16 @@
 		justify-content: center;
 		width: 32px;
 		height: 32px;
-		box-shadow: 0 0 0 1px inset var(--text-light-40);
+		box-shadow: 0 0 0 1px inset var(--text-color-40);
 		border-radius: 100px;
 		transition: linear 180ms box-shadow;
 	}
 	svg {
 		display: block;
-		fill: var(--text-light);
+		fill: var(--text-color);
 	}
 	:global(.btn:hover) .isBordered {
-		box-shadow: 0 0 0 1px inset var(--text-light);
+		box-shadow: 0 0 0 1px inset var(--text-color);
 	}
 	@media (min-width: 720px) {
 		.isBordered {

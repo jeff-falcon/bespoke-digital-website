@@ -318,7 +318,7 @@
 		display: flex;
 		justify-content: space-between;
 		align-items: center;
-		color: var(--text-light);
+		color: var(--text-color);
 		z-index: var(--level10);
 	}
 	header:after {
@@ -362,7 +362,7 @@
 		text-decoration: none;
 	}
 	.h-menu a.active {
-		border-color: var(--text-light);
+		border-color: var(--text-color);
 		opacity: 1;
 	}
 	.useUnderline .h-menu,
@@ -382,13 +382,13 @@
 		transition-property: border-color, opacity;
 	}
 	.h-menu:not(.isBorderAnimating) a:hover {
-		border-color: var(--text-light-40);
+		border-color: var(--text-color-40);
 	} */
 	.menu-btn {
 		display: block;
 		position: relative;
 		background: transparent;
-		border: 1px solid var(--text-light-40);
+		border: 1px solid var(--text-color-40);
 		border-radius: 80px;
 		width: 40px;
 		height: 40px;
@@ -396,13 +396,13 @@
 		transition: linear 180ms border-color;
 	}
 	.menu-btn {
-		border-color: var(--text-light);
+		border-color: var(--text-color);
 	}
 	.border {
 		position: absolute;
 		z-index: 0;
 		background: transparent;
-		border: 1px solid var(--text-light);
+		border: 1px solid var(--text-color);
 		border-radius: var(--input-border-radius);
 		width: 0;
 		height: var(--button-height-large);
@@ -416,16 +416,16 @@
 		border-bottom-width: 1px;
 	}
 	.isBorderAnimating .border {
-		border-color: var(--text-light-40);
+		border-color: var(--text-color-40);
 		visibility: visible;
 	}
 	.isBorderAnimating.isOverCurrent .border {
-		border-color: var(--text-light);
+		border-color: var(--text-color);
 	}
 	.menu-btn .line {
 		width: 16px;
 		height: 2px;
-		background: var(--text-light);
+		background: var(--text-color);
 		transition: 220ms var(--ease-in-out-cubic) all;
 		position: absolute;
 		left: calc(50% - 8px);
@@ -497,7 +497,7 @@
 	.v-menu a {
 		font-size: var(--24pt);
 		line-height: 1;
-		color: var(--text-light);
+		color: var(--text-color);
 		width: min-content;
 		white-space: nowrap;
 	}
@@ -515,10 +515,10 @@
 		align-items: center;
 		transition: linear 180ms;
 		transition-property: border-color;
-		color: var(--text-light);
+		color: var(--text-color);
 	}
 	.insta-btn:hover {
-		border-color: var(--text-light);
+		border-color: var(--text-color);
 	}
 	.socials {
 		display: flex;
@@ -547,7 +547,7 @@
 		}
 		.insta-btn {
 			margin: 0 0 0 32px;
-			border: 1px solid var(--text-light-40);
+			border: 1px solid var(--text-color-40);
 			border-radius: 80px;
 			width: var(--button-height-large);
 			height: var(--button-height-large);

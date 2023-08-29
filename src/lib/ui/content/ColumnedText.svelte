@@ -42,7 +42,7 @@
 	.column hr {
 		width: 48px;
 		height: 1px;
-		background: var(--text-light);
+		background: var(--text-color);
 		opacity: 0.15;
 		border: 0;
 		margin: var(--16pt) 0;
@@ -54,7 +54,7 @@
 		margin: 0 0 var(--16pt);
 	}
 	.hasBorderedTitle .wrap .title {
-		border-bottom: 1px solid var(--text-light-15);
+		border-bottom: 1px solid var(--text-color-15);
 		padding-bottom: var(--32pt);
 		margin: 0 0 var(--32pt);
 	}

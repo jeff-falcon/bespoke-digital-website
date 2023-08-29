@@ -61,10 +61,10 @@
 	}
 	footer.hasDivider {
 		padding-top: 40px;
-		border-top: 1px solid var(--text-light-15);
+		border-top: 1px solid var(--text-color-15);
 	}
 	.signup-socials-row {
-		border-top: 1px solid var(--text-light-15);
+		border-top: 1px solid var(--text-color-15);
 		padding-top: 40px;
 	}
 	.contact + .signup-socials-row {
@@ -82,7 +82,7 @@
 		gap: 48px var(--gutter-sm);
 		margin-top: 48px;
 		padding-top: 48px;
-		border-top: 1px solid var(--text-light-15);
+		border-top: 1px solid var(--text-color-15);
 	}
 
 	.credits .tanka a {
@@ -117,7 +117,7 @@
 	.socials .links a {
 		display: inline-flex;
 		border-radius: 40px;
-		border: 1px solid var(--text-light-15);
+		border: 1px solid var(--text-color-15);
 		width: 48px;
 		height: 48px;
 		align-items: center;
@@ -128,7 +128,7 @@
 		filter: invert(1);
 	}
 	.socials .links a:hover {
-		border-color: var(--text-light);
+		border-color: var(--text-color);
 	}
 	.newsletter {
 		margin-bottom: 40px;

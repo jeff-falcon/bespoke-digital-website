@@ -106,14 +106,14 @@
 		left: 0;
 		width: 100%;
 		height: calc(100% - 2px);
-		border: 1px solid var(--text-light-5);
-		border-bottom-color: var(--text-light-60);
+		border: 1px solid var(--text-color-5);
+		border-bottom-color: var(--text-color-60);
 		border-radius: var(--input-border-radius);
 		pointer-events: none;
 		transition: 180ms linear border-color;
 	}
 	.inputBorderIsRounded .textfield:after {
-		border-color: var(--text-light-15);
+		border-color: var(--text-color-15);
 	}
 	.hasError .textfield:after {
 		border-color: var(--error-text);
@@ -131,7 +131,7 @@
 		transform: translate3d(0, -50%, 0);
 		transform-origin: 0 50%;
 		opacity: 0.3;
-		color: var(--text-light);
+		color: var(--text-color);
 		line-height: 1.5;
 		z-index: 1;
 	}
@@ -144,14 +144,14 @@
 		position: relative;
 		padding: 0 max(12px, var(--input-border-radius));
 		background: transparent;
-		color: var(--text-light);
+		color: var(--text-color);
 		font-size: var(--16pt);
 		line-height: var(--24pt);
 		--bg: var(--page-bg-color);
 		--text: var(--text-highlight);
 	}
 	:global(body.bg-is-light) input {
-		--text: var(--text-light);
+		--text: var(--text-color);
 	}
 
 	input:-webkit-autofill,
@@ -163,15 +163,15 @@
 		outline: none;
 	}
 	input::selection {
-		background-color: var(--text-light-15);
-		color: var(--text-light);
+		background-color: var(--text-color-15);
+		color: var(--text-color);
 	}
 
 	.hasValue input {
 		transform: translate(0, 7px);
 	}
 	.isFocused:not(.hasError) .textfield:after {
-		border-color: var(--text-light);
+		border-color: var(--text-color);
 	}
 	.isFocused:not(.hasValue) label {
 		opacity: 1;

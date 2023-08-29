@@ -64,7 +64,7 @@
 		padding: 0;
 		border: 0;
 		gap: var(--14pt);
-		color: var(--text-light);
+		color: var(--text-color);
 		text-decoration: none;
 	}
 	a:hover {
@@ -100,7 +100,7 @@
 	}
 	.isCapsule {
 		border-radius: var(--input-border-radius);
-		border: 1px solid var(--text-light-30);
+		border: 1px solid var(--text-color-30);
 		padding: 0 32px;
 		height: 48px;
 		transition: border-color 180ms linear;
@@ -109,7 +109,7 @@
 		opacity: 1;
 	}
 	.isCapsule:hover {
-		border-color: var(--text-light);
+		border-color: var(--text-color);
 	}
 	@media (min-width: 560px) {
 		button {

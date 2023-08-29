@@ -74,6 +74,6 @@
 		color: var(--text-highlight);
 	}
 	:global(.bg-is-light) .title.isComplete {
-		color: var(--text-light);
+		color: var(--text-color);
 	}
 </style>

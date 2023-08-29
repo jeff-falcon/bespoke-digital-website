@@ -168,9 +168,10 @@
 	}
 	.medias + :global(.project-grid) {
 		background-color: var(--related-section-bg);
-	}
-	.hasRelatedBg .medias + :global(section) {
 		margin-top: 4rem;
+	}
+	.hasRelatedBg :global(.project-grid) {
+		color: var(--text-light);
 	}
 	.hasRelatedBg.relatedBgIsLight :global(.project-grid) {
 		color: var(--bg-dark);
@@ -241,11 +242,11 @@
 			font-size: var(--18pt);
 			line-height: var(--24pt);
 		}
-		.medias + :global(section) {
+		.medias + :global(.project-grid) {
 			padding-top: 8rem;
 			padding-bottom: 8rem;
 		}
-		.hasRelatedBg .medias + :global(section) {
+		.hasRelatedBg .medias + :global(.project-grid) {
 			margin-top: 8rem;
 		}
 	}
