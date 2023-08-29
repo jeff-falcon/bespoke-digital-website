@@ -44,6 +44,8 @@ export interface Project {
 	bgColor?: string
 	tags?: string[];
 	relatedProjects?: Project[];
+	showRelatedProjects?: boolean;
+	relatedProjectsBgColor?: string;
 }
 export interface ProjectGrid {
 	_type: 'project_grid';

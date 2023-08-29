@@ -3,6 +3,8 @@
 	import 'video.js';
 	import 'video.js/dist/video-js.css';
 	import './styles.css';
+	// import 'swiper/css';
+	// import 'swiper/css/modules/navigation';
 	import Footer from '$lib/ui/nav/Footer.svelte';
 	import type { LayoutData } from './$types';
 	import { footerHasContactForm, isMenuOpenComplete, inputBorderIsRounded } from '$lib/store';

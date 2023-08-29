@@ -12,7 +12,7 @@
 
 	$: hasDescription = project.description || project.descriptionIntro;
 	$: relatedProjects =
-		project.relatedProjects?.length || 0
+		project.showRelatedProjects && (project.relatedProjects?.length || 0)
 			? <ProjectGrid>{
 					title: 'Related Projects',
 					projects: project.relatedProjects,
@@ -21,7 +21,11 @@
 			: null;
 </script>
 
-<div class="project-view">
+<div
+	class="project-view"
+	style="--related-section-bg: {project.relatedProjectsBgColor ?? 'transparent'}"
+	class:hasRelatedBg={Boolean(project.relatedProjectsBgColor)}
+>
 	{#if project.name}
 		<section class="gutter project-info">
 			{#if hasDescription}
@@ -78,9 +82,7 @@
 		</section>
 	{/if}
 	{#if relatedProjects}
-		<section class="related">
-			<ProjectGridComponent data={relatedProjects} />
-		</section>
+		<ProjectGridComponent data={relatedProjects} />
 	{/if}
 </div>
 
@@ -156,6 +158,12 @@
 	.credit + .credit {
 		margin-top: var(--24pt);
 	}
+	.medias + :global(.project-grid) {
+		background-color: var(--related-section-bg);
+	}
+	.hasRelatedBg .medias + :global(section) {
+		margin-top: 4rem;
+	}
 
 	@media (min-width: 720px) {
 		.medias {
@@ -221,6 +229,13 @@
 			margin-top: 0;
 			font-size: var(--18pt);
 			line-height: var(--24pt);
+		}
+		.medias + :global(section) {
+			padding-top: 8rem;
+			padding-bottom: 8rem;
+		}
+		.hasRelatedBg .medias + :global(section) {
+			margin-top: 8rem;
 		}
 	}
 </style>

@@ -85,6 +85,9 @@ devDependencies:
   svelte-intersection-observer:
     specifier: ^0.10.1
     version: 0.10.1
+  swiper:
+    specifier: ^10.2.0
+    version: 10.2.0
   tslib:
     specifier: ^2.6.1
     version: 2.6.1
@@ -2691,6 +2694,11 @@ packages:
       locate-character: 3.0.0
       magic-string: 0.30.2
       periscopic: 3.1.0
+    dev: true
+
+  /swiper@10.2.0:
+    resolution: {integrity: sha512-nktQsOtBInJjr3f5DicxC8eHYGcLXDVIGPSon0QoXRaO6NjKnATCbQ8SZsD3dN1Ph1RH4EhVPwSYCcuDRFWHGQ==}
+    engines: {node: '>= 4.7.0'}
     dev: true
 
   /text-table@0.2.0:

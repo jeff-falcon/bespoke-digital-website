@@ -79,12 +79,18 @@ export const load: PageServerLoad = async ({ params }): Promise<{ project?: Proj
 			videoBgSrcHd: projectData.thumb_vimeo_src_hd,
 			media: mediaList,
 			bgColor: projectData.bg_color?.value,
-			relatedProjects: projectData.relatedProjects ?? []
+			relatedProjects: projectData.show_related_projects !== false ? projectData.relatedProjects ?? [] : [],
+			relatedProjectsBgColor: projectData.related_projects_bg_color?.value,
+			showRelatedProjects: projectData.show_related_projects !== false,
 		};
 		if (project.relatedProjects?.length) {
 			project.relatedProjects.forEach(p => {
 				p.image = parseCloudinaryImage(p.image)
 			})
+			project.relatedProjects.sort(() => {
+				return Math.random() - 0.5
+			})
+			project.relatedProjects = project.relatedProjects.slice(0, project.relatedProjects.length < 4 ? 2 : 4);
 		}
 
 		return { project };
