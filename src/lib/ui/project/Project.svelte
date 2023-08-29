@@ -5,6 +5,7 @@
 	import { fly, type FlyParams } from 'svelte/transition';
 	import { cubicOut, expoOut } from 'svelte/easing';
 	import ProjectGridComponent from './ProjectGrid.svelte';
+	import { getContrastYIQFromColor } from '$lib/color';
 
 	export let project: Project;
 
@@ -19,12 +20,19 @@
 					_type: 'project_grid'
 			  }
 			: null;
+
+	$: hasRelatedBg =
+		project.relatedProjectsBgColor && project.relatedProjectsBgColor !== 'transparent';
+	$: relatedBgIsLight = hasRelatedBg
+		? getContrastYIQFromColor(project.relatedProjectsBgColor!) === 'black'
+		: false;
 </script>
 
 <div
 	class="project-view"
 	style="--related-section-bg: {project.relatedProjectsBgColor ?? 'transparent'}"
-	class:hasRelatedBg={Boolean(project.relatedProjectsBgColor)}
+	class:hasRelatedBg
+	class:relatedBgIsLight
 >
 	{#if project.name}
 		<section class="gutter project-info">
@@ -163,6 +171,9 @@
 	}
 	.hasRelatedBg .medias + :global(section) {
 		margin-top: 4rem;
+	}
+	.hasRelatedBg.relatedBgIsLight :global(.project-grid) {
+		color: var(--bg-dark);
 	}
 
 	@media (min-width: 720px) {
