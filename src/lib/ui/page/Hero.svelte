@@ -10,7 +10,7 @@
 
 	let media: ProjectMedia;
 	$: media = {
-		_key: 'hero',
+		_id: data._id,
 		_type: 'project_media',
 		name: '',
 		kind: data.kind,
@@ -59,7 +59,7 @@
 	</div>
 	<div class="dim" style={dimStyle} />
 	<div class="bg" style={bgStyle}>
-		{#key media._key}
+		{#key data._id}
 			<ProjectMediaComponent {media} cover={true} scaleOnReveal={false} isFullWidth={true} />
 		{/key}
 	</div>

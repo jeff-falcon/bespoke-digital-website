@@ -40,7 +40,7 @@ export async function parseProjectMediaFromData(project: any): Promise<ProjectMe
 	const image = parseCloudinaryImage(project.image, project.image_mobile, useOriginalQuality);
 	const media: ProjectMedia = {
 		_type: 'project_media',
-		_key: project._id as string,
+		_id: project._id as string,
 		name: project.name as string,
 		image,
 		kind: project.kind as ProjectMedia['kind'],
@@ -57,6 +57,7 @@ export function parseProjectFromData(data: any) {
 	if (data?._type !== 'project') return undefined;
 	const project: Project = {
 		_type: 'project',
+		_id: data._id,
 		pageTitle: data.name,
 		name: data.name,
 		title: data.title || data.name,
@@ -79,6 +80,7 @@ export function parseHeroFromData(data: any, title?: string, subtitle?: string) 
 	if (Boolean(data?._type) === false) return undefined;
 	const hero: Hero = {
 		_type: 'hero',
+		_id: data._id,
 		name: title || data.title,
 		subtitle: subtitle || data.subtitle,
 		image_desktop: parseCloudinaryImage(data.image_desktop),
@@ -96,9 +98,11 @@ export function parseMultiHeroFromData(data: any) {
 	const isMultiHero = data?._type === 'multi_hero';
 	const hero: MultiHero = {
 		_type: 'multi_hero',
+		_id: data._id,
 		name: data.title,
 		subtitle: data.subtitle,
 		heros: isMultiHero ? data.heros.map((h: any) => parseHeroFromData(h, data.override_title ? data.title : '', data.override_title ? data.subtitle : '')) : [parseHeroFromData(data)]
 	}
+	console.log({ hero })
 	return hero;
 }

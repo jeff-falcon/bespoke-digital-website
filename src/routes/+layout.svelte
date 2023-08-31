@@ -15,7 +15,6 @@
 		data.config.borderRadius != null ? `--input-border-radius: ${data.config.borderRadius}px` : '';
 
 	inputBorderIsRounded.set(data.config.borderRadius != null && data.config.borderRadius > 0);
-	console.log('render layout, inputBorderIsRounded:', $inputBorderIsRounded);
 </script>
 
 <TopNav config={data.config} usePillFollower={true} />

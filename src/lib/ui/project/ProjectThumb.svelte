@@ -10,7 +10,7 @@
 	let media: ProjectMedia;
 	$: media = {
 		_type: 'project_media',
-		_key: project.slug,
+		_id: project.slug,
 		name: project.title,
 		kind: project.kind,
 		image: project.image,
@@ -22,7 +22,7 @@
 	$: name = project.shortName || project.title;
 </script>
 
-<article class="project" class:isFull data-media={JSON.stringify(media)}>
+<article class="project" class:isFull>
 	<a href="/work/{project.slug}/">
 		<div class="thumbnail">
 			<ProjectMediaComponent {media} cover={true} isFullWidth={isFull} />

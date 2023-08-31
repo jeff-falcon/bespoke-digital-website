@@ -6,7 +6,6 @@ import { parseCloudinaryImage, parseProjectFromData, parseProjectMediaFromData }
 
 export const load: PageServerLoad = async ({ params }): Promise<{ project?: Project } | HttpError> => {
 	if (params.page === 'work') {
-		console.log('loading work/' + params.slug);
 
 		const client = getClient();
 		const groq = `*[_type == "project" && slug.current == "${params.slug}"]{
@@ -64,6 +63,7 @@ export const load: PageServerLoad = async ({ params }): Promise<{ project?: Proj
 		const title = projectData.title || projectData.name;
 		const project: Project = {
 			_type: 'project',
+			_id: projectData._id,
 			pageTitle: title + ' | Work | Bespoke Digital',
 			name: projectData.name,
 			title: title,

@@ -2,8 +2,8 @@
 	import type { ProjectMedia } from '$lib/types';
 	import VimeoBG from '$lib/ui/video/VimeoBG_VJS.svelte';
 	import IntersectionObserver from 'svelte-intersection-observer';
-	import VimeoPlayer from '../video/VimeoPlayer.svelte';
-	import VimeoEmbed from '../video/VimeoEmbed.svelte';
+	import VimeoPlayer from '$lib/ui/video/VimeoPlayer.svelte';
+	import VimeoEmbed from '$lib/ui/video/VimeoEmbed.svelte';
 
 	export let media: ProjectMedia;
 	export let cover = false;
@@ -21,24 +21,9 @@
 	$: isVideoPlayer = media.kind === 'video-player' && Boolean(media.videoPlayerSrc) && !hasVideoId;
 	$: isVideoEmbed = media.kind === 'video-bg' && Boolean(videoBgSrc) && hasVideoId;
 
-	$: {
-		if (typeof window !== 'undefined') {
-			console.log({
-				isVideoPlaying,
-				isBgVideo,
-				isIntersecting,
-				isVideoEmbed,
-				videoBgSrc,
-				hasVideoId,
-				media
-			});
-		}
-	}
-
 	function onVideoPlaying(e: { detail: boolean }) {
 		window.requestAnimationFrame(() => {
 			isVideoPlaying = e.detail;
-			console.log({ isVideoPlaying, isBgVideo, isIntersecting });
 		});
 	}
 </script>
@@ -47,7 +32,7 @@
 	{@const src = media.videoPlayerSrc ?? ''}
 	<div class="video-player">
 		<VimeoPlayer
-			id="media-{media._key}"
+			id="media-{media._id}"
 			{src}
 			title={media.name}
 			placeholder={media.image?.url || undefined}
@@ -58,6 +43,7 @@
 	<IntersectionObserver element={figureEl} bind:intersecting={isIntersecting} once={true}>
 		<figure
 			class="media"
+			id="media-{media._id}"
 			class:cover={cover && !fillContainer}
 			class:isBgVideo
 			class:isVideoPlaying
@@ -73,17 +59,19 @@
 			{#if isVideoEmbed}
 				<VimeoEmbed vimeoId={Number(videoBgSrc)} title={media.name} />
 			{:else if isBgVideo}
-				<VimeoBG
-					id="media-{media._key}"
-					src={videoBgSrc || ''}
-					placeholder={media.image?.url ?? ''}
-					bind:isIntersecting
-					on:isPlaying={onVideoPlaying}
-				/>
+				{#key media._id}
+					<VimeoBG
+						id="videoBg-{media._id}"
+						src={videoBgSrc || ''}
+						placeholder={media.image?.url ?? ''}
+						bind:isIntersecting
+						on:isPlaying={onVideoPlaying}
+					/>
+				{/key}
 			{/if}
 			{#if !isVideoEmbed && media.image}
 				{#if media.image.sizes}
-					<picture>
+					<picture id="img-{media._id}">
 						<source srcset={media.image.sizes.sm} media="(max-width: 719px)" />
 						<source
 							srcset={media.image.sizes.md}
@@ -99,6 +87,7 @@
 					</picture>
 				{:else}
 					<img
+						id="img-{media._id}"
 						src={media.image.url}
 						width={media.image.width}
 						height={media.image.height}
@@ -114,6 +103,7 @@
 	.media {
 		padding: 0;
 		margin: 0;
+		position: relative;
 	}
 	.media img {
 		display: block;

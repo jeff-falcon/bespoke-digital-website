@@ -22,7 +22,6 @@
 		pageHasHero.set(hasHero);
 		const defaultBg = getComputedStyle(document.documentElement).getPropertyValue('--bg-dark');
 		const color = data.bgColor || defaultBg;
-		console.log('page background color', data.bgColor || defaultBg);
 		bgColor.set(color);
 		document.body.style.setProperty('--page-bg-color', color);
 		document.body.className = `bg-is-${
@@ -44,7 +43,9 @@
 
 <div class="page" class:hasHero>
 	{#if hero}
-		<Hero data={hero} />
+		{#key `hero-${hero._id}`}
+			<Hero data={hero} />
+		{/key}
 	{/if}
 	{#if data.components}
 		{#each data.components as component (component)}
@@ -55,11 +56,13 @@
 				<LogoGrid data={component} />
 			{/if}
 			{#if component._type === 'project_media'}
-				<section
-					class="project-media-single gutter {isVideoPlayer(component) ? 'is-video-player' : ''}"
-				>
-					<ProjectMediaComponent media={component} />
-				</section>
+				{#key `project-media-${component._id}`}
+					<section
+						class="project-media-single gutter {isVideoPlayer(component) ? 'is-video-player' : ''}"
+					>
+						<ProjectMediaComponent media={component} />
+					</section>
+				{/key}
 			{/if}
 			{#if component._type === 'text_only'}
 				<TextOnly data={component} />

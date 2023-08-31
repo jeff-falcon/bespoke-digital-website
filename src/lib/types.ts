@@ -18,6 +18,7 @@ export interface Credit {
 
 export interface MultiHero {
 	_type: 'multi_hero';
+	_id: string;
 	name: string;
 	title?: string;
 	subtitle?: string;
@@ -26,6 +27,7 @@ export interface MultiHero {
 
 export interface Project {
 	_type: 'project';
+	_id: string;
 	name: string;
 	title: string;
 	shortName: string;
@@ -60,6 +62,7 @@ export interface ProjectGrid {
 }
 export interface Hero {
 	_type: 'hero';
+	_id: string;
 	name: string;
 	subtitle?: string;
 	kind?: 'image' | 'video-bg';
@@ -86,7 +89,7 @@ export interface Page {
 
 export interface ProjectMedia {
 	_type: 'project_media';
-	_key: string;
+	_id: string;
 	name: string;
 	image?: CloudinaryImage;
 	kind?: 'image' | 'video-bg' | 'video-player';

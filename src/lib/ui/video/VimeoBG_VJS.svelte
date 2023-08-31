@@ -18,17 +18,14 @@
 		clearTimeout(playerTimeout);
 		if (isIntersecting && isReady && !isPlaying) {
 			videoEl?.play();
-			console.log('isIntersecting', isIntersecting);
 		} else if (!isIntersecting && isPlaying) {
 			playerTimeout = setTimeout(() => {
-				console.log('isIntersecting', isIntersecting);
 				videoEl?.pause();
 			}, 50);
 		}
 	}
 
 	function onPlaying() {
-		console.log('video is now playing');
 		dispatch('isPlaying', true);
 		isPlaying = true;
 	}
@@ -39,7 +36,6 @@
 
 	function onReady() {
 		isReady = true;
-		console.log('isReady', src);
 	}
 
 	onMount(() => {
@@ -47,6 +43,7 @@
 		videoEl?.addEventListener('pause', onPaused);
 		videoEl?.addEventListener('canplay', onReady);
 		videoEl!.src = src;
+		console.log({ id, src });
 		return () => {
 			videoEl?.removeEventListener('playing', onPlaying);
 			videoEl?.removeEventListener('pause', onPaused);

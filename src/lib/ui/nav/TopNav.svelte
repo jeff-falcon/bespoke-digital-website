@@ -43,13 +43,11 @@
 	$: if ($pageHasHero) {
 		clearTimeout(changeBgTimeout);
 		hasBg = scrollY > 120;
-		console.log('yes hero');
 	} else {
 		clearTimeout(changeBgTimeout);
 		if (typeof window !== 'undefined') {
 			changeBgTimeout = window.setTimeout(() => {
 				hasBg = true;
-				console.log('no hero');
 			}, 150);
 		}
 	}
@@ -78,7 +76,6 @@
 	$: mobileNavStyle = $bgColor ? `--bg-color: ${$bgColor};` : '';
 
 	function toggleMenu() {
-		console.log('toggleMenu', $menuState);
 		menuState.update((state) => {
 			const newState = state === 'open' ? 'closed' : 'open';
 			clearTimeout(menuStateTimeout);
