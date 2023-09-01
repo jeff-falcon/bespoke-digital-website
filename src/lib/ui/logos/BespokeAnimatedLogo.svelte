@@ -7,8 +7,9 @@
 	let animInt = 0;
 	let isPlaying = false;
 
-	const duration = 1200;
 	const easing = quintInOut;
+	const times = [650, 1300, 1950, 2600, 4100, 5600];
+	$: duration = part > 4 ? 1500 : 600;
 
 	onMount(() => {
 		play();
@@ -18,19 +19,25 @@
 		if (immediate && isPlaying) return;
 		clearInterval(animInt);
 		isPlaying = true;
+		let start = Date.now();
+		let timeOffset = 0;
 		if (immediate) {
 			part = 2;
+			timeOffset = 750;
 		} else {
 			part = 1;
 		}
 		animInt = window.setInterval(() => {
-			part += 1;
-			if (part === 6) {
-				clearInterval(animInt);
-				part = 1;
-				isPlaying = false;
+			const time = Date.now() - start + timeOffset;
+			if (time > times[part - 1]) {
+				part += 1;
+				if (part === 6) {
+					clearInterval(animInt);
+					part = 1;
+					isPlaying = false;
+				}
 			}
-		}, 1500);
+		}, 100 / 60);
 	}
 </script>
 
