@@ -369,7 +369,7 @@
 	.useUnderline .h-menu a {
 		padding: 0;
 		border-width: 0;
-		border-bottom-width: 1px;
+		border-bottom-width: 2px;
 	}
 	.h-menu.isBorderAnimating a,
 	.h-menu.isBorderAnimating a.active {
@@ -399,7 +399,7 @@
 		position: absolute;
 		z-index: 0;
 		background: transparent;
-		border: 1px solid var(--text-color);
+		border: 2px solid var(--text-color);
 		border-radius: var(--input-border-radius);
 		width: 0;
 		height: var(--button-height-large);
@@ -410,7 +410,7 @@
 	}
 	.useUnderline .border {
 		border-width: 0;
-		border-bottom-width: 1px;
+		border-bottom-width: 2px;
 	}
 	.isBorderAnimating .border {
 		border-color: var(--text-color-40);

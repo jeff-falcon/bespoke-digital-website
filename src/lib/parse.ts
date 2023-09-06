@@ -103,6 +103,5 @@ export function parseMultiHeroFromData(data: any) {
 		subtitle: data.subtitle,
 		heros: isMultiHero ? data.heros.map((h: any) => parseHeroFromData(h, data.override_title ? data.title : '', data.override_title ? data.subtitle : '')) : [parseHeroFromData(data)]
 	}
-	console.log({ hero })
 	return hero;
 }

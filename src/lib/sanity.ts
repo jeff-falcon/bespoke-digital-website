@@ -37,7 +37,6 @@ export async function getPage(slug: string): Promise<Page | HttpError> {
 		const result = await client.fetch(groq);
 		if (!result || !result.length) return error(404, 'Page not found');
 		const pageData = result[0];
-		console.log({ hero: pageData.hero })
 		const page: Page = {
 			_type: 'page',
 			_id: pageData._id,

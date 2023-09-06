@@ -101,15 +101,18 @@
 	.isCapsule {
 		border-radius: var(--input-border-radius);
 		border: 1px solid var(--text-color-30);
+		box-shadow: inset 0 0 0 0px transparent;
 		padding: 0 32px;
 		height: 48px;
-		transition: border-color 180ms linear;
+		transition: 180ms linear;
+		transition-property: border, box-shadow, color;
 	}
 	.isCapsule .title {
 		opacity: 1;
 	}
 	.isCapsule:hover {
 		border-color: var(--text-color);
+		box-shadow: inset 0 0 0 2px var(--text-color);
 	}
 	@media (min-width: 560px) {
 		button {
