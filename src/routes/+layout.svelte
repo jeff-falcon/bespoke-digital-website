@@ -1,5 +1,6 @@
 <script lang="ts">
 	import TopNav from '$lib/ui/nav/TopNav.svelte';
+	import { PUBLIC_GA4_TAG_ID } from '$env/static/public';
 	import 'video.js';
 	import 'video.js/dist/video-js.css';
 	import './styles.css';
@@ -16,6 +17,19 @@
 
 	inputBorderIsRounded.set(data.config.borderRadius != null && data.config.borderRadius > 0);
 </script>
+
+<svelte:head>
+	<script async src="https://www.googletagmanager.com/gtag/js?id={PUBLIC_GA4_TAG_ID}"></script>
+	<script>
+		window.dataLayer = window.dataLayer || [];
+		function gtag() {
+			dataLayer.push(arguments);
+		}
+		gtag('js', new Date());
+
+		gtag('config', PUBLIC_GA4_TAG_ID);
+	</script>
+</svelte:head>
 
 <TopNav config={data.config} usePillFollower={true} />
 

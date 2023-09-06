@@ -65,7 +65,7 @@ async function getComponents(components: any): Promise<PageComponents> {
 			const projects: Project[] = []
 			if (component.projects && Array.isArray(component.projects)) {
 				for (const project of component.projects) {
-					const p = await parseProjectFromData(project)
+					const p = parseProjectFromData(project)
 					if (p) projects.push(p)
 				}
 			}
