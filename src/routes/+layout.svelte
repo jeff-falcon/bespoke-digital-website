@@ -20,14 +20,14 @@
 
 <svelte:head>
 	<script async src="https://www.googletagmanager.com/gtag/js?id={PUBLIC_GA4_TAG_ID}"></script>
-	<script>
+	<script data-tag-id={PUBLIC_GA4_TAG_ID}>
 		window.dataLayer = window.dataLayer || [];
 		function gtag() {
 			dataLayer.push(arguments);
 		}
 		gtag('js', new Date());
 
-		gtag('config', PUBLIC_GA4_TAG_ID);
+		gtag('config', document.querySelector('script[data-tag-id]').dataset.tagId);
 	</script>
 </svelte:head>
 
