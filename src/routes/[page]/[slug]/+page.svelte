@@ -26,5 +26,7 @@
 </svelte:head>
 
 {#if data.project}
-	<ProjectComponent project={data.project} />
+	{#key data.project._id}
+		<ProjectComponent project={data.project} />
+	{/key}
 {/if}
