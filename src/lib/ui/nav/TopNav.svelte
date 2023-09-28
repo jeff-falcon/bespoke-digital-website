@@ -399,7 +399,7 @@
 		position: absolute;
 		z-index: 0;
 		background: transparent;
-		border: 2px solid var(--text-color);
+		border: 1px solid var(--text-color);
 		border-radius: var(--input-border-radius);
 		width: 0;
 		height: var(--button-height-large);
