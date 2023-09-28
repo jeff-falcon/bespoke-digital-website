@@ -359,7 +359,7 @@
 		text-decoration: none;
 	}
 	.h-menu a.active {
-		border-color: var(--text-color);
+		border-color: var(--text-color-40);
 		opacity: 1;
 	}
 	.useUnderline .h-menu,
@@ -399,7 +399,7 @@
 		position: absolute;
 		z-index: 0;
 		background: transparent;
-		border: 1px solid var(--text-color);
+		border: 1px solid var(--text-color-40);
 		border-radius: var(--input-border-radius);
 		width: 0;
 		height: var(--button-height-large);
@@ -417,7 +417,7 @@
 		visibility: visible;
 	}
 	.isBorderAnimating.isOverCurrent .border {
-		border-color: var(--text-color);
+		border-color: var(--text-color-40);
 	}
 	.menu-btn .line {
 		width: 16px;
