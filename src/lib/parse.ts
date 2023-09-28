@@ -1,7 +1,7 @@
 import type { Project, ProjectMedia, CloudinaryImage, Hero, MultiHero } from '$lib/types';
 import { bgColor } from './store';
 
-export function parseCloudinaryImage(image: any, mobileImage?: any, useOriginalQuality = false) {
+export function parseCloudinaryImage(image: any, mobileImage?: any, useOriginalQuality = false, isSingle = true) {
 	if (!image) return undefined;
 	const originalUrl = image.derived?.[0]?.secure_url ?? image.secure_url;
 	const url: string =
@@ -19,7 +19,7 @@ export function parseCloudinaryImage(image: any, mobileImage?: any, useOriginalQ
 				: url.replace(/\/upload\/(.*?)\/v(\d+)/, '/upload/$1,w_1600/v$2'),
 			lg: useOriginalQuality ? originalUrl : matches?.length
 				? url
-				: url.replace(/\/upload\/(.*?)\/v(\d+)/, '/upload/$1,w_3200/v$2')
+				: url.replace(/\/upload\/(.*?)\/v(\d+)/, `/upload/$1,w_${isSingle ? 32 : 16}00/v$2`)
 		},
 		width: image.width,
 		height: image.height
@@ -34,10 +34,10 @@ export function parseCloudinaryImage(image: any, mobileImage?: any, useOriginalQ
 	return img;
 }
 
-export async function parseProjectMediaFromData(project: any): Promise<ProjectMedia | undefined> {
+export async function parseProjectMediaFromData(project: any, isSingle = true): Promise<ProjectMedia | undefined> {
 	if (project?._type !== 'project_media') return undefined;
 	const useOriginalQuality = project.use_original_quality ?? false;
-	const image = parseCloudinaryImage(project.image, project.image_mobile, useOriginalQuality);
+	const image = parseCloudinaryImage(project.image, project.image_mobile, useOriginalQuality, isSingle);
 	const media: ProjectMedia = {
 		_type: 'project_media',
 		_id: project._id as string,
