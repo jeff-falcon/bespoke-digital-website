@@ -43,12 +43,12 @@ export async function getPage(slug: string): Promise<Page | HttpError> {
 			_type == 'form_ref' => @->{..., "bgColor": background_color},
 		}
 	}`;
+	const result = await client.fetch(groq);
+	if (!result || !result.length) {
+		console.log('no result');
+		throw error(404, 'Page not found');
+	}
 	try {
-		const result = await client.fetch(groq);
-		if (!result || !result.length) {
-			console.log('no result');
-			throw error(404, 'Page not found');
-		}
 		const pageData = result[0];
 		const page: Page = {
 			_type: 'page',
