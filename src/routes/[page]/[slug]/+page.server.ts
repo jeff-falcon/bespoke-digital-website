@@ -4,9 +4,10 @@ import type { Project, ProjectMedia, ProjectMediaPair } from '$lib/types';
 import { error, type HttpError } from '@sveltejs/kit';
 import { parseCloudinaryImage, parseProjectFromData, parseProjectMediaFromData } from '$lib/parse';
 
-export const load: PageServerLoad = async ({ params }): Promise<{ project?: Project } | HttpError> => {
+export const load: PageServerLoad = async ({
+	params
+}): Promise<{ project?: Project } | HttpError> => {
 	if (params.page === 'work') {
-
 		const client = getClient();
 		const groq = `*[_type == "project" && slug.current == "${params.slug}"]{
 			...,
@@ -33,23 +34,27 @@ export const load: PageServerLoad = async ({ params }): Promise<{ project?: Proj
 			}
 		}`;
 		const data = await client.fetch(groq);
+		if (!data || !data.length) {
+			console.log('no result');
+			throw error(404, 'Page not found');
+		}
 		const projectData = data[0];
-		const mediaList: Array<ProjectMedia | ProjectMediaPair> = []
+		const mediaList: Array<ProjectMedia | ProjectMediaPair> = [];
 		if (projectData.media) {
 			for (const media of projectData.media) {
 				if (media._type === 'project_media') {
 					const item = await parseProjectMediaFromData(media);
-					if (item) mediaList.push(item)
+					if (item) mediaList.push(item);
 				}
 				if (media._type === 'item_pair') {
-					const left = await parseProjectMediaFromData(media.left, false)
-					const right = await parseProjectMediaFromData(media.right, false)
+					const left = await parseProjectMediaFromData(media.left, false);
+					const right = await parseProjectMediaFromData(media.right, false);
 					if (!left && !right) {
 						continue;
 					}
 					if (!left || !right) {
 						const item = left ?? right;
-						if (item) mediaList.push(item)
+						if (item) mediaList.push(item);
 					} else {
 						mediaList.push(<ProjectMediaPair>{
 							_type: 'item_pair',
@@ -79,22 +84,26 @@ export const load: PageServerLoad = async ({ params }): Promise<{ project?: Proj
 			videoBgSrcHd: projectData.thumb_vimeo_src_hd,
 			media: mediaList,
 			bgColor: projectData.bg_color?.value,
-			relatedProjects: projectData.show_related_projects !== false ? projectData.relatedProjects ?? [] : [],
+			relatedProjects:
+				projectData.show_related_projects !== false ? projectData.relatedProjects ?? [] : [],
 			relatedProjectsBgColor: projectData.related_projects_bg_color?.value,
-			showRelatedProjects: projectData.show_related_projects !== false,
+			showRelatedProjects: projectData.show_related_projects !== false
 		};
 		if (project.relatedProjects?.length) {
-			project.relatedProjects.forEach(p => {
-				p.image = parseCloudinaryImage(p.image)
-			})
+			project.relatedProjects.forEach((p) => {
+				p.image = parseCloudinaryImage(p.image);
+			});
 			project.relatedProjects.sort(() => {
-				return Math.random() - 0.5
-			})
-			project.relatedProjects = project.relatedProjects.slice(0, project.relatedProjects.length < 4 ? 2 : 4);
+				return Math.random() - 0.5;
+			});
+			project.relatedProjects = project.relatedProjects.slice(
+				0,
+				project.relatedProjects.length < 4 ? 2 : 4
+			);
 		}
 
 		return { project };
 	}
 
-	return error(404, 'Page not found');
+	throw error(404, 'Page not found');
 };
