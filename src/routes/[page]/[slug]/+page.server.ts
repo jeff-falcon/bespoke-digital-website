@@ -20,7 +20,7 @@ export const load: PageServerLoad = async ({
 				},
 			},
 			"tags": tags[]->,
-			"relatedProjects": *[_type == "project" && count(tags[@._ref in ^.^.tags[]._ref]) > 0 && slug.current != "${params.slug}"]{
+			"relatedProjects": *[_type == "project" && count(tags[@._ref in ^.^.tags[]._ref]) > 0 && slug.current != "${params.slug}" && !(_id in path("drafts.**"))]{
 				_type,
 				_id,
 				image,
