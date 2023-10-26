@@ -19,12 +19,13 @@ export const load: PageServerLoad = async ({
 					right->
 				},
 			},
-			"tags": tags[]->,
+			"tags": tags[]->prefLabel,
 			"relatedProjects": *[_type == "project" && count(tags[@._ref in ^.^.tags[]._ref]) > 0 && slug.current != "${params.slug}" && !(_id in path("drafts.**"))]{
 				_type,
 				_id,
 				image,
 				kind,
+				"tags": tags[]->prefLabel,
 				"videoBgSrc": thumb_vimeo_src,
 				"videoBgSrcHd": thumb_vimeo_src_hd,
 				"shortName": short_name,
@@ -87,19 +88,36 @@ export const load: PageServerLoad = async ({
 			relatedProjects:
 				projectData.show_related_projects !== false ? projectData.relatedProjects ?? [] : [],
 			relatedProjectsBgColor: projectData.related_projects_bg_color?.value,
-			showRelatedProjects: projectData.show_related_projects !== false
+			showRelatedProjects: projectData.show_related_projects !== false,
+			tags: projectData.tags ?? []
 		};
-		if (project.relatedProjects?.length) {
-			project.relatedProjects.forEach((p) => {
+		let rp = project.relatedProjects;
+		if (rp?.length) {
+			const groupedRelatedProjects = new Map<string, Project[]>();
+			project.tags?.map((tag) => {
+				groupedRelatedProjects.set(tag, []);
+			});
+			rp.forEach((p) => {
 				p.image = parseCloudinaryImage(p.image);
 			});
-			project.relatedProjects.sort(() => {
+			rp.sort(() => {
 				return Math.random() - 0.5;
 			});
-			project.relatedProjects = project.relatedProjects.slice(
-				0,
-				project.relatedProjects.length < 4 ? 2 : 4
-			);
+			const ids = new Set<string>();
+			groupedRelatedProjects.forEach((value, key) => {
+				groupedRelatedProjects.set(
+					key,
+					rp?.filter((p) => {
+						const exists = p.tags?.includes(key) && !ids.has(p._id);
+						return exists;
+					}) ?? []
+				);
+				groupedRelatedProjects.get(key)?.forEach((p) => {
+					ids.add(p._id);
+				});
+			});
+			rp = Array.from(groupedRelatedProjects).flatMap((p) => p[1]);
+			project.relatedProjects = rp.slice(0, rp.length < 4 ? 2 : 4);
 		}
 
 		return { project };
