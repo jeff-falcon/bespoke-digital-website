@@ -68,7 +68,8 @@ export function sendMail(
 	name: string,
 	message: string,
 	fields?: { [key: string]: string },
-	subject?: string
+	subject?: string,
+	sendReceipt = true
 ) {
 	const transporter = nodemailer.createTransport({
 		service: 'gmail',
@@ -108,6 +109,7 @@ export function sendMail(
 		);
 	});
 	const promise2 = new Promise((resolve, reject) => {
+		if (!sendReceipt) return resolve({});
 		const { html, text } = createHtmlBody(name, email, message, fields, true);
 		transporter.sendMail(
 			{
