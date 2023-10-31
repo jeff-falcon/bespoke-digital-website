@@ -41,7 +41,7 @@
 		--aspect-pct: 100%;
 	}
 	.project.isFull {
-		--aspect-pct: 194%;
+		--aspect-pct: 140%;
 	}
 	.project a {
 		display: block;
