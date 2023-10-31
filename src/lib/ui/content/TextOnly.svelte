@@ -46,4 +46,14 @@
 			margin-bottom: var(--32pt);
 		}
 	}
+	@media (min-width: 1200px) {
+		.wrap {
+			grid-column: 1 / span 9;
+		}
+	}
+	@media (min-width: 1400px) {
+		.wrap {
+			grid-column: 1 / span 7;
+		}
+	}
 </style>
