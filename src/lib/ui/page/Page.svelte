@@ -11,6 +11,7 @@
 	import ClientList from '../content/ClientList.svelte';
 	import Form from '../form/Form.svelte';
 	import { getContrastYIQFromColor } from '$lib/color';
+	import { afterNavigate } from '$app/navigation';
 
 	export let data: Page;
 
@@ -19,6 +20,16 @@
 	const hero = hasHero ? data.heros!.heros[randomHeroIndex] : null;
 
 	onMount(() => {
+		updatePageSettings();
+		console.log('mounted page');
+	});
+
+	afterNavigate(() => {
+		console.log('navigated to new page');
+		updatePageSettings();
+	});
+
+	function updatePageSettings() {
 		pageHasHero.set(hasHero);
 		const defaultBg = getComputedStyle(document.documentElement).getPropertyValue('--bg-dark');
 		const color = data.bgColor || defaultBg;
@@ -29,7 +40,7 @@
 		}`;
 		document.body.style.backgroundColor = $bgColor;
 		footerHasContactForm.set(data.footerHasContactForm);
-	});
+	}
 
 	function isVideoPlayer(component: ProjectMedia) {
 		return component._type === 'project_media' && component.kind === 'video-player';

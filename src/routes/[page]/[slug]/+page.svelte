@@ -4,10 +4,19 @@
 	import { bgColor, pageHasHero } from '$lib/store';
 	import { onMount } from 'svelte';
 	import { getContrastYIQFromColor } from '$lib/color';
+	import { afterNavigate } from '$app/navigation';
 
 	export let data: PageData;
 
 	onMount(() => {
+		updatePageSettings();
+	});
+
+	afterNavigate(() => {
+		updatePageSettings();
+	});
+
+	function updatePageSettings() {
 		pageHasHero.set(false);
 		const defaultBg = getComputedStyle(document.documentElement).getPropertyValue('--bg-dark');
 		const color = data.project?.bgColor || defaultBg;
@@ -17,7 +26,7 @@
 			getContrastYIQFromColor($bgColor) === 'white' ? 'dark' : 'light'
 		}`;
 		document.body.style.backgroundColor = $bgColor;
-	});
+	}
 </script>
 
 <svelte:head>
