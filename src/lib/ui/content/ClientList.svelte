@@ -1,6 +1,5 @@
 <script lang="ts">
 	import type { ClientList } from '$lib/types';
-	import { PortableText } from '@portabletext/svelte';
 
 	export let data: ClientList;
 </script>
@@ -23,7 +22,7 @@
 		padding-bottom: 3rem;
 	}
 	.title {
-		border-bottom: 1px solid var(--text-light-15);
+		border-bottom: 1px solid var(--text-color-15);
 		padding-bottom: var(--32pt);
 		margin: 0 0 var(--32pt);
 	}
@@ -36,6 +35,7 @@
 	.clients p {
 		font-size: inherit;
 		line-height: inherit;
+		margin: 0;
 	}
 	@media (min-width: 720px) {
 		section {
@@ -55,8 +55,5 @@
 		.clients {
 			columns: 4;
 		}
-	}
-	.clients p {
-		margin: 0;
 	}
 </style>

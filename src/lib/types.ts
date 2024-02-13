@@ -38,12 +38,12 @@ export interface Project {
 	description?: InputValue;
 	descriptionIntro?: InputValue;
 	client?: string;
-	credits?: Credit[],
+	credits?: Credit[];
 	image?: CloudinaryImage;
 	videoBgSrc?: string;
 	videoBgSrcHd?: string;
 	media?: Array<ProjectMedia | ProjectMediaPair>;
-	bgColor?: string
+	bgColor?: string;
 	tags?: string[];
 	relatedProjects?: Project[];
 	showRelatedProjects?: boolean;
@@ -56,8 +56,8 @@ export interface ProjectGrid {
 	useFeature: boolean;
 	moreLink?: {
 		buttonTitle: string;
-		url: string
-	}
+		url: string;
+	};
 	projects: Project[];
 }
 export interface Hero {
@@ -73,13 +73,15 @@ export interface Hero {
 	project?: Project;
 }
 
-export type PageComponents = Array<ProjectGrid | LogoGrid | ProjectMedia | TextOnly | ColumnedText | ClientList | Form>
+export type PageComponents = Array<
+	ProjectGrid | LogoGrid | ProjectMedia | TextOnly | ColumnedText | ClientList | Form | TeamGrid
+>;
 
 export interface Page {
 	_type: 'page';
 	_id: string;
 	name: string;
-	bgColor?: string,
+	bgColor?: string;
 	slug: string;
 	footerHasContactForm: boolean;
 	metaDescription?: string;
@@ -107,25 +109,25 @@ export interface ProjectMediaPair {
 }
 
 export interface Social {
-	name: string
-	_type: 'social'
-	url: string
-	icon: string
+	name: string;
+	_type: 'social';
+	url: string;
+	icon: string;
 }
 
 export interface Location {
-	name: string
-	_type: 'location'
-	address: string
-	email: string
-	timezone: string
+	name: string;
+	_type: 'location';
+	address: string;
+	email: string;
+	timezone: string;
 }
 
 export interface Config {
 	_type: 'config';
-	socials: { name: string, links: Social[] }
-	locations: Location[],
-	borderRadius: number
+	socials: { name: string; links: Social[] };
+	locations: Location[];
+	borderRadius: number;
 }
 
 export interface LogoGrid {
@@ -134,15 +136,15 @@ export interface LogoGrid {
 	desktop: string;
 	mobile: string;
 	color: string;
-	mobileMaxWidth: number
-	desktopMaxWidth: number
+	mobileMaxWidth: number;
+	desktopMaxWidth: number;
 }
 
 export interface TextOnly {
 	_type: 'text_only';
 	title: string;
 	body: InputValue;
-	bgColor: SectionBackgroundColor
+	bgColor: SectionBackgroundColor;
 }
 
 export interface ColumnedText {
@@ -153,14 +155,30 @@ export interface ColumnedText {
 		title: string;
 		body: InputValue;
 	}[];
-	bgColor: SectionBackgroundColor
+	bgColor: SectionBackgroundColor;
 }
 
 export interface ClientList {
 	_type: 'client_list';
 	title: string;
 	clients: string[];
-	bgColor: SectionBackgroundColor
+	bgColor: SectionBackgroundColor;
+}
+
+export interface TeamGrid {
+	_type: 'team_grid';
+	title: string;
+	description: InputValue;
+	members: TeamMember[];
+	extraMembersTitle: string;
+	extraMembers: TeamMember[];
+	bgColor: SectionBackgroundColor;
+}
+
+export interface TeamMember {
+	name: string;
+	title: string;
+	image?: CloudinaryImage;
 }
 
 export interface Form {
@@ -169,8 +187,8 @@ export interface Form {
 	title: string;
 	body: InputValue;
 	form: FormType;
-	bgColor: SectionBackgroundColor
+	bgColor: SectionBackgroundColor;
 }
 
-export type FormType = 'contact' | 'job'
-export type SectionBackgroundColor = 'transparent' | 'dark' | 'darker'
+export type FormType = 'contact' | 'job';
+export type SectionBackgroundColor = 'transparent' | 'dark' | 'darker';

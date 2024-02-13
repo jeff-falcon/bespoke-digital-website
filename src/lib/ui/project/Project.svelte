@@ -18,7 +18,7 @@
 					title: 'Related Projects',
 					projects: project.relatedProjects,
 					_type: 'project_grid'
-			  }
+				}
 			: null;
 
 	$: hasRelatedBg =
@@ -39,12 +39,12 @@
 			{#if hasDescription}
 				{#if project.descriptionIntro}
 					<div class="description intro" in:fly|global={{ ...flyProps }}>
-						<PortableText value={project.descriptionIntro} />
+						<PortableText value={project.descriptionIntro} components={{}} />
 					</div>
 				{/if}
 				{#if project.description}
 					<div class="description extra" in:fly|global={{ ...flyProps, delay: 200 }}>
-						<PortableText value={project.description} />
+						<PortableText value={project.description} components={{}} />
 					</div>
 				{/if}
 			{/if}

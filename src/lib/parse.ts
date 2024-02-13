@@ -1,7 +1,11 @@
 import type { Project, ProjectMedia, CloudinaryImage, Hero, MultiHero } from '$lib/types';
-import { bgColor } from './store';
 
-export function parseCloudinaryImage(image: any, mobileImage?: any, useOriginalQuality = false, isSingle = true) {
+export function parseCloudinaryImage(
+	image: any,
+	mobileImage?: any,
+	useOriginalQuality = false,
+	isSingle = true
+) {
 	if (!image) return undefined;
 	const originalUrl = image.derived?.[0]?.secure_url ?? image.secure_url;
 	const url: string =
@@ -11,21 +15,20 @@ export function parseCloudinaryImage(image: any, mobileImage?: any, useOriginalQ
 	const img: CloudinaryImage = {
 		url,
 		sizes: {
-			sm: matches?.length
-				? url
-				: url.replace(/\/upload\/(.*?)\/v(\d+)/, '/upload/$1,w_900/v$2'),
-			md: matches?.length
-				? url
-				: url.replace(/\/upload\/(.*?)\/v(\d+)/, '/upload/$1,w_1600/v$2'),
-			lg: useOriginalQuality ? originalUrl : matches?.length
-				? url
-				: url.replace(/\/upload\/(.*?)\/v(\d+)/, `/upload/$1,w_${isSingle ? 32 : 16}00/v$2`)
+			sm: matches?.length ? url : url.replace(/\/upload\/(.*?)\/v(\d+)/, '/upload/$1,w_900/v$2'),
+			md: matches?.length ? url : url.replace(/\/upload\/(.*?)\/v(\d+)/, '/upload/$1,w_1600/v$2'),
+			lg: useOriginalQuality
+				? originalUrl
+				: matches?.length
+					? url
+					: url.replace(/\/upload\/(.*?)\/v(\d+)/, `/upload/$1,w_${isSingle ? 32 : 16}00/v$2`)
 		},
 		width: image.width,
 		height: image.height
 	};
 	if (mobileImage) {
-		const mobileUrl: string = mobileImage.derived?.[0]?.secure_url ??
+		const mobileUrl: string =
+			mobileImage.derived?.[0]?.secure_url ??
 			mobileImage.secure_url.replace(/\/upload\/v/, '/upload/f_auto,q_auto:best,w_900/v');
 		if (img.sizes) {
 			img.sizes.sm = mobileUrl;
@@ -34,10 +37,37 @@ export function parseCloudinaryImage(image: any, mobileImage?: any, useOriginalQ
 	return img;
 }
 
-export async function parseProjectMediaFromData(project: any, isSingle = true): Promise<ProjectMedia | undefined> {
+export function makeSquareThumbnail(image: CloudinaryImage, size = 900) {
+	if (!image?.url) return undefined;
+	const url = image.url.replace(
+		/\/upload\/v/,
+		`/upload/c_fill,f_auto,q_auto:best,h_${size},w_${size}/v`
+	);
+	const imageSquare: CloudinaryImage = {
+		url,
+		sizes: {
+			sm: url,
+			md: url,
+			lg: url
+		},
+		width: size,
+		height: size
+	};
+	return imageSquare;
+}
+
+export async function parseProjectMediaFromData(
+	project: any,
+	isSingle = true
+): Promise<ProjectMedia | undefined> {
 	if (project?._type !== 'project_media') return undefined;
 	const useOriginalQuality = project.use_original_quality ?? false;
-	const image = parseCloudinaryImage(project.image, project.image_mobile, useOriginalQuality, isSingle);
+	const image = parseCloudinaryImage(
+		project.image,
+		project.image_mobile,
+		useOriginalQuality,
+		isSingle
+	);
 	const media: ProjectMedia = {
 		_type: 'project_media',
 		_id: project._id as string,
@@ -48,7 +78,7 @@ export async function parseProjectMediaFromData(project: any, isSingle = true): 
 		videoBgSrc: project.thumb_vimeo_src as string,
 		videoBgSrcHd: project.thumb_vimeo_src_hd as string,
 		useOriginalQuality,
-		autoplay: project.autoplay ?? false,
+		autoplay: project.autoplay ?? false
 	};
 	return media;
 }
@@ -72,7 +102,7 @@ export function parseProjectFromData(data: any) {
 		videoBgSrc: data.thumb_vimeo_src,
 		videoBgSrcHd: data.thumb_vimeo_src_hd,
 		bgColor: data.bg_color?.value
-	}
+	};
 	return project;
 }
 
@@ -89,7 +119,7 @@ export function parseHeroFromData(data: any, title?: string, subtitle?: string) 
 		videoBgSrc: data.thumb_vimeo_src,
 		videoBgSrcHd: data.thumb_vimeo_src_hd,
 		project: data.project ? parseProjectFromData(data.project) : undefined
-	}
+	};
 	return hero;
 }
 
@@ -101,7 +131,15 @@ export function parseMultiHeroFromData(data: any) {
 		_id: data._id,
 		name: data.title,
 		subtitle: data.subtitle,
-		heros: isMultiHero ? data.heros.map((h: any) => parseHeroFromData(h, data.override_title ? data.title : '', data.override_title ? data.subtitle : '')) : [parseHeroFromData(data)]
-	}
+		heros: isMultiHero
+			? data.heros.map((h: any) =>
+					parseHeroFromData(
+						h,
+						data.override_title ? data.title : '',
+						data.override_title ? data.subtitle : ''
+					)
+				)
+			: [parseHeroFromData(data)]
+	};
 	return hero;
 }

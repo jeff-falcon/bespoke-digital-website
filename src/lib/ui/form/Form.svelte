@@ -10,7 +10,7 @@
 	<div class="wrap">
 		<h2 class="title">{data.title}</h2>
 		<div class="body">
-			<PortableText value={data.body} />
+			<PortableText value={data.body} components={{}} />
 		</div>
 
 		<div class="form">

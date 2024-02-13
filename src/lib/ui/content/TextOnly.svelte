@@ -11,7 +11,7 @@
 			<h2 class="title">{data.title}</h2>
 		{/if}
 
-		<PortableText value={data.body} />
+		<PortableText value={data.body} components={{}} />
 	</div>
 </section>
 

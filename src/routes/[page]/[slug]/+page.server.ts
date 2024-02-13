@@ -37,7 +37,7 @@ export const load: PageServerLoad = async ({
 		const data = await client.fetch(groq);
 		if (!data || !data.length) {
 			console.log('no result');
-			throw error(404, 'Page not found');
+			error(404, 'Page not found');
 		}
 		const projectData = data[0];
 		const mediaList: Array<ProjectMedia | ProjectMediaPair> = [];
@@ -123,5 +123,5 @@ export const load: PageServerLoad = async ({
 		return { project };
 	}
 
-	throw error(404, 'Page not found');
+	error(404, 'Page not found');
 };
