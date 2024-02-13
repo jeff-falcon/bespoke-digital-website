@@ -42,7 +42,7 @@ export interface Project {
 	image?: CloudinaryImage;
 	videoBgSrc?: string;
 	videoBgSrcHd?: string;
-	media?: Array<ProjectMedia | ProjectMediaPair>;
+	media?: Array<ProjectMedia | ProjectMediaPair | TextOnly>;
 	bgColor?: string;
 	tags?: string[];
 	relatedProjects?: Project[];
@@ -123,8 +123,14 @@ export interface Location {
 	timezone: string;
 }
 
+export interface MenuItem {
+	name: string;
+	slug: string;
+}
+
 export interface Config {
 	_type: 'config';
+	menu: MenuItem[];
 	socials: { name: string; links: Social[] };
 	locations: Location[];
 	borderRadius: number;

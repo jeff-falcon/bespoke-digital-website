@@ -1,18 +1,22 @@
-import { getClient } from "$lib/sanity";
-import type { Config } from "$lib/types";
+import { getClient } from '$lib/sanity';
+import type { Config } from '$lib/types';
 
 export const config = {
-  isr: {
-    expiration: 60,
-  }
-}
+	isr: {
+		expiration: 60
+	}
+};
 
-export const trailingSlash = 'never'
+export const trailingSlash = 'never';
 
 export async function load() {
-  const client = getClient();
-  const groq = `*[_type == "config"]{
+	const client = getClient();
+	const groq = `*[_type == "config"]{
     locations,
+    "menu": main_menu[]->{
+      name,
+      "slug": slug.current
+    },
     "socials": socials_group{
       name,
       "links": socials_links[]{
@@ -23,9 +27,9 @@ export async function load() {
     },
     "borderRadius": border_radius
   }`;
-  const data = await client.fetch(groq);
-  const configData = data[0] as Config;
-  return {
-    config: configData
-  }
+	const data = await client.fetch(groq);
+	const configData = data[0] as Config;
+	return {
+		config: configData
+	};
 }

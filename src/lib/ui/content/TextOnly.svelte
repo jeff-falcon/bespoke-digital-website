@@ -3,9 +3,10 @@
 	import { PortableText } from '@portabletext/svelte';
 
 	export let data: TextOnly;
+	export let withGutter = true;
 </script>
 
-<section class="text-only gutter bg-{data.bgColor ?? 'transparent'}">
+<section class="text-only bg-{data.bgColor ?? 'transparent'}" class:gutter={withGutter}>
 	<div class="wrap">
 		{#if data.title}
 			<h2 class="title">{data.title}</h2>

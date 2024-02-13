@@ -3,9 +3,10 @@
 	import { PortableText } from '@portabletext/svelte';
 	import type { Project, ProjectGrid } from '$lib/types';
 	import { fly, type FlyParams } from 'svelte/transition';
-	import { cubicOut, expoOut } from 'svelte/easing';
+	import { expoOut } from 'svelte/easing';
 	import ProjectGridComponent from './ProjectGrid.svelte';
 	import { getContrastYIQFromColor } from '$lib/color';
+	import TextOnly from '../content/TextOnly.svelte';
 
 	export let project: Project;
 
@@ -84,6 +85,11 @@
 					>
 						<ProjectMediaComponent media={item.left} scaleOnReveal={index === 0} />
 						<ProjectMediaComponent media={item.right} scaleOnReveal={index === 0} />
+					</div>
+				{/if}
+				{#if item._type === 'text_only'}
+					<div class="text-block">
+						<TextOnly data={item} />
 					</div>
 				{/if}
 			{/each}
@@ -176,6 +182,10 @@
 	.hasRelatedBg.relatedBgIsLight :global(.project-grid) {
 		color: var(--bg-dark);
 	}
+	.text-block {
+		margin-left: calc(0px - var(--gutter-sm));
+		margin-right: calc(0px - var(--gutter-sm));
+	}
 
 	@media (min-width: 720px) {
 		.medias {
@@ -204,6 +214,10 @@
 		.isRightLarger :global(.media:nth-of-type(1) img),
 		.isLeftLarger :global(.media:nth-of-type(2) img) {
 			object-fit: cover;
+		}
+		.text-block {
+			margin-left: calc(0px - var(--gutter-lg));
+			margin-right: calc(0px - var(--gutter-lg));
 		}
 	}
 	@media (min-width: 960px) {
