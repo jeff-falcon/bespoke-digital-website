@@ -98,6 +98,10 @@
 		display: block;
 		width: 100%;
 	}
+	.headshot img {
+		object-fit: cover;
+		object-position: center;
+	}
 	.headshot.placeholder {
 		background: var(--text-color-15);
 	}
