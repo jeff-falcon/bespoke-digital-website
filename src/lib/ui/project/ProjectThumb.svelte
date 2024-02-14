@@ -4,6 +4,7 @@
 
 	export let project: Project;
 	export let size: 'half' | 'full' = 'half';
+	export let basePath = 'work';
 
 	$: isFull = size === 'full';
 
@@ -23,7 +24,7 @@
 </script>
 
 <article class="project" class:isFull>
-	<a href="/work/{project.slug}/">
+	<a href="/{basePath}/{project.slug}/">
 		<div class="thumbnail">
 			<ProjectMediaComponent {media} cover={true} isFullWidth={isFull} />
 		</div>

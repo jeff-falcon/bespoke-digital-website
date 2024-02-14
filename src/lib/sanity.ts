@@ -12,10 +12,9 @@ import type {
 	ProjectGrid,
 	TeamGrid
 } from '$lib/types';
-import { type HttpError, error } from '@sveltejs/kit';
+import { error } from '@sveltejs/kit';
 import {
 	makeSquareThumbnail,
-	parseCloudinaryImage,
 	parseMultiHeroFromData,
 	parseProjectFromData,
 	parseProjectMediaFromData

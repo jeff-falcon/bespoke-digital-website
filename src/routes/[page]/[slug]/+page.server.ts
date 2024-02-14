@@ -7,7 +7,7 @@ import { parseCloudinaryImage, parseProjectMediaFromData } from '$lib/parse';
 export const load: PageServerLoad = async ({
 	params
 }): Promise<{ project?: Project } | undefined> => {
-	if (params.page === 'work') {
+	if (params.page === 'work' || params.page === 'case-studies') {
 		const client = getClient();
 		const groq = `*[_type == "project" && slug.current == "${params.slug}"]{
 			...,
