@@ -37,9 +37,10 @@ export function parseCloudinaryImage(
 	return img;
 }
 
-export function makeSquareThumbnail(image: CloudinaryImage, size = 900) {
+export function makeSquareThumbnail(image: any, size = 900) {
 	if (!image?.url) return undefined;
-	const url = image.url.replace(
+	const originalUrl = image.derived?.[0]?.secure_url ?? image.secure_url;
+	const url = originalUrl.replace(
 		/\/upload\/v/,
 		`/upload/c_fill,f_auto,q_auto:best,h_${size},w_${size}/v`
 	);
