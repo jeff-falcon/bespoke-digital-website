@@ -12,7 +12,6 @@
 	import Form from '../form/Form.svelte';
 	import { getContrastYIQFromColor } from '$lib/color';
 	import { afterNavigate } from '$app/navigation';
-	import TeamGrid from '../content/TeamGrid.svelte';
 
 	export let data: Page;
 
@@ -87,9 +86,6 @@
 			{/if}
 			{#if component._type === 'form'}
 				<Form data={component} />
-			{/if}
-			{#if component._type === 'team_grid'}
-				<TeamGrid data={component} />
 			{/if}
 		{/each}
 	{/if}
