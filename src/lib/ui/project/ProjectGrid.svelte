@@ -19,7 +19,11 @@
 	{/if}
 	<div class="projects">
 		{#each data.projects as project, index}
-			<ProjectThumb {project} {basePath} size={index === 0 && data.useFeature ? 'full' : 'half'} />
+			<ProjectThumb
+				{project}
+				{basePath}
+				size={data.disableGrid ? 'full' : index === 0 && data.useFeature ? 'full' : 'half'}
+			/>
 		{/each}
 	</div>
 	{#if data.moreLink?.url}
