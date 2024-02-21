@@ -1,18 +1,19 @@
 import type { PageServerLoad } from './$types';
 import { getClient } from '$lib/sanity';
-import type { Project, ProjectMedia, ProjectMediaPair } from '$lib/types';
-import { error, type HttpError } from '@sveltejs/kit';
-import { parseCloudinaryImage, parseProjectFromData, parseProjectMediaFromData } from '$lib/parse';
+import type { Project, ProjectMedia, ProjectMediaPair, TextOnly } from '$lib/types';
+import { error } from '@sveltejs/kit';
+import { parseCloudinaryImage, parseProjectMediaFromData } from '$lib/parse';
 
 export const load: PageServerLoad = async ({
 	params
-}): Promise<{ project?: Project } | HttpError> => {
-	if (params.page === 'work') {
+}): Promise<{ project?: Project } | undefined> => {
+	if (params.page === 'work' || params.page === 'case-studies') {
 		const client = getClient();
 		const groq = `*[_type == "project" && slug.current == "${params.slug}"]{
 			...,
 			media[]{
 				_type == 'item' => @->,
+				_type == 'text_item' => @->{..., "bgColor": background_color},
 				_type == 'item_pair' => {
 					_type,
 					left->,
@@ -37,10 +38,10 @@ export const load: PageServerLoad = async ({
 		const data = await client.fetch(groq);
 		if (!data || !data.length) {
 			console.log('no result');
-			throw error(404, 'Page not found');
+			error(404, 'Page not found');
 		}
 		const projectData = data[0];
-		const mediaList: Array<ProjectMedia | ProjectMediaPair> = [];
+		const mediaList: Array<ProjectMedia | ProjectMediaPair | TextOnly> = [];
 		if (projectData.media) {
 			for (const media of projectData.media) {
 				if (media._type === 'project_media') {
@@ -63,6 +64,9 @@ export const load: PageServerLoad = async ({
 							right
 						});
 					}
+				}
+				if (media._type === 'text_only') {
+					mediaList.push(media);
 				}
 			}
 		}
@@ -123,5 +127,5 @@ export const load: PageServerLoad = async ({
 		return { project };
 	}
 
-	throw error(404, 'Page not found');
+	error(404, 'Page not found');
 };

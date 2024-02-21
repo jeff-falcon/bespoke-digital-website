@@ -52,23 +52,15 @@
 		}
 	}
 
-	$: menuLinks = [
-		{
-			name: 'Work',
-			url: '/work/',
-			isActive: (currentRoute.indexOf('/work') ?? -1) > -1
-		},
-		{
-			name: 'About',
-			url: '/about/',
-			isActive: (currentRoute.indexOf('/about') ?? -1) > -1
-		},
-		{
-			name: 'Connect',
-			url: '/connect/',
-			isActive: (currentRoute.indexOf('/connect') ?? -1) > -1
-		}
-	];
+	$: menuLinks = config.menu.map((item) => {
+		return {
+			name: item.name,
+			url: `/${item.slug}/`,
+			isActive: (currentRoute.indexOf(`/${item.slug}`) ?? -1) > -1
+		};
+	});
+
+	$: menuIsWide = menuLinks.length >= 4 ? 960 : 760;
 
 	$: currentRoute = $page.url.pathname ?? '';
 	$: isMenuOpen = $menuState === 'open';
@@ -173,7 +165,15 @@
 
 <svelte:window bind:scrollY />
 
-<header class:isMenuOpen id="global-header" class="gutter" class:hasBg {style} class:useUnderline>
+<header
+	class:isMenuOpen
+	id="global-header"
+	class="gutter"
+	class:hasBg
+	{style}
+	class:useUnderline
+	class:menuIsWide
+>
 	<div class="logo">
 		<a
 			href="/"
@@ -211,7 +211,7 @@
 		</button>
 	</div>
 </header>
-<div id="mobile-nav" class:isMenuOpen style={mobileNavStyle}>
+<div id="mobile-nav" class:menuIsWide class:isMenuOpen style={mobileNavStyle}>
 	{#if isMenuOpen}
 		<div
 			class="bg"
@@ -534,15 +534,15 @@
 	}
 
 	@media (min-width: 760px) {
-		.h-menu {
+		header:not(.menuIsWide) .h-menu {
 			display: flex;
 		}
-		.useUnderline .h-menu {
+		header:not(.menuIsWide).useUnderline .h-menu {
 			gap: 48px;
 			margin-right: 16px;
 			align-items: center;
 		}
-		.insta-btn {
+		header:not(.menuIsWide) .insta-btn {
 			margin: 0 0 0 32px;
 			border: 1px solid var(--text-color-40);
 			border-radius: 80px;
@@ -550,10 +550,34 @@
 			height: var(--button-height-large);
 		}
 
-		.menu-btn {
+		header:not(.menuIsWide) .menu-btn {
 			display: none;
 		}
-		#mobile-nav {
+		#mobile-nav:not(.menuIsWide) {
+			display: none;
+		}
+	}
+	@media (min-width: 960px) {
+		.menuIsWide .h-menu {
+			display: flex;
+		}
+		.menuIsWide.useUnderline .h-menu {
+			gap: 48px;
+			margin-right: 16px;
+			align-items: center;
+		}
+		.menuIsWide .insta-btn {
+			margin: 0 0 0 32px;
+			border: 1px solid var(--text-color-40);
+			border-radius: 80px;
+			width: var(--button-height-large);
+			height: var(--button-height-large);
+		}
+
+		.menuIsWide .menu-btn {
+			display: none;
+		}
+		#mobile-nav.menuIsWide {
 			display: none;
 		}
 	}

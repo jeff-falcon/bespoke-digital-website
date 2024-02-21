@@ -11,15 +11,15 @@ import type {
 	Project,
 	ProjectGrid
 } from '$lib/types';
-import { type HttpError, error } from '@sveltejs/kit';
+import { error } from '@sveltejs/kit';
 import { parseMultiHeroFromData, parseProjectFromData, parseProjectMediaFromData } from './parse';
 
 export function getClient() {
 	return client;
 }
 
-export async function getPage(slug: string): Promise<Page | HttpError> {
-	if (!slug) throw error(404, 'Page not found');
+export async function getPage(slug: string): Promise<Page | undefined> {
+	if (!slug) error(404, 'Page not found');
 
 	const client = getClient();
 	const groq = `*[_type == "page" && slug.current == "${slug}"]{
@@ -40,13 +40,14 @@ export async function getPage(slug: string): Promise<Page | HttpError> {
 			_type == 'text_only_ref' => @->{..., "bgColor": background_color},
 			_type == 'columned_text_ref' => @->{..., "borderedTitle": bordered_title, "bgColor": background_color},
 			_type == 'client_list_ref' => @->{..., "bgColor": background_color},
+			_type == 'team_grid_ref' => @->{..., "bgColor": background_color, "extraMembers": extra_members[]->, "extraMembersTitle": extra_members_title},
 			_type == 'form_ref' => @->{..., "bgColor": background_color},
 		}
 	}`;
 	const result = await client.fetch(groq);
 	if (!result || !result.length) {
 		console.log('no result');
-		throw error(404, 'Page not found');
+		error(404, 'Page not found');
 	}
 	try {
 		const pageData = result[0];
@@ -65,7 +66,7 @@ export async function getPage(slug: string): Promise<Page | HttpError> {
 		return page;
 	} catch (err) {
 		console.log('fetch error', (err as Error).message);
-		throw error(403, (err as Error).message);
+		error(403, (err as Error).message);
 	}
 }
 
@@ -89,9 +90,10 @@ async function getComponents(components: any): Promise<PageComponents> {
 					? {
 							buttonTitle: component.more_link.button_title,
 							url: component.more_link.url
-					  }
+						}
 					: undefined,
 				useFeature: component.feature_first ?? false,
+				disableGrid: component.feature_all === true,
 				projects
 			};
 			comps.push(grid);
