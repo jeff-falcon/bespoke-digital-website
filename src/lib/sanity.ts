@@ -9,10 +9,16 @@ import type {
 	Page,
 	PageComponents,
 	Project,
-	ProjectGrid
+	ProjectGrid,
+	TeamGrid
 } from '$lib/types';
 import { error } from '@sveltejs/kit';
-import { parseMultiHeroFromData, parseProjectFromData, parseProjectMediaFromData } from './parse';
+import {
+	makeSquareThumbnail,
+	parseMultiHeroFromData,
+	parseProjectFromData,
+	parseProjectMediaFromData
+} from './parse';
 
 export function getClient() {
 	return client;
@@ -114,6 +120,20 @@ async function getComponents(components: any): Promise<PageComponents> {
 				bgColor: component.bg_color
 			};
 			comps.push(clients);
+		} else if (component._type === 'team_grid') {
+			const team: TeamGrid = {
+				_type: 'team_grid',
+				title: component.title,
+				description: component.description,
+				members: component.members.map((m: any) => {
+					m.image = makeSquareThumbnail(m.image);
+					return m;
+				}),
+				extraMembersTitle: component.extra_members_title,
+				extraMembers: component.extra_members,
+				bgColor: component.bg_color ?? 'transparent'
+			};
+			comps.push(team);
 		} else if (component._type === 'form') {
 			comps.push(component as Form);
 		} else {
