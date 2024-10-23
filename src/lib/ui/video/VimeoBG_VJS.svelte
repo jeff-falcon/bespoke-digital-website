@@ -83,8 +83,7 @@
 
 <style>
 	.video-container,
-	.video-container :global(video),
-	iframe {
+	.video-container :global(video) {
 		width: 100%;
 		height: 100%;
 		position: absolute;
