@@ -50,8 +50,10 @@
 				{/if}
 			{/if}
 			<div class="name-credits">
-				<h3 class="project-name" in:fly|global={{ ...flyProps, delay: 75 }}>{project.title}</h3>
-				{#if project.credits}
+				{#if !project.titleHidden}
+					<h3 class="project-name" in:fly|global={{ ...flyProps, delay: 75 }}>{project.title}</h3>
+				{/if}
+				{#if project.credits?.length}
 					<div class="credits">
 						{#each project.credits as credit, index (credit)}
 							<div class="credit" in:fly|global={{ ...flyProps, delay: index * 60 + 140 }}>

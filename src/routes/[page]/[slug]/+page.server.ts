@@ -77,6 +77,7 @@ export const load: PageServerLoad = async ({
 			pageTitle: title + ' | Work | Bespoke Digital',
 			name: projectData.name,
 			title: title,
+			titleHidden: projectData.title_hidden ?? false,
 			metaDescription: projectData.meta_description,
 			shortName: projectData.short_name || title || '',
 			slug: projectData.slug.current,

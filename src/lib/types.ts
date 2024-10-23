@@ -30,6 +30,7 @@ export interface Project {
 	_id: string;
 	name: string;
 	title: string;
+	titleHidden?: boolean;
 	shortName: string;
 	metaDescription: string;
 	slug: string;
