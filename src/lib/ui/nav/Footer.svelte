@@ -47,8 +47,11 @@
 		{/each}
 	</div>
 	<div class="credits">
-		<p class="copyright">© {new Date().getFullYear()} Bespoke Digital</p>
-		<p class="tanka"><a href="https://tankadesign.com" target="_blank">Site by TANKA</a></p>
+		<div class="left">
+			<p class="copyright">© {new Date().getFullYear()} Bespoke Digital</p>
+			<p class="link"><a href="/privacy">Privacy Policy</a></p>
+		</div>
+		<p class="tanka link"><a href="https://tankadesign.com" target="_blank">Site by TANKA</a></p>
 	</div>
 </footer>
 
@@ -85,12 +88,12 @@
 		border-top: 1px solid var(--text-color-15);
 	}
 
-	.credits .tanka a {
+	.credits .link a {
 		display: inline-block;
 		transition: opacity 0.2s linear;
 		transform: translateZ(0);
 	}
-	.credits .tanka a:hover {
+	.credits .link a:hover {
 		opacity: 0.98;
 	}
 
@@ -101,13 +104,18 @@
 		margin-top: 68px;
 		margin-bottom: 32px;
 	}
+	.credits .left {
+		display: flex;
+		align-items: baseline;
+		gap: 24px;
+	}
 	.credits p {
 		margin: 0;
 		font-size: var(--12pt);
 		line-height: var(--16pt);
 	}
 	.credits .copyright,
-	.credits .tanka a {
+	.credits .link a {
 		opacity: 0.6;
 	}
 	.socials .links {
