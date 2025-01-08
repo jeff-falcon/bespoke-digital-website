@@ -1,12 +1,9 @@
 <script lang="ts">
 	import type { ProjectGrid } from '$lib/types';
 	import ArrowButton from '../button/ArrowButton.svelte';
-	import { page } from '$app/stores';
 
 	import ProjectThumb from './ProjectThumb.svelte';
 	export let data: ProjectGrid;
-
-	$: basePath = $page.params.page;
 </script>
 
 <section class="project-grid gutter">
@@ -18,10 +15,9 @@
 		</div>
 	{/if}
 	<div class="projects">
-		{#each data.projects as project, index}
+		{#each data.projects as project, index (project)}
 			<ProjectThumb
 				{project}
-				{basePath}
 				size={data.disableGrid ? 'full' : index === 0 && data.useFeature ? 'full' : 'half'}
 			/>
 		{/each}
