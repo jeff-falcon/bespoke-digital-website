@@ -1,5 +1,10 @@
 import * as nodemailer from 'nodemailer';
-import { GOOGLE_APP_EMAIL, GOOGLE_APP_PASSWORD } from '$env/static/private';
+import mailchimp from '@mailchimp/mailchimp_transactional';
+import {
+	GOOGLE_APP_EMAIL,
+	GOOGLE_APP_PASSWORD,
+	MAILCHIMP_CONTACT_FORM_API_KEY
+} from '$env/static/private';
 import { addRow } from './google-sheets';
 
 function createHtmlBody(
@@ -63,6 +68,54 @@ function createHtmlBody(
 	return { html, text };
 }
 
+const mailChimpClient = mailchimp(MAILCHIMP_CONTACT_FORM_API_KEY);
+
+export async function sendMailFromMailchimp(
+	email: string,
+	name: string,
+	message: string,
+	fields?: { [key: string]: string },
+	subject?: string,
+	sendReceipt = true
+) {
+	const internalBody = createHtmlBody(name, email, message, fields);
+	const receiptBody = createHtmlBody(name, email, message, fields, sendReceipt);
+
+	const sent1 = await mailChimpClient.messages.send({
+		message: {
+			from_email: GOOGLE_APP_EMAIL,
+			from_name: 'Bespoke Digital',
+			to: [
+				{
+					email: GOOGLE_APP_EMAIL,
+					name: 'Bespoke Digital'
+				}
+			],
+			subject: subject ?? 'Contact Form Submission',
+			html: internalBody.html,
+			text: internalBody.text
+		}
+	});
+
+	if (sendReceipt) {
+		const sent2 = await mailChimpClient.messages.send({
+			message: {
+				from_email: GOOGLE_APP_EMAIL,
+				from_name: 'Bespoke Digital',
+				to: [
+					{
+						email,
+						name
+					}
+				],
+				subject: 'Receipt: ' + (subject ?? 'Form Submission'),
+				html: receiptBody.html,
+				text: receiptBody.text
+			}
+		});
+	}
+}
+
 export function sendMail(
 	email: string,
 	name: string,
@@ -122,7 +175,7 @@ export function sendMail(
 			(err, info) => {
 				if (err) {
 					reject(err);
-					console.log({ err });
+					console.log('sending receipt error', err);
 				} else {
 					try {
 						addRow(email, name, message, fields);
