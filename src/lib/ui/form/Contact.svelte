@@ -24,6 +24,7 @@
 	let wasNameTested = false;
 	let wasMessageTested = false;
 	let formResultMessage = '';
+	let formSubmissionError = '';
 
 	$: validation = check({ email, name, message });
 	$: emailError =
@@ -65,8 +66,10 @@
 		return async ({ result, update }) => {
 			if (result.type === 'success' && result.data) {
 				formResultMessage = result.data.message;
-			} else {
+			} else if (result.type === 'failure' && result.data) {
 				console.log('update', update);
+				formSubmissionError =
+					result.data?.error || 'There was an error submitting the form, please try again later.';
 			}
 			isSending = false;
 		};
@@ -129,6 +132,9 @@
 			<button type="submit" disabled={isSending || formResultMessage != '' || !isValid}
 				>{isSending ? 'Sending...' : 'Send'}</button
 			>
+			{#if formSubmissionError}
+				<p class="submit-error">{formSubmissionError}</p>
+			{/if}
 		</form>
 	{/if}
 </div>
@@ -157,6 +163,9 @@
 		display: flex;
 		flex-direction: column;
 		gap: 16px;
+	}
+	.submit-error {
+		color: var(--text-highlight);
 	}
 	button {
 		margin-top: 8px;
