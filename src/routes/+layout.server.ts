@@ -1,10 +1,12 @@
+import { BYPASS_TOKEN } from '$env/static/private';
 import { getClient } from '$lib/sanity';
 import type { Config } from '$lib/types';
 import { redirect } from '@sveltejs/kit';
 
 export const config = {
 	isr: {
-		expiration: 60
+		expiration: 60,
+		bypassToken: BYPASS_TOKEN
 	}
 };
 
