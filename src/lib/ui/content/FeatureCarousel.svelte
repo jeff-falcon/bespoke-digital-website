@@ -16,6 +16,7 @@
 	let headerOffset = 0;
 	let sectionTopPadding = 0;
 	let currentSlideOffset = 0;
+	let incomingSlideStartY = 0;
 
 	let scrollTrigger: ScrollTrigger | null = null;
 	let revealTrigger: ScrollTrigger | null = null;
@@ -31,6 +32,7 @@
 	const transitionDuration = 0.75;
 	const resizeWidthTolerance = 2;
 	const mobileNavResizeHeightMax = 140;
+	const incomingSlideOffscreenBuffer = 24;
 
 	gsap.registerPlugin(ScrollTrigger);
 
@@ -50,6 +52,9 @@
 
 	function getHeaderOffset() {
 		if (typeof window === 'undefined') return 0;
+		if (window.innerWidth >= 568) {
+			return 0;
+		}
 		const topNavHeight = getComputedStyle(document.documentElement)
 			.getPropertyValue('--top-nav-height')
 			.trim();
@@ -65,6 +70,7 @@
 		headerOffset = getHeaderOffset();
 		sectionTopPadding = 0;
 		currentSlideOffset = 0;
+		incomingSlideStartY = 0;
 		slidesEl.style.setProperty('--slide-height', 'auto');
 		slidesEl.style.setProperty('--slides-wrap-height', 'auto');
 		slidesEl.style.height = 'auto';
@@ -83,6 +89,11 @@
 		const viewportHeight = typeof window === 'undefined' ? slideHeight : window.innerHeight;
 		const visibleViewportHeight = Math.max(0, viewportHeight - headerOffset);
 		currentSlideOffset = Math.max(0, (visibleViewportHeight - slideHeight) / 2 - sectionTopPadding);
+		const viewportBottomInSlides = Math.max(0, visibleViewportHeight - sectionTopPadding);
+		incomingSlideStartY = Math.max(
+			currentSlideOffset + 100,
+			viewportBottomInSlides + incomingSlideOffscreenBuffer
+		);
 		slidesWrapHeight = Math.max(slideHeight, currentSlideOffset + slideHeight);
 
 		slidesEl.style.height = `${slidesWrapHeight}px`;
@@ -134,7 +145,7 @@
 		if (index < activeIndex - 1) {
 			return { autoAlpha: 0, scale: 0.6, y: stackedY };
 		}
-		return { autoAlpha: 0, scale: 1.15, y: currentY + 200 };
+		return { autoAlpha: 1, scale: 1.15, y: incomingSlideStartY || currentY + 100 };
 	}
 
 	function applyState(index: number, currentY: number) {
@@ -370,6 +381,9 @@
 		padding-top: 3rem;
 		padding-bottom: 7.5rem;
 		--slide-behind-offset-y: 70px;
+	}
+	:global(.pin-spacer) {
+		overflow: hidden;
 	}
 	.slides {
 		position: relative;
