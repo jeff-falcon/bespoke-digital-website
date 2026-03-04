@@ -76,7 +76,15 @@ export interface Hero {
 }
 
 export type PageComponents = Array<
-	ProjectGrid | LogoGrid | ProjectMedia | TextOnly | ColumnedText | ClientList | Form | TeamGrid
+	| ProjectGrid
+	| LogoGrid
+	| ProjectMedia
+	| TextOnly
+	| ColumnedText
+	| ClientList
+	| Form
+	| TeamGrid
+	| Text2Column
 >;
 
 export interface Page {
@@ -152,6 +160,13 @@ export interface TextOnly {
 	_type: 'text_only';
 	title: string;
 	body: InputValue;
+	bgColor: SectionBackgroundColor;
+}
+
+export interface Text2Column {
+	_type: 'text_2col';
+	col1: InputValue;
+	col2: InputValue;
 	bgColor: SectionBackgroundColor;
 }
 

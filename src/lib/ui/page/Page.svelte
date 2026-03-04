@@ -1,18 +1,19 @@
 <script lang="ts">
+	import { afterNavigate } from '$app/navigation';
+	import { getContrastYIQFromColor } from '$lib/color';
+	import { bgColor, footerHasContactForm, pageHasHero } from '$lib/store';
 	import type { Page, ProjectMedia } from '$lib/types';
 	import ProjectGrid from '$lib/ui/project/ProjectGrid.svelte';
 	import { onMount } from 'svelte';
-	import LogoGrid from '../logos/LogoGrid.svelte';
-	import Hero from './Hero.svelte';
-	import { bgColor, footerHasContactForm, pageHasHero } from '$lib/store';
-	import ProjectMediaComponent from '../project/ProjectMediaComponent.svelte';
-	import TextOnly from '../content/TextOnly.svelte';
-	import ColumnedText from '../content/ColumnedText.svelte';
 	import ClientList from '../content/ClientList.svelte';
-	import Form from '../form/Form.svelte';
-	import { getContrastYIQFromColor } from '$lib/color';
-	import { afterNavigate } from '$app/navigation';
+	import ColumnedText from '../content/ColumnedText.svelte';
 	import TeamGrid from '../content/TeamGrid.svelte';
+	import Text2Column from '../content/Text2Column.svelte';
+	import TextOnly from '../content/TextOnly.svelte';
+	import Form from '../form/Form.svelte';
+	import LogoGrid from '../logos/LogoGrid.svelte';
+	import ProjectMediaComponent from '../project/ProjectMediaComponent.svelte';
+	import Hero from './Hero.svelte';
 
 	export let data: Page;
 
@@ -78,6 +79,9 @@
 			{/if}
 			{#if component._type === 'text_only'}
 				<TextOnly data={component} />
+			{/if}
+			{#if component._type === 'text_2col'}
+				<Text2Column data={component} />
 			{/if}
 			{#if component._type === 'columned_text'}
 				<ColumnedText data={component} />

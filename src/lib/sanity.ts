@@ -1,7 +1,5 @@
-import { createClient } from '@sanity/client';
-import { SANITY_TOKEN, SANITY_DATASET, SANITY_PROJECT_ID } from '$env/static/private';
+import { SANITY_DATASET, SANITY_PROJECT_ID, SANITY_TOKEN } from '$env/static/private';
 import type {
-	TextOnly,
 	ClientList,
 	ColumnedText,
 	Form,
@@ -10,8 +8,11 @@ import type {
 	PageComponents,
 	Project,
 	ProjectGrid,
-	TeamGrid
+	TeamGrid,
+	Text2Column,
+	TextOnly
 } from '$lib/types';
+import { createClient } from '@sanity/client';
 import { error } from '@sveltejs/kit';
 import {
 	makeSquareThumbnail,
@@ -19,6 +20,8 @@ import {
 	parseProjectFromData,
 	parseProjectMediaFromData
 } from './parse';
+
+const isDev = process.env.NODE_ENV === 'development';
 
 export function getClient() {
 	return client;
@@ -44,6 +47,7 @@ export async function getPage(slug: string): Promise<Page | undefined> {
 			_type == 'projects' => @->{...,projects[]->},
 			_type == 'project_media_ref' => @->,
 			_type == 'text_only_ref' => @->{..., "bgColor": background_color},
+			_type == 'text_2col_ref' => @->{..., "bgColor": background_color},
 			_type == 'columned_text_ref' => @->{..., "borderedTitle": bordered_title, "bgColor": background_color},
 			_type == 'client_list_ref' => @->{..., "bgColor": background_color},
 			_type == 'team_grid_ref' => @->{..., "bgColor": background_color, "extraMembers": extra_members[]->, "extraMembersTitle": extra_members_title},
@@ -110,6 +114,8 @@ async function getComponents(components: any): Promise<PageComponents> {
 			comps.push(component as LogoGrid);
 		} else if (component._type === 'text_only') {
 			comps.push(component as TextOnly);
+		} else if (component._type === 'text_2col') {
+			comps.push(component as Text2Column);
 		} else if (component._type === 'columned_text') {
 			comps.push(component as ColumnedText);
 		} else if (component._type === 'client_list') {
@@ -145,10 +151,13 @@ async function getComponents(components: any): Promise<PageComponents> {
 
 const date = new Date().toISOString().split('T')[0];
 
+console.log('sanity client isDev', isDev);
+
 const client = createClient({
 	projectId: SANITY_PROJECT_ID,
 	dataset: SANITY_DATASET,
 	apiVersion: date,
 	token: SANITY_TOKEN,
-	useCdn: true
+	useCdn: !isDev,
+	perspective: isDev ? 'previewDrafts' : 'published'
 });
