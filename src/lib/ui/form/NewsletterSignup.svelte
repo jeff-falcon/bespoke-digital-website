@@ -56,7 +56,10 @@
 			on:blur={onEmailBlur}
 			readonly={formResultMessage != ''}
 		/>
-		<button type="submit" disabled={isSending || formResultMessage != '' || !isValid}
+		<button
+			class="ignore-disabled"
+			type="submit"
+			disabled={isSending || formResultMessage != '' || !isValid}
 			>{isSending ? 'Subscribing...' : 'Sign Up'}</button
 		>
 	</form>

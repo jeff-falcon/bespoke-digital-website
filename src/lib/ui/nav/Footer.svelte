@@ -70,7 +70,7 @@
 		margin-top: 88px;
 	}
 	footer.hasSolutions {
-		margin-top: 128px;
+		margin-top: 64px;
 	}
 	footer.isDisabled {
 		visibility: hidden;
@@ -188,7 +188,7 @@
 			margin-top: 128px;
 		}
 		footer.hasSolutions {
-			margin-top: 220px;
+			margin-top: 64px;
 		}
 		.signup-socials-row {
 			display: grid;
