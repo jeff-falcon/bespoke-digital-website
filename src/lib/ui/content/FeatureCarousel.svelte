@@ -111,7 +111,11 @@
 		const widthDelta = Math.abs(width - lastViewportWidth);
 		const heightDelta = Math.abs(height - lastViewportHeight);
 
-		return widthDelta <= resizeWidthTolerance && heightDelta > 0 && heightDelta <= mobileNavResizeHeightMax;
+		return (
+			widthDelta <= resizeWidthTolerance &&
+			heightDelta > 0 &&
+			heightDelta <= mobileNavResizeHeightMax
+		);
 	}
 
 	function getSlideTargetState(index: number, activeIndex: number, currentY: number) {
@@ -130,7 +134,7 @@
 		if (index < activeIndex - 1) {
 			return { autoAlpha: 0, scale: 0.6, y: stackedY };
 		}
-		return { autoAlpha: 0, scale: 0.96, y: currentY + 80 };
+		return { autoAlpha: 0, scale: 1.15, y: currentY + 200 };
 	}
 
 	function applyState(index: number, currentY: number) {
@@ -205,7 +209,7 @@
 				y: currentY,
 				autoAlpha: 1,
 				duration: transitionDuration,
-				ease: easeCurve,
+				ease: 'power2.out',
 				overwrite: true
 			});
 		};
