@@ -8,7 +8,11 @@
 	$: hasBorderedTitle = hasTitle && data.borderedTitle;
 </script>
 
-<section class="columned-text gutter bg-{data.bgColor ?? 'transparent'}" class:hasBorderedTitle>
+<section
+	class="columned-text gutter bg-{data.bgColor ?? 'transparent'}"
+	class:hasBorderedTitle
+	class:indented={data.indented}
+>
 	<div class="wrap">
 		{#if hasTitle}
 			<h2 class="title">{data.title}</h2>
@@ -73,11 +77,22 @@
 	.column .title {
 		margin-top: 0;
 	}
+	section:not(.hasBorderedTitle) .column .title {
+		margin-bottom: var(--24pt);
+	}
 	.column .body :global(p:first-of-type) {
 		margin-top: 0;
 	}
 	.column .body :global(p:last-of-type) {
 		margin-bottom: 0;
+	}
+	.column .body :global(ul) {
+		margin: 0;
+		list-style-type: none;
+		padding: 0;
+	}
+	.column .body :global(li) {
+		margin: 0.5em 0;
 	}
 	@media (min-width: 560px) {
 		.columns {
@@ -98,8 +113,10 @@
 			margin: var(--16pt) 0 var(--24pt);
 		}
 		.wrap .title {
-			margin: 0 0 48px;
-			margin-bottom: var(--32pt);
+			margin: 0 0 var(--32pt);
+		}
+		section:not(.hasBorderedTitle) .wrap .title {
+			margin-bottom: 56px;
 		}
 		.hasBorderedTitle .columns :global(p) {
 			font-size: var(--20pt);
@@ -113,6 +130,21 @@
 	@media (min-width: 768px) {
 		.columns {
 			grid-template-columns: repeat(var(--max-columns), 1fr);
+		}
+	}
+	@media (min-width: 1200px) {
+		section.indented {
+			display: grid;
+			grid-template-columns: repeat(12, 1fr);
+			gap: 0 var(--gutter-lg);
+		}
+		section.indented .wrap {
+			grid-row: 1;
+			grid-column: 2 / span 10;
+		}
+		section.indented .columns {
+			grid-row: 2;
+			grid-column: 2 / span 10;
 		}
 	}
 </style>

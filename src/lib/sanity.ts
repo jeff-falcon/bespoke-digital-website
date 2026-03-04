@@ -8,6 +8,7 @@ import type {
 	PageComponents,
 	Project,
 	ProjectGrid,
+	Quote,
 	TeamGrid,
 	Text2Column,
 	TextOnly
@@ -48,6 +49,7 @@ export async function getPage(slug: string): Promise<Page | undefined> {
 			_type == 'project_media_ref' => @->,
 			_type == 'text_only_ref' => @->{..., "bgColor": background_color},
 			_type == 'text_2col_ref' => @->{..., "bgColor": background_color},
+			_type == 'quote_ref' => @->{..., "textColor": text_color},
 			_type == 'columned_text_ref' => @->{..., "borderedTitle": bordered_title, "bgColor": background_color},
 			_type == 'client_list_ref' => @->{..., "bgColor": background_color},
 			_type == 'team_grid_ref' => @->{..., "bgColor": background_color, "extraMembers": extra_members[]->, "extraMembersTitle": extra_members_title},
@@ -116,6 +118,8 @@ async function getComponents(components: any): Promise<PageComponents> {
 			comps.push(component as TextOnly);
 		} else if (component._type === 'text_2col') {
 			comps.push(component as Text2Column);
+		} else if (component._type === 'quote') {
+			comps.push(component as Quote);
 		} else if (component._type === 'columned_text') {
 			comps.push(component as ColumnedText);
 		} else if (component._type === 'client_list') {

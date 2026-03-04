@@ -85,6 +85,7 @@ export type PageComponents = Array<
 	| Form
 	| TeamGrid
 	| Text2Column
+	| Quote
 >;
 
 export interface Page {
@@ -156,6 +157,14 @@ export interface LogoGrid {
 	desktopMaxWidth: number;
 }
 
+export interface Quote {
+	_type: 'quote';
+	quote: string;
+	byline: string;
+	image?: CloudinaryImage;
+	textColor: SectionTextColor;
+}
+
 export interface TextOnly {
 	_type: 'text_only';
 	title: string;
@@ -174,6 +183,7 @@ export interface ColumnedText {
 	_type: 'columned_text';
 	title: string;
 	borderedTitle: boolean;
+	indented: boolean;
 	body: {
 		title: string;
 		body: InputValue;
@@ -215,3 +225,4 @@ export interface Form {
 
 export type FormType = 'contact' | 'job';
 export type SectionBackgroundColor = 'transparent' | 'dark' | 'darker';
+export type SectionTextColor = 'white' | 'green';

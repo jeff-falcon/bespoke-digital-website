@@ -7,6 +7,7 @@
 	import { onMount } from 'svelte';
 	import ClientList from '../content/ClientList.svelte';
 	import ColumnedText from '../content/ColumnedText.svelte';
+	import Quote from '../content/Quote.svelte';
 	import TeamGrid from '../content/TeamGrid.svelte';
 	import Text2Column from '../content/Text2Column.svelte';
 	import TextOnly from '../content/TextOnly.svelte';
@@ -82,6 +83,9 @@
 			{/if}
 			{#if component._type === 'text_2col'}
 				<Text2Column data={component} />
+			{/if}
+			{#if component._type === 'quote'}
+				<Quote data={component} />
 			{/if}
 			{#if component._type === 'columned_text'}
 				<ColumnedText data={component} />
