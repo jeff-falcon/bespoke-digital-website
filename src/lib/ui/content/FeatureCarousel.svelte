@@ -339,7 +339,7 @@
 			display: grid;
 			gap: var(--gutter-lg);
 			grid-template-columns: 1fr 1fr;
-			padding: 64px 60px 96px;
+			padding: 32px 40px 48px;
 		}
 		.slide-title {
 			font-size: var(--40pt);
@@ -356,6 +356,17 @@
 		}
 		img {
 			aspect-ratio: 1.4563 / 1;
+		}
+	}
+	@media (min-width: 720px) and (max-height: 700px) {
+		.slide {
+			padding: 16px 16px 40px;
+			gap: 16px var(--gutter-lg);
+		}
+	}
+	@media (min-width: 720px) and (min-height: 800px) {
+		.slide {
+			padding: 64px 60px 96px;
 		}
 	}
 </style>

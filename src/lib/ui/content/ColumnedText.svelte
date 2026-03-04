@@ -137,6 +137,8 @@
 			display: grid;
 			grid-template-columns: repeat(12, 1fr);
 			gap: 0 var(--gutter-lg);
+			padding-top: 8rem;
+			padding-bottom: 8rem;
 		}
 		section.indented .wrap {
 			grid-row: 1;
