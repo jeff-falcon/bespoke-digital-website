@@ -1,9 +1,10 @@
 <script lang="ts">
-	import Validator, { type ValidationError } from 'fastest-validator';
-	import TextField from '../input/TextField.svelte';
 	import { enhance } from '$app/forms';
 	import type { SubmitFunction } from '@sveltejs/kit';
+	import Validator, { type ValidationError } from 'fastest-validator';
+	import TextField from '../input/TextField.svelte';
 
+	export let title: string;
 	const v = new Validator();
 	const check = v.compile({
 		email: { type: 'email', label: 'Email address' }
@@ -42,7 +43,7 @@
 
 <div class="sign-up-form">
 	<h3 class="title" class:isComplete={formResultMessage !== ''}>
-		{#if formResultMessage}{formResultMessage}{:else}Sign Up For Our Newsletter{/if}
+		{#if formResultMessage}{formResultMessage}{:else}{title}{/if}
 	</h3>
 	<form method="POST" action="/forms/newsletter" use:enhance={onUseForm}>
 		<TextField

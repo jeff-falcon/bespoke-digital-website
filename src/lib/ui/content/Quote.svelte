@@ -12,7 +12,7 @@
 {#if data.quote}
 	<section class="quote-section bg-transparent" class:gutter={withGutter} class:isIntersecting>
 		<div class="wrap">
-			<IntersectionObserver element={quoteEl} bind:intersecting={isIntersecting} once={true}>
+			<IntersectionObserver element={quoteEl} bind:intersecting={isIntersecting} once={false}>
 				<h2 class="quote" class:green={data.textColor === 'green'} bind:this={quoteEl}>
 					"{data.quote}"
 				</h2>

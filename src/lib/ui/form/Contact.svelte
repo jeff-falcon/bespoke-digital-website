@@ -1,9 +1,9 @@
 <script lang="ts">
-	import Validator, { type ValidationError } from 'fastest-validator';
-	import TextField from '../input/TextField.svelte';
 	import { enhance } from '$app/forms';
 	import type { SubmitFunction } from '@sveltejs/kit';
+	import Validator, { type ValidationError } from 'fastest-validator';
 	import TextArea from '../input/TextArea.svelte';
+	import TextField from '../input/TextField.svelte';
 
 	export let mode: 'long' | 'short' = 'short';
 
@@ -146,7 +146,7 @@
 		gap: 16px;
 	}
 	.title {
-		font-weight: bold;
+		font-weight: normal;
 	}
 	.title.isComplete {
 		color: var(--text-highlight);

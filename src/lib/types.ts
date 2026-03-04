@@ -140,11 +140,18 @@ export interface MenuItem {
 	slug: string;
 }
 
+export interface Solutions {
+	title: string;
+	body: InputValue;
+}
+
 export interface Config {
 	_type: 'config';
 	menu: MenuItem[];
 	socials: { name: string; links: Social[] };
 	locations: Location[];
+	solutions: Solutions;
+	newsletterFormTitle: string;
 	borderRadius: number;
 }
 

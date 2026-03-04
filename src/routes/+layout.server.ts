@@ -39,6 +39,8 @@ export async function load({ cookies, url }) {
         "icon": icon.asset->url
       }
     },
+    "newsletterFormTitle": newsletter_form_title,
+    solutions,
     "borderRadius": border_radius
   }`;
 	const data = await client.fetch(groq);

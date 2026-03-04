@@ -1,6 +1,7 @@
 <script lang="ts">
 	import { isMenuOpenComplete } from '$lib/store';
 	import type { Config } from '$lib/types';
+	import { PortableText } from '@portabletext/svelte';
 	import Contact from '../form/Contact.svelte';
 	import NewsletterSignup from '../form/NewsletterSignup.svelte';
 	import Location from './Location.svelte';
@@ -11,6 +12,8 @@
 
 	const style =
 		config.borderRadius != null ? `--input-border-radius: ${config.borderRadius}px` : '';
+
+	$: hasSolutions = Boolean(config.solutions && config.solutions.title && config.solutions.body);
 </script>
 
 <footer
@@ -19,8 +22,15 @@
 	class:hasDivider
 	class:hasContactForm
 	class:isDisabled={$isMenuOpenComplete}
+	class:hasSolutions
 	{style}
 >
+	{#if hasSolutions}
+		<div class="solutions">
+			<h2 class="title">{config.solutions.title}</h2>
+			<div class="body"><PortableText value={config.solutions.body} components={{}} /></div>
+		</div>
+	{/if}
 	{#if hasContactForm}
 		<div class="contact">
 			<Contact />
@@ -28,7 +38,7 @@
 	{/if}
 	<div class="signup-socials-row">
 		<div class="newsletter">
-			<NewsletterSignup />
+			<NewsletterSignup title={config.newsletterFormTitle || 'Sign Up For Our Newsletter'} />
 		</div>
 		<div class="socials">
 			<h3 class="title">{config.socials.name}</h3>
@@ -59,6 +69,9 @@
 	footer {
 		margin-top: 88px;
 	}
+	footer.hasSolutions {
+		margin-top: 128px;
+	}
 	footer.isDisabled {
 		visibility: hidden;
 	}
@@ -73,10 +86,15 @@
 	.contact + .signup-socials-row {
 		margin-top: 48px;
 	}
+	.solutions + .contact {
+		margin-top: 40px;
+		border-top: 1px solid var(--text-color-15);
+		padding-top: 40px;
+	}
 	footer :global(h3.title) {
 		font-size: var(--18pt);
 		line-height: var(--24pt);
-		font-weight: bold;
+		font-weight: normal;
 		margin: 0 0 var(--24pt);
 	}
 	.locations {
@@ -149,9 +167,28 @@
 	.newsletter {
 		margin-bottom: 40px;
 	}
+	.solutions {
+		margin-bottom: 48px;
+	}
+	.solutions .title {
+		margin: 0 0 var(--24pt);
+	}
+	.solutions .body {
+		color: var(--text-color-60);
+	}
+	.solutions .body :global(ul) {
+		list-style-type: none;
+		padding: 0;
+	}
+	.solutions .body :global(li) {
+		margin: 10px 0;
+	}
 	@media (min-width: 720px) {
 		footer {
 			margin-top: 128px;
+		}
+		footer.hasSolutions {
+			margin-top: 220px;
 		}
 		.signup-socials-row {
 			display: grid;
@@ -194,6 +231,14 @@
 		.contact :global(.contact-form) {
 			grid-column: 1 / span 12;
 		}
+		.solutions {
+			margin-bottom: 40px;
+		}
+		.solutions .body :global(ul) {
+			display: flex;
+			flex-wrap: wrap;
+			gap: 24px 32px;
+		}
 	}
 	/* @media (min-width: 860px) {
 		.contact :global(.contact-form) {
@@ -208,6 +253,12 @@
 	@media (min-width: 1280px) {
 		.contact :global(.contact-form) {
 			grid-column: 1 / span 6;
+			}
+			} */
+
+	@media (min-width: 1100px) {
+		.solutions .body :global(ul) {
+			gap: 24px 48px;
 		}
-	} */
+	}
 </style>

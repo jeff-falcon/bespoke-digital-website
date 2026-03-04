@@ -100,7 +100,7 @@
 	}
 	.isCapsule {
 		border-radius: var(--input-border-radius);
-		border: 1px solid var(--bg-light);
+		border: 1px solid var(--text-color-60);
 		box-shadow: inset 0 0 0 0px transparent;
 		padding: 0 32px;
 		height: 48px;
