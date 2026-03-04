@@ -77,8 +77,11 @@
 	.column .title {
 		margin-top: 0;
 	}
+	section:not(.hasBorderedTitle) .wrap .title {
+		margin-bottom: var(--48pt);
+	}
 	section:not(.hasBorderedTitle) .column .title {
-		margin-bottom: var(--24pt);
+		margin-bottom: 0;
 	}
 	.column .body :global(p:first-of-type) {
 		margin-top: 0;
