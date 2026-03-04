@@ -2,6 +2,7 @@ import { SANITY_DATASET, SANITY_PROJECT_ID, SANITY_TOKEN } from '$env/static/pri
 import type {
 	ClientList,
 	ColumnedText,
+	FeatureCarousel,
 	Form,
 	LogoGrid,
 	Page,
@@ -17,6 +18,7 @@ import { createClient } from '@sanity/client';
 import { error } from '@sveltejs/kit';
 import {
 	makeSquareThumbnail,
+	parseCloudinaryImage,
 	parseMultiHeroFromData,
 	parseProjectFromData,
 	parseProjectMediaFromData
@@ -49,7 +51,7 @@ export async function getPage(slug: string): Promise<Page | undefined> {
 			_type == 'project_media_ref' => @->,
 			_type == 'text_only_ref' => @->{..., "bgColor": background_color},
 			_type == 'text_2col_ref' => @->{..., "bgColor": background_color},
-			_type == 'quote_ref' => @->{..., "textColor": text_color},
+			_type == 'feature_carousel_ref' => @->{..., "bgColor": background_color},
 			_type == 'columned_text_ref' => @->{..., "borderedTitle": bordered_title, "bgColor": background_color},
 			_type == 'client_list_ref' => @->{..., "bgColor": background_color},
 			_type == 'team_grid_ref' => @->{..., "bgColor": background_color, "extraMembers": extra_members[]->, "extraMembersTitle": extra_members_title},
@@ -122,6 +124,20 @@ async function getComponents(components: any): Promise<PageComponents> {
 			comps.push(component as Quote);
 		} else if (component._type === 'columned_text') {
 			comps.push(component as ColumnedText);
+		} else if (component._type === 'feature_carousel') {
+			const featureCarousel: FeatureCarousel = {
+				_type: 'feature_carousel',
+				slides: (component.slides ?? []).map((slide: any) => ({
+					title: slide.title ?? '',
+					image: parseCloudinaryImage(slide.image),
+					body: slide.body,
+					hasButton: slide.has_button ?? false,
+					buttonTitle: slide.button_title ?? '',
+					buttonUrl: slide.button_url ?? ''
+				})),
+				bgColor: component.bgColor ?? component.background_color
+			};
+			comps.push(featureCarousel);
 		} else if (component._type === 'client_list') {
 			const clients: ClientList = {
 				_type: 'client_list',

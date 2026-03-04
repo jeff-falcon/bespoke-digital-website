@@ -82,6 +82,7 @@ export type PageComponents = Array<
 	| TextOnly
 	| ColumnedText
 	| ClientList
+	| FeatureCarousel
 	| Form
 	| TeamGrid
 	| Text2Column
@@ -155,6 +156,21 @@ export interface LogoGrid {
 	color: string;
 	mobileMaxWidth: number;
 	desktopMaxWidth: number;
+}
+
+export interface FeatureCarousel {
+	_type: 'feature_carousel';
+	slides: FeatureCarouselSlide[];
+	bgColor: SectionBackgroundColor;
+}
+
+export interface FeatureCarouselSlide {
+	title: string;
+	image: CloudinaryImage;
+	body: InputValue;
+	hasButton?: boolean;
+	buttonTitle?: string;
+	buttonUrl?: string;
 }
 
 export interface Quote {

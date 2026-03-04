@@ -7,6 +7,7 @@
 	import { onMount } from 'svelte';
 	import ClientList from '../content/ClientList.svelte';
 	import ColumnedText from '../content/ColumnedText.svelte';
+	import FeatureCarousel from '../content/FeatureCarousel.svelte';
 	import Quote from '../content/Quote.svelte';
 	import TeamGrid from '../content/TeamGrid.svelte';
 	import Text2Column from '../content/Text2Column.svelte';
@@ -98,6 +99,9 @@
 			{/if}
 			{#if component._type === 'team_grid'}
 				<TeamGrid data={component} />
+			{/if}
+			{#if component._type === 'feature_carousel'}
+				<FeatureCarousel data={component} />
 			{/if}
 		{/each}
 	{/if}
