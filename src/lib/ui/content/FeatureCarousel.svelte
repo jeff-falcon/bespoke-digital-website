@@ -274,12 +274,35 @@
 			lastViewportWidth = nextViewport.width;
 			lastViewportHeight = nextViewport.height;
 			if (ignoreResize) return;
+			const previousRange = scrollTrigger
+				? {
+						start: scrollTrigger.start,
+						end: scrollTrigger.end,
+						scrollY: window.scrollY
+					}
+				: null;
 
 			cancelAnimationFrame(resizeRaf);
 			resizeRaf = requestAnimationFrame(async () => {
-				updateHeights();
-				ScrollTrigger.refresh();
 				await setupCarousel();
+				ScrollTrigger.refresh();
+
+				if (!previousRange || !scrollTrigger) return;
+				const { start: oldStart, end: oldEnd, scrollY: oldScrollY } = previousRange;
+				let targetScrollY: number | null = null;
+
+				if (oldScrollY > oldEnd) {
+					targetScrollY = scrollTrigger.end + (oldScrollY - oldEnd);
+				} else if (oldScrollY >= oldStart) {
+					const oldDistance = Math.max(1, oldEnd - oldStart);
+					const oldProgress = (oldScrollY - oldStart) / oldDistance;
+					const newDistance = Math.max(1, scrollTrigger.end - scrollTrigger.start);
+					targetScrollY = scrollTrigger.start + oldProgress * newDistance;
+				}
+
+				if (targetScrollY !== null && Math.abs(targetScrollY - window.scrollY) > 1) {
+					window.scrollTo({ top: targetScrollY, left: window.scrollX, behavior: 'auto' });
+				}
 			});
 		};
 
