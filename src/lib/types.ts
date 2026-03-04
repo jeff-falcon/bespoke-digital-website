@@ -168,6 +168,7 @@ export interface FeatureCarouselSlide {
 	title: string;
 	image: CloudinaryImage;
 	body: InputValue;
+	bodyTruncated: InputValue;
 	hasButton?: boolean;
 	buttonTitle?: string;
 	buttonUrl?: string;

@@ -27,7 +27,6 @@
 
 	const easeCurve = 'power2.inOut';
 	const transitionDuration = 0.75;
-	const slideStackStep = 100;
 
 	gsap.registerPlugin(ScrollTrigger);
 
@@ -90,13 +89,16 @@
 
 	function getSlideTargetState(index: number, activeIndex: number, currentY: number) {
 		const depth = activeIndex - index;
+		const slideStackStep =
+			Number.parseFloat(getComputedStyle(sectionEl).getPropertyValue('--slide-behind-offset-y')) ||
+			70;
 		const stackedY = currentY - depth * slideStackStep;
 
 		if (index === activeIndex) {
 			return { autoAlpha: 1, scale: 1, y: currentY };
 		}
 		if (index === activeIndex - 1) {
-			return { autoAlpha: 0.3, scale: 0.8, y: stackedY };
+			return { autoAlpha: 0, scale: 0.8, y: stackedY };
 		}
 		if (index < activeIndex - 1) {
 			return { autoAlpha: 0, scale: 0.6, y: stackedY };
@@ -202,7 +204,7 @@
 			start: () => `top top+=${headerOffset}`,
 			end: () => {
 				const slideCount = slides.length;
-				const distance = window.innerHeight * (slideCount + (slideCount - 1) * 0.8 + 1.25);
+				const distance = slideHeight * (slideCount + (slideCount - 1) * 0.8);
 				return `+=${distance}`;
 			},
 			pin: true,
@@ -243,58 +245,66 @@
 </script>
 
 <section bind:this={sectionEl} class="feature-carousel gutter bg-{data.bgColor ?? 'transparent'}">
-	{#if data.slides.length}
-		<div
-			bind:this={slidesEl}
-			class="slides"
-			style={`--slide-height:${slideHeight}px;--slides-wrap-height:${slidesWrapHeight}px`}
-		>
-			{#each data.slides as slide, index (slide)}
-				<div class="slide" bind:this={slideElements[index]}>
-					<span class="num">{(index + 1).toString().padStart(2, '0')}</span>
-					<div class="image">
-						<img
-							src={slide.image.url}
-							alt={slide.title}
-							width={slide.image.width}
-							height={slide.image.height}
-						/>
-					</div>
-					<div class="info">
-						{#if slide.title}
-							<h1 class="slide-title">{slide.title}</h1>
-						{/if}
-						<div class="body">
-							<PortableText value={slide.body} components={{}} />
-						</div>
-						{#if slide.hasButton && slide.buttonTitle && slide.buttonUrl}
-							<ArrowButton
-								style="capsule"
-								href={slide.buttonUrl}
-								isTitleBefore={true}
-								title={slide.buttonTitle}
+	<div class="wrap">
+		{#if data.slides.length}
+			<div
+				bind:this={slidesEl}
+				class="slides"
+				style={`--slide-height:${slideHeight}px;--slides-wrap-height:${slidesWrapHeight}px`}
+			>
+				{#each data.slides as slide, index (slide)}
+					<div class="slide" bind:this={slideElements[index]}>
+						<span class="num">{(index + 1).toString().padStart(2, '0')}</span>
+						<div class="image">
+							<img
+								src={slide.image.url}
+								alt={slide.title}
+								width={slide.image.width}
+								height={slide.image.height}
 							/>
-						{/if}
+						</div>
+						<div class="info">
+							{#if slide.title}
+								<h1 class="slide-title">{slide.title}</h1>
+							{/if}
+							<div class="body desktop">
+								<PortableText value={slide.body} components={{}} />
+							</div>
+							<div class="body mobile">
+								<PortableText value={slide.bodyTruncated} components={{}} />
+							</div>
+							{#if slide.hasButton && slide.buttonTitle && slide.buttonUrl}
+								<ArrowButton
+									style="capsule"
+									href={slide.buttonUrl}
+									isTitleBefore={true}
+									title={slide.buttonTitle}
+								/>
+							{/if}
+						</div>
 					</div>
-				</div>
-			{/each}
-		</div>
-	{/if}
+				{/each}
+			</div>
+		{/if}
+	</div>
 </section>
 
 <style>
 	section {
 		padding-top: 3rem;
-		padding-bottom: 3rem;
+		padding-bottom: 7.5rem;
+		--slide-behind-offset-y: 70px;
 	}
 	.slides {
 		position: relative;
 		height: var(--slides-wrap-height, auto);
 	}
 	.slide {
+		display: grid;
 		background: var(--bg-turquoise);
 		padding: 24px 16px 40px;
-		grid-template-rows: auto 1fr;
+		grid-template-rows: auto auto 1fr;
+		gap: 16px;
 		position: absolute;
 		top: 0;
 		left: 0;
@@ -312,7 +322,10 @@
 		width: 100%;
 		height: auto;
 		object-fit: cover;
+		object-position: center;
 		aspect-ratio: 1.716667 / 1;
+		display: block;
+		max-height: 300px;
 	}
 	.slide-title {
 		font-size: var(--24pt);
@@ -330,24 +343,45 @@
 		margin-top: 24px;
 		justify-content: center;
 	}
-	@media (min-width: 720px) {
+	.body.desktop {
+		display: none;
+	}
+	@media (min-width: 480px) {
 		section {
-			padding-top: 4rem;
-			padding-bottom: 4rem;
+			--slide-behind-offset-y: 95px;
 		}
 		.slide {
-			display: grid;
-			gap: var(--gutter-lg);
+			padding-inline: 32px;
+		}
+		.info :global(.btn) {
+			width: fit-content;
+		}
+	}
+	@media (min-width: 960px) {
+		section {
+			padding-top: 4rem;
+			padding-bottom: 8rem;
+			--slide-behind-offset-y: 85px;
+		}
+		.slide {
+			gap: 24px var(--gutter-lg);
 			grid-template-columns: 1fr 1fr;
 			padding: 32px 40px 48px;
+			grid-template-rows: auto 1fr;
+		}
+		.body.desktop {
+			display: block;
+		}
+		.body.mobile {
+			display: none;
 		}
 		.slide-title {
 			font-size: var(--40pt);
 			line-height: var(--48pt);
-			margin-bottom: var(--24pt);
+			margin-bottom: var(--16pt);
 		}
 		.info :global(.btn) {
-			margin-top: 56px;
+			margin-top: 48px;
 			width: fit-content;
 		}
 		.num {
@@ -356,15 +390,20 @@
 		}
 		img {
 			aspect-ratio: 1.4563 / 1;
+			max-height: none;
+		}
+		.wrap {
+			max-width: 1280px;
+			margin-inline: auto;
 		}
 	}
-	@media (min-width: 720px) and (max-height: 700px) {
+	@media (min-width: 768px) and (max-height: 700px) {
 		.slide {
 			padding: 16px 16px 40px;
 			gap: 16px var(--gutter-lg);
 		}
 	}
-	@media (min-width: 720px) and (min-height: 800px) {
+	@media (min-width: 1200px) and (min-height: 800px) {
 		.slide {
 			padding: 64px 60px 96px;
 		}

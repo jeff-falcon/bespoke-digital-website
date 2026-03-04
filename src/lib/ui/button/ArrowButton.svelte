@@ -63,7 +63,7 @@
 		align-items: center;
 		padding: 0;
 		border: 0;
-		gap: var(--14pt);
+		gap: 8px;
 		color: var(--text-color);
 		text-decoration: none;
 	}
@@ -100,7 +100,7 @@
 	}
 	.isCapsule {
 		border-radius: var(--input-border-radius);
-		border: 1px solid var(--text-color-30);
+		border: 1px solid var(--bg-light);
 		box-shadow: inset 0 0 0 0px transparent;
 		padding: 0 32px;
 		height: 48px;
@@ -112,7 +112,7 @@
 	}
 	.isCapsule:hover {
 		border-color: var(--text-color);
-		box-shadow: inset 0 0 0 2px var(--text-color);
+		box-shadow: inset 0 0 0 1px var(--text-color);
 	}
 	@media (min-width: 560px) {
 		button {

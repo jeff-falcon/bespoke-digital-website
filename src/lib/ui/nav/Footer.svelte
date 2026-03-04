@@ -35,7 +35,7 @@
 			<div class="links">
 				{#each config.socials.links as link}
 					<a href={link.url} target="_blank">
-						<img src={link.icon} width="16" height="16" alt={link.name} />
+						<img src={link.icon} width="20" height="20" alt={link.name} />
 					</a>
 				{/each}
 			</div>
@@ -125,18 +125,26 @@
 	.socials .links a {
 		display: inline-flex;
 		border-radius: 40px;
-		border: 1px solid var(--text-color-15);
+		border: 1px solid var(--text-color-30);
 		width: 48px;
 		height: 48px;
 		align-items: center;
 		justify-content: center;
 		transition: border-color 180ms linear;
 	}
+	.socials .links a img {
+		opacity: 0.8;
+		transition: opacity 180ms linear;
+	}
 	:global(.bg-is-light) .socials .links a img {
+		opacity: 0.65;
 		filter: invert(1);
 	}
 	.socials .links a:hover {
 		border-color: var(--text-color);
+	}
+	.socials .links a:hover img {
+		opacity: 1;
 	}
 	.newsletter {
 		margin-bottom: 40px;

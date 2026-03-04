@@ -1,14 +1,15 @@
-import type { PageServerLoad } from './$types';
+import { parseCloudinaryImage, parseProjectMediaFromData } from '$lib/parse';
 import { getClient } from '$lib/sanity';
 import type { Project, ProjectMedia, ProjectMediaPair, TextOnly } from '$lib/types';
 import { error } from '@sveltejs/kit';
-import { parseCloudinaryImage, parseProjectMediaFromData } from '$lib/parse';
+import type { PageServerLoad } from './$types';
 
 export const load: PageServerLoad = async ({
-	params
+	params,
+	cookies
 }): Promise<{ project?: Project } | undefined> => {
 	if (params.page === 'work' || params.page === 'case-studies') {
-		const client = getClient();
+		const client = getClient(cookies.get('drafts-enabled') === 'true');
 		const groq = `*[_type == "project" && slug.current == "${params.slug}"]{
 			...,
 			media[]{

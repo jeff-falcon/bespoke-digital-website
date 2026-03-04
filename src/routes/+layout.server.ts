@@ -1,5 +1,6 @@
 import { getClient } from '$lib/sanity';
 import type { Config } from '$lib/types';
+import { redirect } from '@sveltejs/kit';
 
 export const config = {
 	isr: {
@@ -9,8 +10,21 @@ export const config = {
 
 export const trailingSlash = 'never';
 
-export async function load() {
-	const client = getClient();
+export async function load({ cookies, url }) {
+	if (url.searchParams.get('enable-previews') === '1') {
+		console.log('enabling previews');
+		cookies.set('drafts-enabled', 'true', { path: '/' });
+		redirect(302, url.pathname);
+	} else if (
+		url.searchParams.get('enable-previews') === '0' &&
+		cookies.get('drafts-enabled') === 'true'
+	) {
+		console.log('disabling previews');
+		cookies.delete('drafts-enabled', { path: '/' });
+		redirect(302, url.pathname);
+	}
+	const draftsEnabled = cookies.get('drafts-enabled') === 'true';
+	const client = getClient(draftsEnabled);
 	const groq = `*[_type == "config"]{
     locations,
     "menu": main_menu[]->{
@@ -30,6 +44,7 @@ export async function load() {
 	const data = await client.fetch(groq);
 	const configData = data[0] as Config;
 	return {
-		config: configData
+		config: configData,
+		draftsEnabled
 	};
 }

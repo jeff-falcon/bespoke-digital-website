@@ -1,14 +1,14 @@
 <script lang="ts">
-	import TopNav from '$lib/ui/nav/TopNav.svelte';
 	import { PUBLIC_GA4_TAG_ID } from '$env/static/public';
+	import TopNav from '$lib/ui/nav/TopNav.svelte';
 	import 'video.js';
 	import 'video.js/dist/video-js.css';
 	import './styles.css';
 	// import 'swiper/css';
 	// import 'swiper/css/modules/navigation';
+	import { footerHasContactForm, inputBorderIsRounded, isMenuOpenComplete } from '$lib/store';
 	import Footer from '$lib/ui/nav/Footer.svelte';
 	import type { LayoutData } from './$types';
-	import { footerHasContactForm, isMenuOpenComplete, inputBorderIsRounded } from '$lib/store';
 
 	export let data: LayoutData;
 
@@ -16,6 +16,10 @@
 		data.config.borderRadius != null ? `--input-border-radius: ${data.config.borderRadius}px` : '';
 
 	inputBorderIsRounded.set(data.config.borderRadius != null && data.config.borderRadius > 0);
+
+	function disableDrafts() {
+		window.location.href = `${window.location.pathname}?enable-previews=0`;
+	}
 </script>
 
 <svelte:head>
@@ -62,6 +66,13 @@
 	</defs>
 </svg>
 
+{#if data.draftsEnabled}
+	<div class="drafts-enabled-banner">
+		<span>Drafts enabled</span>
+		<button on:click={disableDrafts}>Disable</button>
+	</div>
+{/if}
+
 <style>
 	main {
 		width: 100%;
@@ -70,5 +81,27 @@
 	}
 	main.isDisabled {
 		visibility: hidden;
+	}
+	.drafts-enabled-banner {
+		position: fixed;
+		bottom: 10px;
+		left: 10px;
+		z-index: 1000;
+		background: color-mix(in srgb, var(--bg-light), transparent 30%);
+		color: var(--text-dark);
+		padding: 8px 12px;
+		border-radius: 4px;
+		display: flex;
+		gap: 12px;
+		align-items: center;
+		font-size: var(--12pt);
+		backdrop-filter: blur(4px);
+	}
+	.drafts-enabled-banner button {
+		background: black;
+		color: white;
+		padding: 4px 8px;
+		border-radius: 4px;
+		border: 0;
 	}
 </style>

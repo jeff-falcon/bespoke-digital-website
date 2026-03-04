@@ -3,6 +3,7 @@ import type {
 	ClientList,
 	ColumnedText,
 	FeatureCarousel,
+	FeatureCarouselSlide,
 	Form,
 	LogoGrid,
 	Page,
@@ -15,7 +16,7 @@ import type {
 	TextOnly
 } from '$lib/types';
 import { createClient } from '@sanity/client';
-import { error } from '@sveltejs/kit';
+import { error, type Cookies } from '@sveltejs/kit';
 import {
 	makeSquareThumbnail,
 	parseCloudinaryImage,
@@ -24,16 +25,25 @@ import {
 	parseProjectMediaFromData
 } from './parse';
 
-const isDev = process.env.NODE_ENV === 'development';
+export function getClient(showDrafts = false) {
+	const date = new Date().toISOString().split('T')[0];
 
-export function getClient() {
-	return client;
+	console.log('getClient', { showDrafts, date });
+
+	return createClient({
+		projectId: SANITY_PROJECT_ID,
+		dataset: SANITY_DATASET,
+		apiVersion: date,
+		token: SANITY_TOKEN,
+		useCdn: !showDrafts,
+		perspective: showDrafts ? 'previewDrafts' : 'published'
+	});
 }
 
-export async function getPage(slug: string): Promise<Page | undefined> {
+export async function getPage(slug: string, cookies: Cookies): Promise<Page | undefined> {
 	if (!slug) error(404, 'Page not found');
 
-	const client = getClient();
+	const client = getClient(cookies.get('drafts-enabled') === 'true');
 	const groq = `*[_type == "page" && slug.current == "${slug}"]{
 		_id,
 		name,
@@ -51,6 +61,7 @@ export async function getPage(slug: string): Promise<Page | undefined> {
 			_type == 'project_media_ref' => @->,
 			_type == 'text_only_ref' => @->{..., "bgColor": background_color},
 			_type == 'text_2col_ref' => @->{..., "bgColor": background_color},
+			_type == 'quote_ref' => @->{..., "bgColor": background_color, "textColor": text_color},
 			_type == 'feature_carousel_ref' => @->{..., "bgColor": background_color},
 			_type == 'columned_text_ref' => @->{..., "borderedTitle": bordered_title, "bgColor": background_color},
 			_type == 'client_list_ref' => @->{..., "bgColor": background_color},
@@ -127,14 +138,18 @@ async function getComponents(components: any): Promise<PageComponents> {
 		} else if (component._type === 'feature_carousel') {
 			const featureCarousel: FeatureCarousel = {
 				_type: 'feature_carousel',
-				slides: (component.slides ?? []).map((slide: any) => ({
-					title: slide.title ?? '',
-					image: parseCloudinaryImage(slide.image),
-					body: slide.body,
-					hasButton: slide.has_button ?? false,
-					buttonTitle: slide.button_title ?? '',
-					buttonUrl: slide.button_url ?? ''
-				})),
+				slides: (component.slides ?? []).map(
+					(slide: any) =>
+						({
+							title: slide.title ?? '',
+							image: parseCloudinaryImage(slide.image),
+							body: slide.body,
+							bodyTruncated: slide.body_truncated,
+							hasButton: slide.has_button ?? false,
+							buttonTitle: slide.button_title ?? '',
+							buttonUrl: slide.button_url ?? ''
+						}) as FeatureCarouselSlide
+				),
 				bgColor: component.bgColor ?? component.background_color
 			};
 			comps.push(featureCarousel);
@@ -168,16 +183,3 @@ async function getComponents(components: any): Promise<PageComponents> {
 	}
 	return comps;
 }
-
-const date = new Date().toISOString().split('T')[0];
-
-console.log('sanity client isDev', isDev);
-
-const client = createClient({
-	projectId: SANITY_PROJECT_ID,
-	dataset: SANITY_DATASET,
-	apiVersion: date,
-	token: SANITY_TOKEN,
-	useCdn: !isDev,
-	perspective: isDev ? 'previewDrafts' : 'published'
-});

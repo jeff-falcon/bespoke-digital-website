@@ -1,31 +1,39 @@
 <script lang="ts">
 	import type { Quote } from '$lib/types';
+	import IntersectionObserver from 'svelte-intersection-observer';
 
 	export let data: Quote;
 	export let withGutter = true;
+
+	let isIntersecting = false;
+	let quoteEl: HTMLElement;
 </script>
 
-<section class="quote-section bg-transparent" class:gutter={withGutter}>
-	<div class="wrap">
-		{#if data.quote}
-			<h2 class="quote" class:green={data.textColor === 'green'}>"{data.quote}"</h2>
-		{/if}
+{#if data.quote}
+	<section class="quote-section bg-transparent" class:gutter={withGutter} class:isIntersecting>
+		<div class="wrap">
+			<IntersectionObserver element={quoteEl} bind:intersecting={isIntersecting} once={true}>
+				<h2 class="quote" class:green={data.textColor === 'green'} bind:this={quoteEl}>
+					"{data.quote}"
+				</h2>
 
-		{#if data.byline}
-			<div class="byline-row">
-				<p class="byline">— {data.byline}</p>
-				{#if data.image}
-					<img
-						src={data.image.url}
-						alt={data.byline}
-						width={data.image.width}
-						height={data.image.height}
-					/>
+				{#if data.byline}
+					<div class="byline-row">
+						<p class="byline">— {data.byline}</p>
+						{#if data.image}
+							<img
+								src={data.image.url}
+								alt={data.byline}
+								width={data.image.width}
+								height={data.image.height}
+							/>
+						{/if}
+					</div>
 				{/if}
-			</div>
-		{/if}
-	</div>
-</section>
+			</IntersectionObserver>
+		</div>
+	</section>
+{/if}
 
 <style>
 	section {
@@ -42,6 +50,16 @@
 		font-size: var(--40pt);
 		line-height: var(--48pt);
 		margin-bottom: var(--40pt);
+		opacity: 0;
+		translate: 0 80px;
+		filter: blur(20px);
+		transition: 1s var(--ease-out-cubic);
+		transition-property: filter, translate, opacity;
+	}
+	.isIntersecting .quote {
+		opacity: 1;
+		translate: 0;
+		filter: blur(0);
 	}
 	.quote.green {
 		color: var(--text-highlight);
@@ -51,6 +69,17 @@
 		flex-direction: column;
 		gap: 32px;
 		align-items: flex-end;
+		translate: 0 50px;
+		filter: blur(20px);
+		opacity: 0;
+		transition: 1s var(--ease-out-cubic);
+		transition-delay: 200ms;
+		transition-property: filter, translate, opacity;
+	}
+	.isIntersecting .byline-row {
+		translate: 0;
+		filter: blur(0);
+		opacity: 1;
 	}
 	.byline {
 		font-size: var(--18pt);
@@ -72,6 +101,9 @@
 			display: grid;
 			grid-template-columns: repeat(12, 1fr);
 			gap: var(--gutter-lg);
+		}
+		:global(section:not(.bg-transparent) + .quote-section.bg-transparent) {
+			padding-top: 8.5rem;
 		}
 		.wrap {
 			grid-column: 1 / span 12;

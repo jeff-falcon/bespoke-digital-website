@@ -36,6 +36,9 @@
 		background: var(--text-light-15);
 		margin: 6px 0 12px;
 	}
+	:global(.bg-is-light) hr {
+		background-color: var(--text-dark-15);
+	}
 	.address,
 	.email {
 		font-size: var(--12pt);

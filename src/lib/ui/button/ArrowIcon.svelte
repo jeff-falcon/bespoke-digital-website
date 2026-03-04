@@ -3,8 +3,8 @@
 </script>
 
 <span class="icon" class:isBordered>
-	<svg width="6" height="6" viewBox="0 0 6 6" fill="none" xmlns="http://www.w3.org/2000/svg">
-		<path d="M6 2.99993L1.5 5.59801L1.5 0.401855L6 2.99993Z" />
+	<svg width="6" height="8" viewBox="0 0 6 8" fill="none" xmlns="http://www.w3.org/2000/svg">
+		<path d="M6 4L0 8L2.68231e-07 0L6 4Z" />
 	</svg>
 </span>
 
