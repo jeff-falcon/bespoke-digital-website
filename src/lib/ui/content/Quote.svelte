@@ -40,6 +40,9 @@
 		padding-top: 3rem;
 		padding-bottom: 3rem;
 	}
+	:global(section:not(.bg-transparent) + .quote-section.bg-transparent) {
+		padding-top: 5rem;
+	}
 	.wrap :global(> :first-child) {
 		margin-top: 0;
 	}
