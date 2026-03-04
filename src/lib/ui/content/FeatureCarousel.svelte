@@ -382,8 +382,8 @@
 		padding-bottom: 7.5rem;
 		--slide-behind-offset-y: 70px;
 	}
-	:global(.pin-spacer) {
-		overflow: hidden;
+	:global(.pin-spacer:has(.feature-carousel)) {
+		overflow: hidden !important;
 	}
 	.slides {
 		position: relative;
