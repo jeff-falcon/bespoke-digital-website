@@ -37,6 +37,7 @@
 		"fastest-validator": "^1.17.0",
 		"google-auth-library": "^9.6.3",
 		"google-spreadsheet": "^4.1.1",
+		"gsap": "^3.14.2",
 		"luxon": "^3.4.4",
 		"nodemailer": "^6.9.9",
 		"prettier": "^3.2.5",
