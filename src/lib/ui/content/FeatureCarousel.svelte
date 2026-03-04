@@ -24,9 +24,13 @@
 	let queuedIndex: number | null = null;
 	let isAnimating = false;
 	let hasRevealedFirstSlide = false;
+	let lastViewportWidth = 0;
+	let lastViewportHeight = 0;
 
 	const easeCurve = 'power2.inOut';
 	const transitionDuration = 0.75;
+	const resizeWidthTolerance = 2;
+	const mobileNavResizeHeightMax = 140;
 
 	gsap.registerPlugin(ScrollTrigger);
 
@@ -85,6 +89,29 @@
 		for (const slide of slideElements) {
 			slide.style.minHeight = `${slideHeight}px`;
 		}
+	}
+
+	function getViewportDimensions() {
+		const viewport = window.visualViewport;
+		if (viewport) {
+			return {
+				width: Math.round(viewport.width),
+				height: Math.round(viewport.height)
+			};
+		}
+		return {
+			width: window.innerWidth,
+			height: window.innerHeight
+		};
+	}
+
+	function shouldIgnoreResize(width: number, height: number) {
+		if (!lastViewportWidth || !lastViewportHeight) return false;
+
+		const widthDelta = Math.abs(width - lastViewportWidth);
+		const heightDelta = Math.abs(height - lastViewportHeight);
+
+		return widthDelta <= resizeWidthTolerance && heightDelta > 0 && heightDelta <= mobileNavResizeHeightMax;
 	}
 
 	function getSlideTargetState(index: number, activeIndex: number, currentY: number) {
@@ -183,6 +210,16 @@
 			});
 		};
 
+		const resetFirstSlide = () => {
+			gsap.killTweensOf(slides);
+			currentIndex = 0;
+			queuedIndex = null;
+			isAnimating = false;
+			hasRevealedFirstSlide = false;
+			applyState(0, currentY);
+			gsap.set(slides[0], { y: currentY + 200, autoAlpha: 0 });
+		};
+
 		const handleProgress = (progress: number) => {
 			const targetIndex = Math.max(0, Math.min(maxIndex, Math.round(progress * maxIndex)));
 			animateToIndex(targetIndex, currentY);
@@ -196,6 +233,9 @@
 			},
 			onEnterBack: () => {
 				revealFirstSlide();
+			},
+			onLeaveBack: () => {
+				resetFirstSlide();
 			}
 		});
 
@@ -224,8 +264,17 @@
 
 	onMount(() => {
 		setupCarousel();
+		const initialViewport = getViewportDimensions();
+		lastViewportWidth = initialViewport.width;
+		lastViewportHeight = initialViewport.height;
 
 		const handleResize = () => {
+			const nextViewport = getViewportDimensions();
+			const ignoreResize = shouldIgnoreResize(nextViewport.width, nextViewport.height);
+			lastViewportWidth = nextViewport.width;
+			lastViewportHeight = nextViewport.height;
+			if (ignoreResize) return;
+
 			cancelAnimationFrame(resizeRaf);
 			resizeRaf = requestAnimationFrame(async () => {
 				updateHeights();
