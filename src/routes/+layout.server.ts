@@ -1,14 +1,17 @@
-import { BYPASS_TOKEN } from '$env/static/private';
+import { BYPASS_TOKEN, USE_ISR } from '$env/static/private';
 import { getClient } from '$lib/sanity';
 import type { Config } from '$lib/types';
 import { redirect } from '@sveltejs/kit';
 
-export const config = {
-	isr: {
-		expiration: 60,
-		bypassToken: BYPASS_TOKEN
-	}
-};
+export const config =
+	typeof USE_ISR === 'string' && USE_ISR === 'true'
+		? {
+				isr: {
+					expiration: 60,
+					bypassToken: BYPASS_TOKEN
+				}
+			}
+		: {};
 
 export const trailingSlash = 'never';
 
