@@ -34,8 +34,7 @@
 
 	let useUnderline = $derived(config.borderRadius === 0);
 
-	function toggleMenu() {
-		const newState = store.menuState === 'open' ? 'closed' : 'open';
+	function setMenuState(newState: 'open' | 'closed') {
 		store.menuState = newState;
 		clearTimeout(menuStateTimeout);
 		if (newState === 'closed') {
@@ -47,6 +46,11 @@
 				store.isMenuOpenComplete = true;
 			}, 500);
 		}
+	}
+
+	function toggleMenu() {
+		const newState = store.menuState === 'open' ? 'closed' : 'open';
+		setMenuState(newState);
 		return newState;
 	}
 
@@ -88,7 +92,8 @@
 		const isHidden = currentOpacity <= 0.01;
 		const currentLeft = Number(gsap.getProperty(borderEl, 'left')) || 0;
 		const currentWidth = Number(gsap.getProperty(borderEl, 'width')) || 0;
-		const isSamePosition = Math.abs(currentLeft - left) < 0.5 && Math.abs(currentWidth - width) < 0.5;
+		const isSamePosition =
+			Math.abs(currentLeft - left) < 0.5 && Math.abs(currentWidth - width) < 0.5;
 
 		killBorderTween();
 
@@ -152,7 +157,10 @@
 		}
 		const targetUrl = pendingNavUrl || hoveredUrl || activeUrl;
 		const skipPositionAnimation =
-			!!previousActiveUrl && !!activeUrl && previousActiveUrl !== activeUrl && hoveredUrl === activeUrl;
+			!!previousActiveUrl &&
+			!!activeUrl &&
+			previousActiveUrl !== activeUrl &&
+			hoveredUrl === activeUrl;
 		const clickToHoveredTargetNoAnimate =
 			!!activeUrl && !!clickedTargetNoAnimate && activeUrl === clickedTargetNoAnimate;
 		const shouldImmediate = immediate || skipPositionAnimation || clickToHoveredTargetNoAnimate;
@@ -197,11 +205,11 @@
 	}
 	$effect(() => {
 		if (
-			navigating?.type === 'popstate' ||
-			(navigating?.type === 'link' && store.menuState === 'open')
+			(navigating?.type === 'popstate' || navigating?.type === 'link') &&
+			store.menuState === 'open'
 		) {
 			untrack(() => {
-				toggleMenu();
+				setMenuState('closed');
 			});
 		}
 	});
@@ -493,7 +501,7 @@
 		border-width: 0;
 		border-bottom-width: 2px;
 	}
-	
+
 	.menu-btn {
 		display: block;
 		position: relative;
