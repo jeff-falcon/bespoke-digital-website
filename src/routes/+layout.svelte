@@ -4,7 +4,7 @@
 	import Footer from '$lib/ui/nav/Footer.svelte';
 	import TopNav from '$lib/ui/nav/TopNav.svelte';
 	import { gsap } from 'gsap';
-	import { ScrollTrigger } from 'gsap/ScrollTrigger';
+	import { ScrollTrigger } from 'gsap/dist/ScrollTrigger';
 	import { onMount } from 'svelte';
 	import 'video.js';
 	import 'video.js/dist/video-js.css';

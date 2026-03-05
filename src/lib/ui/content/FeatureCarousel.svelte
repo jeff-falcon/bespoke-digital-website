@@ -2,7 +2,7 @@
 	import type { FeatureCarousel } from '$lib/types';
 	import { PortableText } from '@portabletext/svelte';
 	import { gsap } from 'gsap';
-	import { ScrollTrigger } from 'gsap/ScrollTrigger';
+	import { ScrollTrigger } from 'gsap/dist/ScrollTrigger';
 	import { onMount, tick } from 'svelte';
 	import ArrowButton from '../button/ArrowButton.svelte';
 	import ProjectMediaComponent from '../project/ProjectMediaComponent.svelte';
