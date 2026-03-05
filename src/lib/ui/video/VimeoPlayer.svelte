@@ -1,6 +1,6 @@
 <script lang="ts">
+	import { createEventDispatcher, onMount } from 'svelte';
 	import IntersectionObserver from 'svelte-intersection-observer';
-	import { onMount, createEventDispatcher } from 'svelte';
 	import videojs from 'video.js';
 
 	const dispatch = createEventDispatcher<{ isPlaying: boolean }>();
@@ -8,7 +8,6 @@
 	export let src: string;
 	export let placeholder: string = '';
 	export let id: string;
-	export let title: string | null = null;
 	export let autoplay = false;
 
 	type Player = ReturnType<typeof videojs>;
@@ -39,7 +38,7 @@
 		if (isIntersecting && wasPlaying) {
 			vjsPlayer?.play();
 		} else if (!isIntersecting) {
-			wasPlaying = vjsPlayer?.paused() === false ?? false;
+			wasPlaying = vjsPlayer?.paused() === false;
 			vjsPlayer?.pause();
 		}
 	}
@@ -67,7 +66,7 @@
 		player.on('playing', onPlaying);
 		player.on('pause', onPaused);
 		player.on('volumechange', () => {
-			localStorage.setItem('video-volume', player.volume().toString());
+			localStorage.setItem('video-volume', player.volume()?.toString() ?? '1');
 		});
 		player.volume(Number(localStorage.getItem('video-volume') ?? 1));
 		vjsPlayer = player;

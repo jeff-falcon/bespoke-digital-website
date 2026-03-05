@@ -1,9 +1,9 @@
 <script lang="ts">
 	import type { ProjectMedia } from '$lib/types';
 	import VimeoBG from '$lib/ui/video/VimeoBG_VJS.svelte';
-	import IntersectionObserver from 'svelte-intersection-observer';
-	import VimeoPlayer from '$lib/ui/video/VimeoPlayer.svelte';
 	import VimeoEmbed from '$lib/ui/video/VimeoEmbed.svelte';
+	import VimeoPlayer from '$lib/ui/video/VimeoPlayer.svelte';
+	import IntersectionObserver from 'svelte-intersection-observer';
 
 	export let media: ProjectMedia;
 	export let cover = false;
@@ -34,7 +34,6 @@
 		<VimeoPlayer
 			id="media-{media._id}"
 			{src}
-			title={media.name}
 			placeholder={media.image?.url || undefined}
 			autoplay={media.autoplay}
 		/>
@@ -159,7 +158,9 @@
 	.media:not(.isBgVideo) img {
 		opacity: 0;
 		transform-origin: center top;
-		transition: 1.5s linear opacity, 5s transform var(--ease-out-cubic);
+		transition:
+			1.5s linear opacity,
+			5s transform var(--ease-out-cubic);
 	}
 	.media:not(.isBgVideo).isIntersecting img {
 		opacity: 1;

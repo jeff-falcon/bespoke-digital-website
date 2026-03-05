@@ -1,3 +1,4 @@
+//@ts-expect-error - this exists
 import type { InputValue } from '@portabletext/svelte/ptTypes';
 
 export interface CloudinaryImage {
