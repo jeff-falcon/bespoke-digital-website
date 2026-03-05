@@ -1,4 +1,4 @@
-import type { Project, ProjectMedia, CloudinaryImage, Hero, MultiHero } from '$lib/types';
+import type { CloudinaryImage, Hero, MultiHero, Project, ProjectMedia } from '$lib/types';
 
 export function parseCloudinaryImage(
 	image: any,
@@ -57,10 +57,7 @@ export function makeSquareThumbnail(image: any, size = 900) {
 	return imageSquare;
 }
 
-export async function parseProjectMediaFromData(
-	project: any,
-	isSingle = true
-): Promise<ProjectMedia | undefined> {
+export function parseProjectMediaFromData(project: any, isSingle = true): ProjectMedia | undefined {
 	if (project?._type !== 'project_media') return undefined;
 	const useOriginalQuality = project.use_original_quality ?? false;
 	const image = parseCloudinaryImage(

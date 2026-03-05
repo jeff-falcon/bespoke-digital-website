@@ -25,15 +25,15 @@ import {
 	parseProjectMediaFromData
 } from './parse';
 
-export function getClient(showDrafts = false) {
-	const date = new Date().toISOString().split('T')[0];
+const apiVersion = '2026-03-05';
 
-	console.log('getClient', { showDrafts, date });
+export function getClient(showDrafts = false) {
+	console.log('getClient', { showDrafts, apiVersion });
 
 	return createClient({
 		projectId: SANITY_PROJECT_ID,
 		dataset: SANITY_DATASET,
-		apiVersion: date,
+		apiVersion,
 		token: SANITY_TOKEN,
 		useCdn: !showDrafts,
 		perspective: showDrafts ? 'previewDrafts' : 'published'
@@ -62,7 +62,7 @@ export async function getPage(slug: string, cookies: Cookies): Promise<Page | un
 			_type == 'text_only_ref' => @->{..., "bgColor": background_color},
 			_type == 'text_2col_ref' => @->{..., "bgColor": background_color},
 			_type == 'quote_ref' => @->{..., "bgColor": background_color, "textColor": text_color},
-			_type == 'feature_carousel_ref' => @->{..., "bgColor": background_color},
+			_type == 'feature_carousel_ref' => @->{..., "bgColor": background_color, "slides": slides[]{..., media->}},
 			_type == 'columned_text_ref' => @->{..., "borderedTitle": bordered_title, "bgColor": background_color},
 			_type == 'client_list_ref' => @->{..., "bgColor": background_color},
 			_type == 'team_grid_ref' => @->{..., "bgColor": background_color, "extraMembers": extra_members[]->, "extraMembersTitle": extra_members_title},
@@ -123,7 +123,7 @@ async function getComponents(components: any): Promise<PageComponents> {
 			};
 			comps.push(grid);
 		} else if (component._type === 'project_media') {
-			const p = await parseProjectMediaFromData(component);
+			const p = parseProjectMediaFromData(component);
 			if (p) comps.push(p);
 		} else if (component._type === 'logo_grid') {
 			comps.push(component as LogoGrid);
@@ -142,7 +142,8 @@ async function getComponents(components: any): Promise<PageComponents> {
 					(slide: any) =>
 						({
 							title: slide.title ?? '',
-							image: parseCloudinaryImage(slide.image),
+							image: slide.media ? undefined : parseCloudinaryImage(slide.image),
+							media: slide.media ? parseProjectMediaFromData(slide.media) : undefined,
 							body: slide.body,
 							bodyTruncated: slide.body_truncated,
 							hasButton: slide.has_button ?? false,

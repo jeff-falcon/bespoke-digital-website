@@ -46,12 +46,12 @@ export const load: PageServerLoad = async ({
 		if (projectData.media) {
 			for (const media of projectData.media) {
 				if (media._type === 'project_media') {
-					const item = await parseProjectMediaFromData(media);
+					const item = parseProjectMediaFromData(media);
 					if (item) mediaList.push(item);
 				}
 				if (media._type === 'item_pair') {
-					const left = await parseProjectMediaFromData(media.left, false);
-					const right = await parseProjectMediaFromData(media.right, false);
+					const left = parseProjectMediaFromData(media.left, false);
+					const right = parseProjectMediaFromData(media.right, false);
 					if (!left && !right) {
 						continue;
 					}

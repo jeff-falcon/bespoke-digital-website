@@ -5,6 +5,7 @@
 	import { ScrollTrigger } from 'gsap/ScrollTrigger';
 	import { onMount, tick } from 'svelte';
 	import ArrowButton from '../button/ArrowButton.svelte';
+	import ProjectMediaComponent from '../project/ProjectMediaComponent.svelte';
 
 	export let data: FeatureCarousel;
 
@@ -342,13 +343,10 @@
 				{#each data.slides as slide, index (slide)}
 					<div class="slide" bind:this={slideElements[index]}>
 						<span class="num">{(index + 1).toString().padStart(2, '0')}</span>
-						<div class="image">
-							<img
-								src={slide.image.url}
-								alt={slide.title}
-								width={slide.image.width}
-								height={slide.image.height}
-							/>
+						<div class="image" class:empty={!slide.media}>
+							{#if slide.media}
+								<ProjectMediaComponent media={slide.media} scaleOnReveal={false} cover={true} />
+							{/if}
 						</div>
 						<div class="info">
 							{#if slide.title}
@@ -408,15 +406,6 @@
 		line-height: var(--48pt);
 		height: min-content;
 	}
-	img {
-		width: 100%;
-		height: auto;
-		object-fit: cover;
-		object-position: center;
-		aspect-ratio: 1.716667 / 1;
-		display: block;
-		max-height: 300px;
-	}
 	.slide-title {
 		font-size: var(--24pt);
 		line-height: var(--28pt);
@@ -435,6 +424,14 @@
 	}
 	.body.desktop {
 		display: none;
+	}
+	.image {
+		position: relative;
+		aspect-ratio: 1.716667 / 1;
+		max-height: 300px;
+	}
+	.image.empty {
+		background: red;
 	}
 	@media (min-width: 480px) {
 		section {
@@ -455,7 +452,7 @@
 		}
 		.slide {
 			gap: 24px var(--gutter-lg);
-			grid-template-columns: 1fr 1fr;
+			grid-template-columns: repeat(2, minmax(0, 1fr));
 			padding: 32px 40px 48px;
 			grid-template-rows: auto 1fr;
 		}
@@ -478,9 +475,9 @@
 			grid-row: 1;
 			grid-column: 1 / span 2;
 		}
-		img {
-			aspect-ratio: 1.4563 / 1;
+		.image {
 			max-height: none;
+			aspect-ratio: 1.4563 / 1;
 		}
 		.wrap {
 			max-width: 1280px;

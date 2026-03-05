@@ -173,9 +173,10 @@ export interface FeatureCarousel {
 
 export interface FeatureCarouselSlide {
 	title: string;
-	image: CloudinaryImage;
+	image?: CloudinaryImage;
+	media?: ProjectMedia;
 	body: InputValue;
-	bodyTruncated: InputValue;
+	bodyTruncated?: InputValue;
 	hasButton?: boolean;
 	buttonTitle?: string;
 	buttonUrl?: string;
