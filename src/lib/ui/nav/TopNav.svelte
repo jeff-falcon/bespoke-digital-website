@@ -30,6 +30,7 @@
 	let borderTween = $state<gsap.core.Tween | null>(null);
 	let previousActiveUrl: string | null = null;
 	let clickedTargetNoAnimate: string | null = null;
+	let pendingNavUrl: string | null = null;
 
 	let useUnderline = $derived(config.borderRadius === 0);
 
@@ -85,6 +86,9 @@
 		const width = targetBox.width;
 		const currentOpacity = Number(gsap.getProperty(borderEl, 'opacity')) || 0;
 		const isHidden = currentOpacity <= 0.01;
+		const currentLeft = Number(gsap.getProperty(borderEl, 'left')) || 0;
+		const currentWidth = Number(gsap.getProperty(borderEl, 'width')) || 0;
+		const isSamePosition = Math.abs(currentLeft - left) < 0.5 && Math.abs(currentWidth - width) < 0.5;
 
 		killBorderTween();
 
@@ -114,6 +118,13 @@
 			return true;
 		}
 
+		if (isSamePosition) {
+			gsap.set(borderEl, {
+				autoAlpha: 1
+			});
+			return true;
+		}
+
 		borderTween = gsap.to(borderEl, {
 			left,
 			width,
@@ -136,7 +147,10 @@
 		}
 
 		const activeUrl = getActiveUrl();
-		const targetUrl = hoveredUrl || activeUrl;
+		if (pendingNavUrl && activeUrl === pendingNavUrl) {
+			pendingNavUrl = null;
+		}
+		const targetUrl = pendingNavUrl || hoveredUrl || activeUrl;
 		const skipPositionAnimation =
 			!!previousActiveUrl && !!activeUrl && previousActiveUrl !== activeUrl && hoveredUrl === activeUrl;
 		const clickToHoveredTargetNoAnimate =
@@ -144,6 +158,7 @@
 		const shouldImmediate = immediate || skipPositionAnimation || clickToHoveredTargetNoAnimate;
 		if (!targetUrl) {
 			fadeBorderOut(shouldImmediate);
+			previousActiveUrl = activeUrl;
 			if (clickToHoveredTargetNoAnimate) clickedTargetNoAnimate = null;
 			return;
 		}
@@ -169,7 +184,16 @@
 		if (hoveredUrl === url && currentOpacity > 0.01) {
 			clickedTargetNoAnimate = url;
 		}
+		pendingNavUrl = url;
+		hoveredUrl = url;
+	}
+
+	function onLogoClick() {
 		hoveredUrl = null;
+		pendingNavUrl = null;
+		clickedTargetNoAnimate = null;
+		previousActiveUrl = null;
+		fadeBorderOut(true);
 	}
 	$effect(() => {
 		if (
@@ -274,6 +298,7 @@
 	<div class="logo">
 		<a
 			href="/"
+			onclick={onLogoClick}
 			onmouseenter={(e) => bespokeLogo?.play(true)}
 			onfocus={(e) => bespokeLogo?.play(true)}
 		>
