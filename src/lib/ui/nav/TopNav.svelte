@@ -225,20 +225,22 @@
 		}`
 	);
 	$effect(() => {
-		if (store.pageHasHero) {
-			untrack(() => {
-				clearTimeout(changeBgTimeout);
-				hasBg = scrollY > 120;
-			});
-		} else {
-			untrack(() => {
-				clearTimeout(changeBgTimeout);
-				if (typeof window !== 'undefined') {
-					changeBgTimeout = window.setTimeout(() => {
-						hasBg = true;
-					}, 150);
-				}
-			});
+		if (scrollY > -10000) {
+			if (store.pageHasHero) {
+				untrack(() => {
+					clearTimeout(changeBgTimeout);
+					hasBg = scrollY > 120;
+				});
+			} else {
+				untrack(() => {
+					clearTimeout(changeBgTimeout);
+					if (typeof window !== 'undefined') {
+						changeBgTimeout = window.setTimeout(() => {
+							hasBg = true;
+						}, 150);
+					}
+				});
+			}
 		}
 	});
 	let currentRoute = $derived(page.url.pathname ?? '');
