@@ -1,11 +1,11 @@
 <script lang="ts">
-	import { page, navigating } from '$app/stores';
-	import { isMenuOpenComplete, menuState, pageHasHero, bgColor } from '$lib/store';
+	import { navigating, page } from '$app/stores';
+	import { bgColor, isMenuOpenComplete, menuState, pageHasHero } from '$lib/store';
 	import type { Config } from '$lib/types';
 	import BespokeAnimatedLogo from '$lib/ui/logos/BespokeAnimatedLogo.svelte';
 	import InstagramLogo from '$lib/ui/logos/InstagramLogo.svelte';
 
-	import anime from 'animejs';
+	import { gsap } from 'gsap';
 	import { cubicIn, cubicOut, expoOut, linear, sineInOut } from 'svelte/easing';
 	import { fade, fly } from 'svelte/transition';
 
@@ -96,11 +96,11 @@
 				if (prevLink) {
 					drawBorder(prevLink.url, true);
 				} else {
-					anime({
-						targets: borderEl,
-						opacity: 0,
-						duration: 300,
-						easing: 'easeInOutSine'
+					gsap.to(borderEl, {
+						autoAlpha: 0,
+						duration: 0.3,
+						ease: 'sine.inOut',
+						overwrite: true
 					});
 				}
 			}
@@ -123,40 +123,35 @@
 				const left = Math.min(fromBox.left, toBox.left);
 				const right = Math.max(fromBox.right, toBox.right);
 				currentLinkHover = toEl;
-				anime({
-					targets: borderEl,
-					opacity: 1,
-					duration: 300,
-					easing: 'easeInOutSine'
+				gsap.to(borderEl, {
+					autoAlpha: 1,
+					duration: 0.3,
+					ease: 'sine.inOut',
+					overwrite: true
 				});
-				anime({
-					targets: borderEl,
-					keyframes: [
-						{
-							duration: 0,
-							left: `${fromBox.left}px`,
-							width: `${fromBox.width}px`,
-							easing: 'easeOutCubic'
-						},
-						{
-							duration: 220,
-							left: `${left}px`,
-							width: `${right - left}px`,
-							easing: 'easeOutCubic'
-						},
-						{
-							duration: 300,
-							left: `${toBox.left}px`,
-							width: `${toBox.width}px`,
-							easing: 'easeOutCubic'
-						}
-					],
-					complete: () => {
+				const borderTl = gsap.timeline({
+					onComplete: () => {
 						if (removeOnComplete) {
 							currentLinkHover = null;
 							isBorderAnimating = false;
 						}
 					}
+				});
+				borderTl.set(borderEl, {
+					left: `${fromBox.left}px`,
+					width: `${fromBox.width}px`
+				});
+				borderTl.to(borderEl, {
+					duration: 0.22,
+					left: `${left}px`,
+					width: `${right - left}px`,
+					ease: 'power3.out'
+				});
+				borderTl.to(borderEl, {
+					duration: 0.3,
+					left: `${toBox.left}px`,
+					width: `${toBox.width}px`,
+					ease: 'power3.out'
 				});
 			}
 		}, 150);
