@@ -7,6 +7,8 @@
 	import ArrowButton from '../button/ArrowButton.svelte';
 	import ProjectMediaComponent from '../project/ProjectMediaComponent.svelte';
 
+	gsap.registerPlugin(ScrollTrigger);
+
 	interface Props {
 		data: FeatureCarousel;
 	}
