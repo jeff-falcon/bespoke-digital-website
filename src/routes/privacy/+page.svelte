@@ -1,19 +1,19 @@
 <script lang="ts">
 	import { getContrastYIQFromColor } from '$lib/color';
-	import { bgColor, footerHasContactForm, pageHasHero } from '$lib/store';
+	import { store } from '$lib/store.svelte';
 	import { onMount } from 'svelte';
 
 	onMount(() => {
-		pageHasHero.set(false);
+		store.pageHasHero = false;
 		const defaultBg = getComputedStyle(document.documentElement).getPropertyValue('--bg-light');
 		const color = defaultBg;
-		bgColor.set(color);
+		store.bgColor = color;
 		document.body.style.setProperty('--page-bg-color', color);
 		document.body.className = `bg-is-${
-			getContrastYIQFromColor($bgColor) === 'white' ? 'dark' : 'light'
+			getContrastYIQFromColor(store.bgColor) === 'white' ? 'dark' : 'light'
 		}`;
-		document.body.style.backgroundColor = $bgColor;
-		footerHasContactForm.set(false);
+		document.body.style.backgroundColor = store.bgColor;
+		store.footerHasContactForm = false;
 	});
 </script>
 
@@ -59,8 +59,8 @@
 			<a href="#personalinfo">Learn more about personal information you disclose to us.</a>
 		</p>
 		<p>
-			<strong>Do we process any sensitive personal information?</strong> Some of the information may
-			be considered "special" or "sensitive" in certain jurisdictions, for example your racial or ethnic
+			<strong>Do we process any sensitive personal information?</strong> Some of the information may be
+			considered "special" or "sensitive" in certain jurisdictions, for example your racial or ethnic
 			origins, sexual orientation, and religious beliefs. We do not process sensitive personal information.
 		</p>
 		<p>
@@ -99,8 +99,8 @@
 			by submitting a
 			<a href="https://app.termly.io/notify/26fa51ee-cccb-4158-a7d2-a913cc77b169"
 				>data subject access request,</a
-			> or by contacting us. We will consider and act upon any request in accordance with applicable
-			data protection laws.
+			> or by contacting us. We will consider and act upon any request in accordance with applicable data
+			protection laws.
 		</p>
 		<p>
 			Want to learn more about what we do with any information we collect? <a href="#toc"
@@ -315,9 +315,9 @@
 		<p>We may need to share your personal information in the following situations:</p>
 		<ul>
 			<li>
-				<strong>Business Transfers.</strong> We may share or transfer your information in connection
-				with, or during negotiations of, any merger, sale of company assets, financing, or acquisition
-				of all or a portion of our business to another company.
+				<strong>Business Transfers.</strong> We may share or transfer your information in connection with,
+				or during negotiations of, any merger, sale of company assets, financing, or acquisition of all
+				or a portion of our business to another company.
 			</li>
 		</ul>
 		<span id="cookies"></span>
@@ -687,8 +687,7 @@
 			<li>
 				<strong>Right to opt out</strong> of the processing of your personal data if it is used for targeted
 				advertising (or sharing as defined under California’s privacy law), the sale of personal data,
-				or profiling in furtherance of decisions that produce legal or similarly significant effects
-				("profiling")
+				or profiling in furtherance of decisions that produce legal or similarly significant effects ("profiling")
 			</li>
 		</ul>
 		<p>Depending upon the state where you live, you may also have the following rights:</p>

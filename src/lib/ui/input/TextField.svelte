@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { inputBorderIsRounded } from '$lib/store';
+	import { store } from '$lib/store.svelte';
 	import { fade } from 'svelte/transition';
 
 	interface Props {
@@ -53,7 +53,7 @@
 	class:hasValue={value.trim().length > 0}
 	class:isFocused={readonly ? false : isFocused}
 	class:hasError
-	class:inputBorderIsRounded={$inputBorderIsRounded}
+	class:inputBorderIsRounded={store.inputBorderIsRounded}
 >
 	<div class="textfield">
 		{#if label}

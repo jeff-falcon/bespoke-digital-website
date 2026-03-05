@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { afterNavigate } from '$app/navigation';
 	import { getContrastYIQFromColor } from '$lib/color';
-	import { bgColor, footerHasContactForm, pageHasHero } from '$lib/store';
+	import { store } from '$lib/store.svelte';
 	import type { Page, ProjectMedia } from '$lib/types';
 	import ProjectGrid from '$lib/ui/project/ProjectGrid.svelte';
 	import { onMount } from 'svelte';
@@ -23,9 +23,9 @@
 
 	let { data }: Props = $props();
 
-	const randomHeroIndex = Math.floor(Math.random() * (data.heros?.heros.length ?? 0));
-	const hasHero = data.heros?.heros != null && data.heros?.heros.length > 0;
-	const hero = hasHero ? data.heros!.heros[randomHeroIndex] : null;
+	let randomHeroIndex = $derived(Math.floor(Math.random() * (data.heros?.heros.length ?? 0)));
+	let hasHero = $derived(data.heros?.heros != null && data.heros?.heros.length > 0);
+	let hero = $derived(hasHero ? data.heros!.heros[randomHeroIndex] : null);
 
 	onMount(() => {
 		updatePageSettings();
@@ -38,16 +38,16 @@
 	});
 
 	function updatePageSettings() {
-		pageHasHero.set(hasHero);
+		store.pageHasHero = hasHero;
 		const defaultBg = getComputedStyle(document.documentElement).getPropertyValue('--bg-dark');
 		const color = data.bgColor || defaultBg;
-		bgColor.set(color);
+		store.bgColor = color;
 		document.body.style.setProperty('--page-bg-color', color);
 		document.body.className = `bg-is-${
-			getContrastYIQFromColor($bgColor) === 'white' ? 'dark' : 'light'
+			getContrastYIQFromColor(store.bgColor) === 'white' ? 'dark' : 'light'
 		}`;
-		document.body.style.backgroundColor = $bgColor;
-		footerHasContactForm.set(data.footerHasContactForm);
+		document.body.style.backgroundColor = store.bgColor;
+		store.footerHasContactForm = data.footerHasContactForm;
 	}
 
 	function isVideoPlayer(component: ProjectMedia) {

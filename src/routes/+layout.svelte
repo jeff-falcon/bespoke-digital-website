@@ -1,8 +1,9 @@
 <script lang="ts">
 	import { PUBLIC_GA4_TAG_ID } from '$env/static/public';
-	import { footerHasContactForm, inputBorderIsRounded, isMenuOpenComplete } from '$lib/store';
+	import { store } from '$lib/store.svelte';
 	import Footer from '$lib/ui/nav/Footer.svelte';
 	import TopNav from '$lib/ui/nav/TopNav.svelte';
+	import { onMount } from 'svelte';
 	import 'video.js';
 	import 'video.js/dist/video-js.css';
 	import type { LayoutData } from './$types';
@@ -15,10 +16,13 @@
 
 	let { data, children }: Props = $props();
 
-	const style =
-		data.config.borderRadius != null ? `--input-border-radius: ${data.config.borderRadius}px` : '';
+	const style = $derived(
+		data.config.borderRadius != null ? `--input-border-radius: ${data.config.borderRadius}px` : ''
+	);
 
-	inputBorderIsRounded.set(data.config.borderRadius != null && data.config.borderRadius > 0);
+	onMount(() => {
+		store.inputBorderIsRounded = data.config.borderRadius != null && data.config.borderRadius > 0;
+	});
 
 	function disableDrafts() {
 		window.location.href = `${window.location.pathname}?enable-previews=0`;
@@ -40,11 +44,11 @@
 
 <TopNav config={data.config} usePillFollower={true} />
 
-<main class:isDisabled={$isMenuOpenComplete} {style}>
+<main class:isDisabled={store.isMenuOpenComplete} {style}>
 	{@render children?.()}
 </main>
 
-<Footer config={data.config} hasContactForm={$footerHasContactForm} />
+<Footer config={data.config} hasContactForm={store.footerHasContactForm} />
 
 <svg viewBox="0 0 100 100" height="0" width="0">
 	<defs>

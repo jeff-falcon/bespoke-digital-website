@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { inputBorderIsRounded } from '$lib/store';
+	import { store } from '$lib/store.svelte';
 	import { fade } from 'svelte/transition';
 
 	interface Props {
@@ -50,7 +50,7 @@
 	class:hasError
 	class:isTaller
 	class:isScrollable
-	class:inputBorderIsRounded={$inputBorderIsRounded}
+	class:inputBorderIsRounded={store.inputBorderIsRounded}
 	style="--height: {scrollHeight < actualScrollHeight && !isScrollable
 		? actualScrollHeight
 		: scrollHeight}px"

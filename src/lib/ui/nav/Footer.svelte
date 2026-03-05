@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { isMenuOpenComplete } from '$lib/store';
+	import { store } from '$lib/store.svelte';
 	import type { Config } from '$lib/types';
 	import { PortableText } from '@portabletext/svelte';
 	import Contact from '../form/Contact.svelte';
@@ -14,10 +14,13 @@
 
 	let { config, hasContactForm = false, hasDivider = false }: Props = $props();
 
-	const style =
-		config.borderRadius != null ? `--input-border-radius: ${config.borderRadius}px` : '';
+	const style = $derived(
+		config.borderRadius != null ? `--input-border-radius: ${config.borderRadius}px` : ''
+	);
 
-	let hasSolutions = $derived(Boolean(config.solutions && config.solutions.title && config.solutions.body));
+	let hasSolutions = $derived(
+		Boolean(config.solutions && config.solutions.title && config.solutions.body)
+	);
 </script>
 
 <footer
@@ -25,7 +28,7 @@
 	id="footer"
 	class:hasDivider
 	class:hasContactForm
-	class:isDisabled={$isMenuOpenComplete}
+	class:isDisabled={store.isMenuOpenComplete}
 	class:hasSolutions
 	{style}
 >

@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { navigating, page } from '$app/state';
-	import { bgColor, isMenuOpenComplete, menuState, pageHasHero } from '$lib/store';
+	import { store } from '$lib/store.svelte';
 	import type { Config } from '$lib/types';
 	import BespokeAnimatedLogo from '$lib/ui/logos/BespokeAnimatedLogo.svelte';
 	import InstagramLogo from '$lib/ui/logos/InstagramLogo.svelte';
@@ -19,33 +19,31 @@
 
 	let isBorderAnimating = $state(false);
 	let scrollY = $state(0);
-	let changeBgTimeout = $state(0);
+	let changeBgTimeout = $state<number>();
 	let hasBg = $state(false);
 
 	let bespokeLogo = $state<BespokeAnimatedLogo>();
 	let borderEl = $state<HTMLDivElement>();
 	let linkElements = $state<{ [key: string]: HTMLAnchorElement }>({});
 	let currentLinkHover = $state<HTMLAnchorElement | null>(null);
-	let hoverTimeout = 0;
-	let menuStateTimeout = 0;
+	let hoverTimeout = $state<number>();
+	let menuStateTimeout = $state<number>();
 
-	const useUnderline = config.borderRadius === 0;
+	let useUnderline = $derived(config.borderRadius === 0);
 
 	function toggleMenu() {
-		menuState.update((state) => {
-			const newState = state === 'open' ? 'closed' : 'open';
-			clearTimeout(menuStateTimeout);
-			if (newState === 'closed') {
-				menuStateTimeout = window.setTimeout(() => {
-					isMenuOpenComplete.set(false);
-				}, 10);
-			} else {
-				menuStateTimeout = window.setTimeout(() => {
-					isMenuOpenComplete.set(true);
-				}, 500);
-			}
-			return newState;
-		});
+		const newState = store.menuState === 'open' ? 'closed' : 'open';
+		clearTimeout(menuStateTimeout);
+		if (newState === 'closed') {
+			menuStateTimeout = window.setTimeout(() => {
+				store.isMenuOpenComplete = false;
+			}, 10);
+		} else {
+			menuStateTimeout = window.setTimeout(() => {
+				store.isMenuOpenComplete = true;
+			}, 500);
+		}
+		return newState;
 	}
 	function removeBorder() {
 		clearTimeout(hoverTimeout);
@@ -76,7 +74,7 @@
 			if (!borderEl) return;
 			let prevLink = menuLinks.find((link) => link.isActive)?.url;
 			if (currentLinkHover) {
-				prevLink = currentLinkHover.getAttribute('href') ?? undefined;
+				prevLink = currentLinkHover.getAttribute('href') || undefined;
 			}
 			if (!prevLink) prevLink = url;
 			if (prevLink && usePillFollower) {
@@ -122,7 +120,10 @@
 		}, 150);
 	}
 	$effect(() => {
-		if (navigating?.type === 'popstate' || (navigating?.type === 'link' && $menuState === 'open')) {
+		if (
+			navigating?.type === 'popstate' ||
+			(navigating?.type === 'link' && store.menuState === 'open')
+		) {
 			untrack(() => {
 				toggleMenu();
 			});
@@ -130,9 +131,9 @@
 	});
 
 	let backgroundColor = $derived(
-		$bgColor.startsWith('#')
-			? `${$bgColor}CC`
-			: `rgba(${$bgColor.replace('rgb(', '').replace(')', '')},0.8)`
+		store.bgColor.startsWith('#')
+			? `${store.bgColor}CC`
+			: `rgba(${store.bgColor.replace('rgb(', '').replace(')', '')},0.8)`
 	);
 	let style = $derived(
 		`--bg-color: ${backgroundColor}; ${
@@ -140,7 +141,7 @@
 		}`
 	);
 	$effect(() => {
-		if ($pageHasHero) {
+		if (store.pageHasHero) {
 			untrack(() => {
 				clearTimeout(changeBgTimeout);
 				hasBg = scrollY > 120;
@@ -167,9 +168,9 @@
 		})
 	);
 	let menuIsWide = $derived(menuLinks.length >= 4 ? 960 : 760);
-	let isMenuOpen = $derived($menuState === 'open');
+	let isMenuOpen = $derived(store.menuState === 'open');
 	let isOverCurrent = $derived(currentLinkHover?.getAttribute('href') === currentRoute);
-	let mobileNavStyle = $derived($bgColor ? `--bg-color: ${$bgColor};` : '');
+	let mobileNavStyle = $derived(store.bgColor ? `--bg-color: ${store.bgColor};` : '');
 </script>
 
 <svelte:window bind:scrollY />
