@@ -1,15 +1,11 @@
 <script lang="ts">
 	import type { FeatureCarousel } from '$lib/types';
 	import { PortableText } from '@portabletext/svelte';
-	import gsap, { Power2 } from 'gsap';
+	import gsap, { Power2 } from 'gsap/dist/gsap';
 	import { ScrollTrigger } from 'gsap/dist/ScrollTrigger';
 	import { onMount, tick } from 'svelte';
 	import ArrowButton from '../button/ArrowButton.svelte';
 	import ProjectMediaComponent from '../project/ProjectMediaComponent.svelte';
-
-	if (typeof window !== 'undefined') {
-		gsap.registerPlugin(ScrollTrigger);
-	}
 
 	interface Props {
 		data: FeatureCarousel;
@@ -42,8 +38,6 @@
 	const resizeWidthTolerance = 2;
 	const mobileNavResizeHeightMax = 140;
 	const incomingSlideOffscreenBuffer = 24;
-
-	gsap.registerPlugin(ScrollTrigger);
 
 	function destroyCarousel() {
 		if (scrollTrigger) {
