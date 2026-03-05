@@ -1,11 +1,15 @@
 <script lang="ts">
-	import Validator, { type ValidationError } from 'fastest-validator';
-	import TextField from '../input/TextField.svelte';
 	import { enhance } from '$app/forms';
 	import type { SubmitFunction } from '@sveltejs/kit';
+	import Validator, { type ValidationError } from 'fastest-validator';
 	import TextArea from '../input/TextArea.svelte';
+	import TextField from '../input/TextField.svelte';
 
-	export let mode: 'long' | 'short' = 'short';
+	interface Props {
+		mode?: 'long' | 'short';
+	}
+
+	let { mode = 'short' }: Props = $props();
 
 	const v = new Validator();
 	const check = v.compile({
@@ -14,47 +18,50 @@
 		message: { type: 'string', label: 'Message', trim: true, min: 10, max: 5000 }
 	});
 
-	let email: string = '';
-	let name: string = '';
-	let message: string = '';
-	let portfolio: string = '';
-	let phone: string = '';
-	let isSending = false;
-	let wasEmailTested = false;
-	let wasNameTested = false;
-	let wasMessageTested = false;
-	let formResultMessage = '';
+	let email: string = $state('');
+	let name: string = $state('');
+	let message: string = $state('');
+	let portfolio: string = $state('');
+	let phone: string = $state('');
+	let isSending = $state(false);
+	let wasEmailTested = $state(false);
+	let wasNameTested = $state(false);
+	let wasMessageTested = $state(false);
+	let formResultMessage = $state('');
 
-	$: validation = check({ email, name, message });
-	$: emailError =
+	let validation = $derived(check({ email, name, message }));
+	let emailError = $derived(
 		wasEmailTested &&
-		validation !== true &&
-		(validation as ValidationError[]).find((val) => val.field === 'email')
+			validation !== true &&
+			(validation as ValidationError[]).find((val) => val.field === 'email')
 			? 'Invalid email address'
-			: '';
-	$: nameError =
+			: ''
+	);
+	let nameError = $derived(
 		wasNameTested &&
-		validation !== true &&
-		(validation as ValidationError[]).find((val) => val.field === 'name')
+			validation !== true &&
+			(validation as ValidationError[]).find((val) => val.field === 'name')
 			? 'Name is required'
-			: '';
-	$: messageError =
+			: ''
+	);
+	let messageError = $derived(
 		wasMessageTested && validation !== true
-			? (validation as ValidationError[]).find((val) => val.field === 'message')?.message ?? ''
-			: '';
-	$: isValid = validation === true;
+			? ((validation as ValidationError[]).find((val) => val.field === 'message')?.message ?? '')
+			: ''
+	);
+	let isValid = $derived(validation === true);
 
-	function onEmailBlur(e: { detail: string }) {
+	function onEmailBlur(detail: string) {
 		if (email.length) {
 			wasEmailTested = true;
 		}
 	}
-	function onNameBlur(e: { detail: string }) {
+	function onNameBlur(detail: string) {
 		if (name.length) {
 			wasNameTested = true;
 		}
 	}
-	function onMessageBlur(e: { detail: string }) {
+	function onMessageBlur(detail: string) {
 		if (message.length) {
 			wasMessageTested = true;
 		}
@@ -91,7 +98,7 @@
 					id="message"
 					bind:value={message}
 					error={messageError}
-					on:blur={onMessageBlur}
+					onBlur={onMessageBlur}
 				/>
 			</div>
 			<div class="name-email">
@@ -102,7 +109,7 @@
 					id="name"
 					error={nameError}
 					bind:value={name}
-					on:blur={onNameBlur}
+					onBlur={onNameBlur}
 				/>
 				<TextField
 					name="email"
@@ -111,7 +118,7 @@
 					id="email"
 					error={emailError}
 					bind:value={email}
-					on:blur={onEmailBlur}
+					onBlur={onEmailBlur}
 				/>
 			</div>
 			{#if mode === 'long'}

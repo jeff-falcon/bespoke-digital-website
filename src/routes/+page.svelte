@@ -1,7 +1,11 @@
 <script lang="ts">
 	import PageComponent from '$lib/ui/page/Page.svelte';
 	import type { PageData } from './$types';
-	export let data: PageData;
+	interface Props {
+		data: PageData;
+	}
+
+	let { data }: Props = $props();
 </script>
 
 {#key data._id}

@@ -1,14 +1,18 @@
 <script lang="ts">
 	import type { LogoGrid } from '$lib/types';
 
-	export let data: LogoGrid;
+	interface Props {
+		data: LogoGrid;
+	}
 
-	$: colors = data.color.split('/');
-	$: bgColor = colors[0] ? `var(--${colors[0]})` : 'transparent';
-	$: iconColor = `url(#colorizer-${colors[1] || 'white'})`;
-	$: textColor = colors[0] ? `var(--${colors[1]})` : 'white';
-	$: mobileMaxWidth = data.mobileMaxWidth ? `${data.mobileMaxWidth}px` : '100%';
-	$: desktopMaxWidth = data.desktopMaxWidth ? `${data.desktopMaxWidth}px` : '100%';
+	let { data }: Props = $props();
+
+	let colors = $derived(data.color.split('/'));
+	let bgColor = $derived(colors[0] ? `var(--${colors[0]})` : 'transparent');
+	let iconColor = $derived(`url(#colorizer-${colors[1] || 'white'})`);
+	let textColor = $derived(colors[0] ? `var(--${colors[1]})` : 'white');
+	let mobileMaxWidth = $derived(data.mobileMaxWidth ? `${data.mobileMaxWidth}px` : '100%');
+	let desktopMaxWidth = $derived(data.desktopMaxWidth ? `${data.desktopMaxWidth}px` : '100%');
 </script>
 
 <section

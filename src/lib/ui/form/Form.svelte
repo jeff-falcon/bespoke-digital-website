@@ -3,7 +3,11 @@
 	import { PortableText } from '@portabletext/svelte';
 	import Contact from './Contact.svelte';
 	import JobSubmission from './JobSubmission.svelte';
-	export let data: Form;
+	interface Props {
+		data: Form;
+	}
+
+	let { data }: Props = $props();
 </script>
 
 <section class="gutter bg-{data.bgColor ?? 'transparent'}">

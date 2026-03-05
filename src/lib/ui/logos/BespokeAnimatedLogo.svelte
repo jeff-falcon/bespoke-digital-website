@@ -3,13 +3,13 @@
 	import { cubicInOut, quintInOut } from 'svelte/easing';
 	import { fly } from 'svelte/transition';
 
-	let part = 1;
+	let part = $state(1);
 	let animInt = 0;
 	let isPlaying = false;
 
 	const easing = quintInOut;
 	const times = [650, 1300, 1950, 2600, 4100, 5600];
-	$: duration = part > 4 ? 1500 : 600;
+	let duration = $derived(part > 4 ? 1500 : 600);
 
 	onMount(() => {
 		play();

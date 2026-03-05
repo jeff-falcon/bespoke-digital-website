@@ -5,25 +5,39 @@
 	import VimeoPlayer from '$lib/ui/video/VimeoPlayer.svelte';
 	import IntersectionObserver from 'svelte-intersection-observer';
 
-	export let media: ProjectMedia;
-	export let cover = false;
-	export let fillContainer = false;
-	export let scaleOnReveal = true;
-	export let isFullWidth = true;
+	interface Props {
+		media: ProjectMedia;
+		cover?: boolean;
+		fillContainer?: boolean;
+		scaleOnReveal?: boolean;
+		isFullWidth?: boolean;
+	}
 
-	let figureEl: HTMLElement;
-	let isIntersecting = false;
-	let isVideoPlaying = false;
-	$: videoBgSrc = isFullWidth ? media.videoBgSrcHd || media.videoBgSrc : media.videoBgSrc;
-	$: isBgVideo = media.kind === 'video-bg' && Boolean(videoBgSrc);
-	$: isStaticImage = media.kind === 'image' && Boolean(media.image?.url);
-	$: hasVideoId = !isNaN(Number(videoBgSrc));
-	$: isVideoPlayer = media.kind === 'video-player' && Boolean(media.videoPlayerSrc) && !hasVideoId;
-	$: isVideoEmbed = media.kind === 'video-bg' && Boolean(videoBgSrc) && hasVideoId;
+	let {
+		media,
+		cover = false,
+		fillContainer = false,
+		scaleOnReveal = true,
+		isFullWidth = true
+	}: Props = $props();
 
-	function onVideoPlaying(e: { detail: boolean }) {
+	let figureEl = $state<HTMLElement>();
+	let isIntersecting = $state(false);
+	let isVideoPlaying = $state(false);
+	let videoBgSrc = $derived(
+		isFullWidth ? media.videoBgSrcHd || media.videoBgSrc : media.videoBgSrc
+	);
+	let isBgVideo = $derived(media.kind === 'video-bg' && Boolean(videoBgSrc));
+	let isStaticImage = $derived(media.kind === 'image' && Boolean(media.image?.url));
+	let hasVideoId = $derived(!isNaN(Number(videoBgSrc)));
+	let isVideoPlayer = $derived(
+		media.kind === 'video-player' && Boolean(media.videoPlayerSrc) && !hasVideoId
+	);
+	let isVideoEmbed = $derived(media.kind === 'video-bg' && Boolean(videoBgSrc) && hasVideoId);
+
+	function onVideoPlaying(isPlaying: boolean) {
 		window.requestAnimationFrame(() => {
-			isVideoPlaying = e.detail;
+			isVideoPlaying = isPlaying;
 		});
 	}
 </script>
@@ -64,7 +78,7 @@
 						src={videoBgSrc || ''}
 						placeholder={media.image?.url ?? ''}
 						bind:isIntersecting
-						on:isPlaying={onVideoPlaying}
+						onPlaying={onVideoPlaying}
 					/>
 				{/key}
 			{/if}

@@ -2,13 +2,13 @@
 	import type { TeamGrid } from '$lib/types';
 	import { PortableText } from '@portabletext/svelte';
 
-	export let data: TeamGrid;
-
-	$: hasDescription = Boolean(data.description?.[0]?.children?.[0]?.text);
-
-	$: {
-		console.log(data);
+	interface Props {
+		data: TeamGrid;
 	}
+
+	let { data }: Props = $props();
+
+	let hasDescription = $derived(Boolean(data.description?.[0]?.children?.[0]?.text));
 </script>
 
 <section class="team-grid gutter bg-{data.bgColor ?? 'transparent'}" class:hasDescription>

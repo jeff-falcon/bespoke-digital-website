@@ -1,7 +1,11 @@
 <script lang="ts">
 	import type { ClientList } from '$lib/types';
 
-	export let data: ClientList;
+	interface Props {
+		data: ClientList;
+	}
+
+	let { data }: Props = $props();
 </script>
 
 <section class="client-list gutter bg-{data.bgColor ?? 'transparent'}">

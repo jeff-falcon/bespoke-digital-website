@@ -6,7 +6,11 @@
 	import { getContrastYIQFromColor } from '$lib/color';
 	import { afterNavigate } from '$app/navigation';
 
-	export let data: PageData;
+	interface Props {
+		data: PageData;
+	}
+
+	let { data }: Props = $props();
 
 	onMount(() => {
 		updatePageSettings();

@@ -3,13 +3,16 @@
 	import ArrowButton from '$lib/ui/button/ArrowButton.svelte';
 	import ProjectMediaComponent from '../project/ProjectMediaComponent.svelte';
 
-	export let data: Hero;
+	interface Props {
+		data: Hero;
+	}
 
-	let scrollY = 0;
-	let innerHeight = 0;
+	let { data }: Props = $props();
 
-	let media: ProjectMedia;
-	$: media = {
+	let scrollY = $state(0);
+	let innerHeight = $state(0);
+
+	let media: ProjectMedia = $derived({
 		_id: data._id,
 		_type: 'project_media',
 		name: '',
@@ -19,14 +22,15 @@
 		videoBgSrcHd: data.videoBgSrcHd,
 		useOriginalQuality: false,
 		autoplay: true
-	};
-	$: scrollPct = innerHeight ? Math.max(0, Math.min(1, scrollY / innerHeight)) : 0;
-	$: canApplyTransform = Math.abs(scrollY) < innerHeight + 100;
-	$: bgStyle = canApplyTransform ? `transform: translateY(${scrollY * 0.55}px);` : '';
-	$: fgStyle = canApplyTransform
+	});
+	
+	let scrollPct = $derived(innerHeight ? Math.max(0, Math.min(1, scrollY / innerHeight)) : 0);
+	let canApplyTransform = $derived(Math.abs(scrollY) < innerHeight + 100);
+	let bgStyle = $derived(canApplyTransform ? `transform: translateY(${scrollY * 0.55}px);` : '');
+	let fgStyle = $derived(canApplyTransform
 		? `transform: translateY(${scrollY * 0.65}px); opacity: ${1 - scrollPct};`
-		: '';
-	$: dimStyle = canApplyTransform ? `opacity: ${scrollPct * 0.7 + 0.3};` : '';
+		: '');
+	let dimStyle = $derived(canApplyTransform ? `opacity: ${scrollPct * 0.7 + 0.3};` : '');
 </script>
 
 <svelte:window bind:scrollY bind:innerHeight />
@@ -57,7 +61,7 @@
 			{/if}
 		</div>
 	</div>
-	<div class="dim" style={dimStyle} />
+	<div class="dim" style={dimStyle}></div>
 	<div class="bg" style={bgStyle}>
 		{#key data._id}
 			<ProjectMediaComponent {media} cover={true} scaleOnReveal={false} isFullWidth={true} />

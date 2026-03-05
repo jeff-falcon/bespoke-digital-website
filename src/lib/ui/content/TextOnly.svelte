@@ -2,8 +2,12 @@
 	import type { TextOnly } from '$lib/types';
 	import { PortableText } from '@portabletext/svelte';
 
-	export let data: TextOnly;
-	export let withGutter = true;
+	interface Props {
+		data: TextOnly;
+		withGutter?: boolean;
+	}
+
+	let { data, withGutter = true }: Props = $props();
 </script>
 
 <section class="text-only bg-{data.bgColor ?? 'transparent'}" class:gutter={withGutter}>

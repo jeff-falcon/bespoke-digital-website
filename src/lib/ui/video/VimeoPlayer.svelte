@@ -1,47 +1,60 @@
 <script lang="ts">
-	import { createEventDispatcher, onMount } from 'svelte';
+	import { onMount, untrack } from 'svelte';
 	import IntersectionObserver from 'svelte-intersection-observer';
 	import videojs from 'video.js';
 
-	const dispatch = createEventDispatcher<{ isPlaying: boolean }>();
+	interface Props {
+		src: string;
+		placeholder?: string;
+		id: string;
+		autoplay?: boolean;
+		onPlaying?: (isPlaying: boolean) => void;
+	}
 
-	export let src: string;
-	export let placeholder: string = '';
-	export let id: string;
-	export let autoplay = false;
+	let { src, placeholder = '', id, autoplay = false, onPlaying: _onPlaying }: Props = $props();
 
 	type Player = ReturnType<typeof videojs>;
 
-	let containerEl: HTMLElement;
-	let videoEl: HTMLVideoElement | null = null;
-	let isIntersecting = false;
-	let shouldReveal = false;
-	let startedPlaying = false;
-	let vjsPlayer: Player | null = null;
-	let wasPlaying = false;
-	let shouldAutoPlay = false;
+	let containerEl = $state<HTMLElement>();
+	let videoEl = $state<HTMLVideoElement | null>(null);
+	let isIntersecting = $state(false);
+	let shouldReveal = $state(false);
+	let startedPlaying = $state(false);
+	let vjsPlayer: Player | null = $state(null);
+	let wasPlaying = $state(false);
+	let shouldAutoPlay = $state(false);
 
 	function onPlaying() {
-		dispatch('isPlaying', true);
+		_onPlaying?.(true);
 		startedPlaying = true;
 		wasPlaying = true;
 	}
 	function onPaused() {
-		dispatch('isPlaying', false);
+		_onPlaying?.(false);
 	}
 
-	$: if (isIntersecting && !shouldReveal) {
-		shouldReveal = true;
-	}
-
-	$: if ((isIntersecting || !isIntersecting) && startedPlaying) {
-		if (isIntersecting && wasPlaying) {
-			vjsPlayer?.play();
-		} else if (!isIntersecting) {
-			wasPlaying = vjsPlayer?.paused() === false;
-			vjsPlayer?.pause();
+	$effect(() => {
+		if (isIntersecting && !shouldReveal) {
+			untrack(() => {
+				shouldReveal = true;
+			});
 		}
-	}
+	});
+
+	$effect(() => {
+		if ((isIntersecting || !isIntersecting) && startedPlaying) {
+			if (isIntersecting && wasPlaying) {
+				untrack(() => {
+					vjsPlayer?.play();
+				});
+			} else if (!isIntersecting) {
+				untrack(() => {
+					wasPlaying = vjsPlayer?.paused() === false;
+					vjsPlayer?.pause();
+				});
+			}
+		}
+	});
 
 	onMount(() => {
 		shouldAutoPlay = window.innerWidth < 560 ? true : autoplay;
@@ -82,7 +95,7 @@
 
 <IntersectionObserver element={containerEl} bind:intersecting={isIntersecting}>
 	<div class="video-container" bind:this={containerEl} class:shouldReveal>
-		<!-- svelte-ignore a11y-media-has-caption -->
+		<!-- svelte-ignore a11y_media_has_caption -->
 		<video
 			{id}
 			class="video-js vjs-fill vjs-16-9"

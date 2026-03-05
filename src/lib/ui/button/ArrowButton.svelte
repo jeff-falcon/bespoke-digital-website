@@ -1,16 +1,29 @@
 <script lang="ts">
 	import ArrowIcon from './ArrowIcon.svelte';
 
-	export let title: string = '';
-	export let isTitleHiddenOnMobile = false;
-	export let isTitleBefore = true;
-	export let href = '';
-	export let isOverSolid = true;
-	export let style: 'capsule' | 'default' = 'default';
+	interface Props {
+		title?: string;
+		isTitleHiddenOnMobile?: boolean;
+		isTitleBefore?: boolean;
+		href?: string;
+		isOverSolid?: boolean;
+		style?: 'capsule' | 'default';
+		onClick?: () => void;
+	}
 
-	$: sanitizedHref = href.replace(/^http(s):\/\/(.*?)bespokedigital\.com/, '') ?? '';
-	$: isLinkExternal = sanitizedHref.startsWith('http');
-	$: titleSplits = title.split(' ');
+	let {
+		title = '',
+		isTitleHiddenOnMobile = false,
+		isTitleBefore = true,
+		href = '',
+		isOverSolid = true,
+		style = 'default',
+		onClick
+	}: Props = $props();
+
+	let sanitizedHref = $derived(href.replace(/^http(s):\/\/(.*?)bespokedigital\.com/, '') ?? '');
+	let isLinkExternal = $derived(sanitizedHref.startsWith('http'));
+	let titleSplits = $derived(title.split(' '));
 </script>
 
 {#if href}
@@ -26,8 +39,8 @@
 	>
 		{#if title}
 			<span class="title"
-				>{#each titleSplits as word}
-					<span class="word">{word}</span>
+				>{#each titleSplits as word, index}
+					<span class="word">{word}{index < titleSplits.length - 1 ? ' ' : ''}</span>
 				{/each}</span
 			>
 		{/if}
@@ -35,7 +48,7 @@
 	</a>
 {:else}
 	<button
-		on:click
+		onclick={() => onClick?.()}
 		type="button"
 		class="btn"
 		class:hasTitle={Boolean(title)}
@@ -46,8 +59,8 @@
 	>
 		{#if title}
 			<span class="title"
-				>{#each titleSplits as word}
-					<span class="word">{word}</span>
+				>{#each titleSplits as word, index}
+					<span class="word">{word}{index < titleSplits.length - 1 ? ' ' : ''}</span>
 				{/each}</span
 			>
 		{/if}

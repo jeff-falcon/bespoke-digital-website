@@ -2,10 +2,14 @@
 	import type { ColumnedText } from '$lib/types';
 	import { PortableText } from '@portabletext/svelte';
 
-	export let data: ColumnedText;
+	interface Props {
+		data: ColumnedText;
+	}
 
-	$: hasTitle = data.title && data.title.length > 0;
-	$: hasBorderedTitle = hasTitle && data.borderedTitle;
+	let { data }: Props = $props();
+
+	let hasTitle = $derived(data.title && data.title.length > 0);
+	let hasBorderedTitle = $derived(hasTitle && data.borderedTitle);
 </script>
 
 <section

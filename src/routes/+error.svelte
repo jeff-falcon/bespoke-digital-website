@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { page } from '$app/stores';
+	import { page } from '$app/state';
 	import { onMount } from 'svelte';
 
 	onMount(() => {
@@ -11,8 +11,8 @@
 </script>
 
 <section class="gutter">
-	<h1>{$page.status}</h1>
-	<h3>{$page.error?.message}</h3>
+	<h1>{page.status}</h1>
+	<h3>{page.error?.message}</h3>
 </section>
 
 <style>

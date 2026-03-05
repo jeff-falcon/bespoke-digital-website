@@ -1,38 +1,51 @@
 <script lang="ts">
-	import { onMount, createEventDispatcher } from 'svelte';
+	import { onMount, untrack } from 'svelte';
 
-	const dispatch = createEventDispatcher<{ isPlaying: boolean }>();
-
-	export let src: string;
-	export let placeholder: string = '';
-	export let id: string;
-	export let isIntersecting = false;
-
-	let isPlaying = false;
-	let isReady = false;
-	let playerTimeout: number | NodeJS.Timeout = 0;
-
-	let videoEl: HTMLVideoElement | null = null;
-
-	$: hasRedirect = src.includes('progressive_redirect');
-
-	$: if (isIntersecting || !isIntersecting) {
-		clearTimeout(playerTimeout);
-		if (isIntersecting && isReady && !isPlaying) {
-			videoEl?.play();
-		} else if (!isIntersecting && isPlaying) {
-			playerTimeout = setTimeout(() => {
-				videoEl?.pause();
-			}, 50);
-		}
+	interface Props {
+		src: string;
+		placeholder?: string;
+		id: string;
+		isIntersecting?: boolean;
+		onPlaying?: (isPlaying: boolean) => void;
 	}
 
+	let {
+		src,
+		placeholder = '',
+		id,
+		isIntersecting = $bindable(false),
+		onPlaying: _onPlaying
+	}: Props = $props();
+
+	let isPlaying = $state(false);
+	let isReady = $state(false);
+	let playerTimeout = $state<number>();
+
+	let videoEl = $state<HTMLVideoElement>();
+
+	let hasRedirect = $derived(src.includes('progressive_redirect'));
+
+	$effect(() => {
+		if (isIntersecting || !isIntersecting) {
+			untrack(() => {
+				clearTimeout(playerTimeout);
+				if (isIntersecting && isReady && !isPlaying) {
+					videoEl?.play();
+				} else if (!isIntersecting && isPlaying && typeof window !== 'undefined') {
+					playerTimeout = window.setTimeout(() => {
+						videoEl?.pause();
+					}, 50);
+				}
+			});
+		}
+	});
+
 	function onPlaying() {
-		dispatch('isPlaying', true);
+		_onPlaying?.(true);
 		isPlaying = true;
 	}
 	function onPaused() {
-		dispatch('isPlaying', false);
+		_onPlaying?.(false);
 		isPlaying = false;
 	}
 
@@ -78,7 +91,7 @@
 		crossorigin="anonymous"
 		disablepictureinpicture
 		disableremoteplayback
-	/>
+	></video>
 </div>
 
 <style>

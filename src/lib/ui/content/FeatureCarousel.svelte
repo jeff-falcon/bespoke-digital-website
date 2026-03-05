@@ -7,13 +7,17 @@
 	import ArrowButton from '../button/ArrowButton.svelte';
 	import ProjectMediaComponent from '../project/ProjectMediaComponent.svelte';
 
-	export let data: FeatureCarousel;
+	interface Props {
+		data: FeatureCarousel;
+	}
 
-	let sectionEl: HTMLElement;
-	let slidesEl: HTMLDivElement;
-	let slideElements: HTMLDivElement[] = [];
-	let slideHeight = 0;
-	let slidesWrapHeight = 0;
+	let { data }: Props = $props();
+
+	let sectionEl = $state<HTMLElement>();
+	let slidesEl = $state<HTMLDivElement>();
+	let slideElements = $state<HTMLDivElement[]>([]);
+	let slideHeight = $state(0);
+	let slidesWrapHeight = $state(0);
 	let headerOffset = 0;
 	let sectionTopPadding = 0;
 	let currentSlideOffset = 0;
@@ -131,6 +135,7 @@
 	}
 
 	function getSlideTargetState(index: number, activeIndex: number, currentY: number) {
+		if (!sectionEl) return { autoAlpha: 0, scale: 1, y: currentY };
 		const depth = activeIndex - index;
 		const slideStackStep =
 			Number.parseFloat(getComputedStyle(sectionEl).getPropertyValue('--slide-behind-offset-y')) ||

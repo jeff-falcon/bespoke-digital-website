@@ -10,7 +10,12 @@
 	import Footer from '$lib/ui/nav/Footer.svelte';
 	import type { LayoutData } from './$types';
 
-	export let data: LayoutData;
+	interface Props {
+		data: LayoutData;
+		children?: import('svelte').Snippet;
+	}
+
+	let { data, children }: Props = $props();
 
 	const style =
 		data.config.borderRadius != null ? `--input-border-radius: ${data.config.borderRadius}px` : '';
@@ -38,7 +43,7 @@
 <TopNav config={data.config} usePillFollower={true} />
 
 <main class:isDisabled={$isMenuOpenComplete} {style}>
-	<slot />
+	{@render children?.()}
 </main>
 
 <Footer config={data.config} hasContactForm={$footerHasContactForm} />
@@ -69,7 +74,7 @@
 {#if data.draftsEnabled}
 	<div class="drafts-enabled-banner">
 		<span>Drafts enabled</span>
-		<button on:click={disableDrafts}>Disable</button>
+		<button onclick={disableDrafts}>Disable</button>
 	</div>
 {/if}
 

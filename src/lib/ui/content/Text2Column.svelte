@@ -2,8 +2,12 @@
 	import type { Text2Column } from '$lib/types';
 	import { PortableText } from '@portabletext/svelte';
 
-	export let data: Text2Column;
-	export let withGutter = true;
+	interface Props {
+		data: Text2Column;
+		withGutter?: boolean;
+	}
+
+	let { data, withGutter = true }: Props = $props();
 </script>
 
 <section class="text-2col bg-{data.bgColor ?? 'transparent'}" class:gutter={withGutter}>

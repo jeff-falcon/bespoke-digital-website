@@ -6,14 +6,18 @@
 	import NewsletterSignup from '../form/NewsletterSignup.svelte';
 	import Location from './Location.svelte';
 
-	export let config: Config;
-	export let hasContactForm = false;
-	export let hasDivider = false;
+	interface Props {
+		config: Config;
+		hasContactForm?: boolean;
+		hasDivider?: boolean;
+	}
+
+	let { config, hasContactForm = false, hasDivider = false }: Props = $props();
 
 	const style =
 		config.borderRadius != null ? `--input-border-radius: ${config.borderRadius}px` : '';
 
-	$: hasSolutions = Boolean(config.solutions && config.solutions.title && config.solutions.body);
+	let hasSolutions = $derived(Boolean(config.solutions && config.solutions.title && config.solutions.body));
 </script>
 
 <footer

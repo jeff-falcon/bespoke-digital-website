@@ -3,7 +3,11 @@
 	import ArrowButton from '../button/ArrowButton.svelte';
 
 	import ProjectThumb from './ProjectThumb.svelte';
-	export let data: ProjectGrid;
+	interface Props {
+		data: ProjectGrid;
+	}
+
+	let { data }: Props = $props();
 </script>
 
 <section class="project-grid gutter">

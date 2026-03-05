@@ -2,10 +2,14 @@
 	import type { Location } from '$lib/types';
 	import LocaleTime from './LocaleTime.svelte';
 
-	export let location: Location;
+	interface Props {
+		location: Location;
+	}
 
-	$: email = location.email.toLowerCase().replace(/\s+/g, '').trim();
-	$: address = location.address.replace(/\n/g, '<br/>');
+	let { location }: Props = $props();
+
+	let email = $derived(location.email.toLowerCase().replace(/\s+/g, '').trim());
+	let address = $derived(location.address.replace(/\n/g, '<br/>'));
 </script>
 
 <div class="location">

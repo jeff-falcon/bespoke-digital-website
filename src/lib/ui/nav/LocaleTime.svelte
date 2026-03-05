@@ -1,11 +1,13 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
 
-	export let timezone: string;
+	interface Props {
+		timezone: string;
+	}
 
-	let tick = 0;
-	$: isClientSide = typeof window !== 'undefined';
-	$: time = isClientSide ? getLocalTime(timezone, tick) : '';
+	let { timezone }: Props = $props();
+
+	let tick = $state(0);
 
 	onMount(() => {
 		const myTimer = window.setInterval(() => {
@@ -33,6 +35,8 @@
 			return localTime;
 		}
 	}
+	let isClientSide = $derived(typeof window !== 'undefined');
+	let time = $derived(isClientSide ? getLocalTime(timezone, tick) : '');
 </script>
 
 {#if time}

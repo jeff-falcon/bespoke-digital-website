@@ -4,28 +4,33 @@
 	import Validator, { type ValidationError } from 'fastest-validator';
 	import TextField from '../input/TextField.svelte';
 
-	export let title: string;
+	interface Props {
+		title: string;
+	}
+
+	let { title }: Props = $props();
 	const v = new Validator();
 	const check = v.compile({
 		email: { type: 'email', label: 'Email address' }
 	});
 
-	let email: string = '';
-	let wasEmailTested = false;
-	let formResultMessage = '';
-	let isSending = false;
+	let email: string = $state('');
+	let wasEmailTested = $state(false);
+	let formResultMessage = $state('');
+	let isSending = $state(false);
 
-	$: validation = check({ email });
-	$: emailError =
+	let validation = $derived(check({ email }));
+	let emailError = $derived(
 		wasEmailTested &&
-		validation !== true &&
-		(validation as ValidationError[]).find((val) => val.field === 'email')
+			validation !== true &&
+			(validation as ValidationError[]).find((val) => val.field === 'email')
 			? 'Invalid email address'
-			: '';
-	$: isValid = validation === true;
+			: ''
+	);
+	let isValid = $derived(validation === true);
 
-	function onEmailBlur(e: { detail: string }) {
-		wasEmailTested = Boolean(e.detail.length);
+	function onEmailBlur(detail: string) {
+		wasEmailTested = Boolean(detail.length);
 	}
 
 	function onUseForm(): ReturnType<SubmitFunction> {
@@ -53,7 +58,7 @@
 			id="email"
 			error={emailError}
 			bind:value={email}
-			on:blur={onEmailBlur}
+			onBlur={onEmailBlur}
 			readonly={formResultMessage != ''}
 		/>
 		<button

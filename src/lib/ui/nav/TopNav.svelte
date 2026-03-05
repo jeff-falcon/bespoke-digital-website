@@ -1,71 +1,35 @@
 <script lang="ts">
-	import { navigating, page } from '$app/stores';
+	import { navigating, page } from '$app/state';
 	import { bgColor, isMenuOpenComplete, menuState, pageHasHero } from '$lib/store';
 	import type { Config } from '$lib/types';
 	import BespokeAnimatedLogo from '$lib/ui/logos/BespokeAnimatedLogo.svelte';
 	import InstagramLogo from '$lib/ui/logos/InstagramLogo.svelte';
 
 	import { gsap } from 'gsap';
+	import { untrack } from 'svelte';
 	import { cubicIn, cubicOut, expoOut, linear, sineInOut } from 'svelte/easing';
 	import { fade, fly } from 'svelte/transition';
 
-	export let usePillFollower = true;
-	export let config: Config;
+	interface Props {
+		usePillFollower?: boolean;
+		config: Config;
+	}
 
-	let isBorderAnimating = false;
-	let scrollY = 0;
-	let changeBgTimeout = 0;
-	let hasBg = false;
+	let { usePillFollower = true, config }: Props = $props();
 
-	let bespokeLogo: BespokeAnimatedLogo;
-	let borderEl: HTMLDivElement;
-	let linkElements: { [key: string]: HTMLAnchorElement } = {};
-	let fromToAnim = { from: { x: 0, width: 0 }, to: { x: 0, width: 0 } };
-	let currentLinkHover: HTMLAnchorElement | null = null;
+	let isBorderAnimating = $state(false);
+	let scrollY = $state(0);
+	let changeBgTimeout = $state(0);
+	let hasBg = $state(false);
+
+	let bespokeLogo = $state<BespokeAnimatedLogo>();
+	let borderEl = $state<HTMLDivElement>();
+	let linkElements = $state<{ [key: string]: HTMLAnchorElement }>({});
+	let currentLinkHover = $state<HTMLAnchorElement | null>(null);
 	let hoverTimeout = 0;
 	let menuStateTimeout = 0;
 
 	const useUnderline = config.borderRadius === 0;
-
-	$: if ($navigating?.type === 'popstate' || $navigating?.type === 'link') {
-		if ($menuState === 'open') {
-			toggleMenu();
-		}
-	}
-
-	$: backgroundColor = $bgColor.startsWith('#')
-		? `${$bgColor}CC`
-		: `rgba(${$bgColor.replace('rgb(', '').replace(')', '')},0.8)`;
-	$: style = `--bg-color: ${backgroundColor}; ${
-		config.borderRadius != null ? `--input-border-radius: ${config.borderRadius}px` : ''
-	}`;
-
-	$: if ($pageHasHero) {
-		clearTimeout(changeBgTimeout);
-		hasBg = scrollY > 120;
-	} else {
-		clearTimeout(changeBgTimeout);
-		if (typeof window !== 'undefined') {
-			changeBgTimeout = window.setTimeout(() => {
-				hasBg = true;
-			}, 150);
-		}
-	}
-
-	$: menuLinks = config.menu.map((item) => {
-		return {
-			name: item.name,
-			url: `/${item.slug}/`,
-			isActive: (currentRoute.indexOf(`/${item.slug}`) ?? -1) > -1
-		};
-	});
-
-	$: menuIsWide = menuLinks.length >= 4 ? 960 : 760;
-
-	$: currentRoute = $page.url.pathname ?? '';
-	$: isMenuOpen = $menuState === 'open';
-	$: isOverCurrent = currentLinkHover?.getAttribute('href') === currentRoute;
-	$: mobileNavStyle = $bgColor ? `--bg-color: ${$bgColor};` : '';
 
 	function toggleMenu() {
 		menuState.update((state) => {
@@ -95,7 +59,7 @@
 				const prevLink = menuLinks.find((link) => link.isActive);
 				if (prevLink) {
 					drawBorder(prevLink.url, true);
-				} else {
+				} else if (borderEl) {
 					gsap.to(borderEl, {
 						autoAlpha: 0,
 						duration: 0.3,
@@ -109,6 +73,7 @@
 	function drawBorder(url: string, removeOnComplete = false) {
 		clearTimeout(hoverTimeout);
 		hoverTimeout = window.setTimeout(() => {
+			if (!borderEl) return;
 			let prevLink = menuLinks.find((link) => link.isActive)?.url;
 			if (currentLinkHover) {
 				prevLink = currentLinkHover.getAttribute('href') ?? undefined;
@@ -156,6 +121,55 @@
 			}
 		}, 150);
 	}
+	$effect(() => {
+		if (navigating?.type === 'popstate' || (navigating?.type === 'link' && $menuState === 'open')) {
+			untrack(() => {
+				toggleMenu();
+			});
+		}
+	});
+
+	let backgroundColor = $derived(
+		$bgColor.startsWith('#')
+			? `${$bgColor}CC`
+			: `rgba(${$bgColor.replace('rgb(', '').replace(')', '')},0.8)`
+	);
+	let style = $derived(
+		`--bg-color: ${backgroundColor}; ${
+			config.borderRadius != null ? `--input-border-radius: ${config.borderRadius}px` : ''
+		}`
+	);
+	$effect(() => {
+		if ($pageHasHero) {
+			untrack(() => {
+				clearTimeout(changeBgTimeout);
+				hasBg = scrollY > 120;
+			});
+		} else {
+			untrack(() => {
+				clearTimeout(changeBgTimeout);
+				if (typeof window !== 'undefined') {
+					changeBgTimeout = window.setTimeout(() => {
+						hasBg = true;
+					}, 150);
+				}
+			});
+		}
+	});
+	let currentRoute = $derived(page.url.pathname ?? '');
+	let menuLinks = $derived(
+		config.menu.map((item) => {
+			return {
+				name: item.name,
+				url: `/${item.slug}/`,
+				isActive: (currentRoute.indexOf(`/${item.slug}`) ?? -1) > -1
+			};
+		})
+	);
+	let menuIsWide = $derived(menuLinks.length >= 4 ? 960 : 760);
+	let isMenuOpen = $derived($menuState === 'open');
+	let isOverCurrent = $derived(currentLinkHover?.getAttribute('href') === currentRoute);
+	let mobileNavStyle = $derived($bgColor ? `--bg-color: ${$bgColor};` : '');
 </script>
 
 <svelte:window bind:scrollY />
@@ -172,8 +186,8 @@
 	<div class="logo">
 		<a
 			href="/"
-			on:mouseenter={(e) => bespokeLogo.play(true)}
-			on:focus={(e) => bespokeLogo.play(true)}
+			onmouseenter={(e) => bespokeLogo?.play(true)}
+			onfocus={(e) => bespokeLogo?.play(true)}
 		>
 			<BespokeAnimatedLogo bind:this={bespokeLogo} />
 		</a>
@@ -185,12 +199,12 @@
 					href={link.url}
 					class:active={link.isActive && !currentLinkHover}
 					bind:this={linkElements[link.url]}
-					on:click={removeBorder}
-					on:mouseleave={mouseOut}
-					on:mouseenter={(e) => drawBorder(link.url)}>{link.name}</a
+					onclick={removeBorder}
+					onmouseleave={mouseOut}
+					onmouseenter={(e) => drawBorder(link.url)}>{link.name}</a
 				>
 			{/each}
-			<div class="border" bind:this={borderEl} />
+			<div class="border" bind:this={borderEl}></div>
 		</nav>
 		{#if !isMenuOpen}
 			<a
@@ -200,9 +214,9 @@
 				target="_blank"><InstagramLogo /></a
 			>
 		{/if}
-		<button class="menu-btn" on:click={toggleMenu}>
-			<div class="line line1" />
-			<div class="line line2" />
+		<button class="menu-btn" onclick={toggleMenu} aria-label="Toggle menu">
+			<div class="line line1"></div>
+			<div class="line line2"></div>
 		</button>
 	</div>
 </header>
@@ -226,7 +240,7 @@
 				easing: sineInOut,
 				delay: 600
 			}}
-		/>
+		></div>
 		<div class="wrap">
 			<nav class="v-menu">
 				{#each menuLinks as link, index (link.url)}
@@ -524,7 +538,7 @@
 		align-items: center;
 		justify-content: center;
 	}
-	.bg-is-light .socials a {
+	:global(.bg-is-light) .socials a {
 		filter: invert(1);
 	}
 

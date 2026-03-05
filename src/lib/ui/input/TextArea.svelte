@@ -1,30 +1,42 @@
 <script lang="ts">
 	import { inputBorderIsRounded } from '$lib/store';
-	import { createEventDispatcher } from 'svelte';
 	import { fade } from 'svelte/transition';
 
-	export let label: string = '';
-	export let hint: string = '';
-	export let name: string;
-	export let id: string;
-	export let value: string;
-	export let error: string = '';
-	export let readonly = false;
+	interface Props {
+		label?: string;
+		hint?: string;
+		name: string;
+		id: string;
+		value: string;
+		error?: string;
+		readonly?: boolean;
+		onBlur?: (value: string) => void;
+	}
 
-	let dispatch = createEventDispatcher<{ blur: string }>();
+	let {
+		label = '',
+		hint = '',
+		name,
+		id,
+		value = $bindable(),
+		error = '',
+		readonly = false,
+		onBlur
+	}: Props = $props();
 
-	let isFocused = false;
-	let textareaEl: HTMLTextAreaElement;
-	let scrollHeight = 0;
-	let actualScrollHeight = 0;
+	let isFocused = $state(false);
+	let textareaEl = $state<HTMLTextAreaElement>();
+	let scrollHeight = $state(0);
+	let actualScrollHeight = $state(0);
 
-	$: hasError = error.trim().length > 0;
-	$: isTaller = scrollHeight > 50;
-	$: isScrollable = actualScrollHeight > 160;
+	let hasError = $derived(error.trim().length > 0);
+	let isTaller = $derived(scrollHeight > 50);
+	let isScrollable = $derived(actualScrollHeight > 160);
 
 	function onChange(el: HTMLTextAreaElement) {
 		scrollHeight = 0;
 		window.requestAnimationFrame(() => {
+			if (!textareaEl) return;
 			actualScrollHeight = textareaEl.scrollHeight;
 			scrollHeight = Math.min(144, textareaEl.scrollHeight);
 		});
@@ -53,18 +65,18 @@
 			bind:value
 			{readonly}
 			bind:this={textareaEl}
-			on:focus={(e) => (isFocused = true)}
-			on:blur={(e) => {
+			onfocus={(e) => (isFocused = true)}
+			onblur={(e) => {
 				isFocused = false;
-				dispatch('blur', value);
+				onBlur?.(value);
 			}}
-			on:change={(e) => {
+			onchange={(e) => {
 				onChange(e.currentTarget);
 			}}
-			on:input={(e) => {
+			oninput={(e) => {
 				onChange(e.currentTarget);
 			}}
-		/>
+		></textarea>
 	</div>
 	{#if error}
 		<p class="hint error" in:fade={{ duration: 250 }}>{error}</p>

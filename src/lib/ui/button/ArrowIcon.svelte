@@ -1,5 +1,9 @@
 <script lang="ts">
-	export let isBordered: boolean = true;
+	interface Props {
+		isBordered?: boolean;
+	}
+
+	let { isBordered = true }: Props = $props();
 </script>
 
 <span class="icon" class:isBordered>

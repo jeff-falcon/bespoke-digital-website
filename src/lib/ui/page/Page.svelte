@@ -17,7 +17,11 @@
 	import ProjectMediaComponent from '../project/ProjectMediaComponent.svelte';
 	import Hero from './Hero.svelte';
 
-	export let data: Page;
+	interface Props {
+		data: Page;
+	}
+
+	let { data }: Props = $props();
 
 	const randomHeroIndex = Math.floor(Math.random() * (data.heros?.heros.length ?? 0));
 	const hasHero = data.heros?.heros != null && data.heros?.heros.length > 0;

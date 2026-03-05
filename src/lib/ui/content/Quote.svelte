@@ -2,11 +2,15 @@
 	import type { Quote } from '$lib/types';
 	import IntersectionObserver from 'svelte-intersection-observer';
 
-	export let data: Quote;
-	export let withGutter = true;
+	interface Props {
+		data: Quote;
+		withGutter?: boolean;
+	}
 
-	let isIntersecting = false;
-	let quoteEl: HTMLElement;
+	let { data, withGutter = true }: Props = $props();
+
+	let isIntersecting = $state(false);
+	let quoteEl = $state<HTMLElement>();
 </script>
 
 {#if data.quote}

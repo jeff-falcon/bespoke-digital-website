@@ -8,25 +8,29 @@
 	import { getContrastYIQFromColor } from '$lib/color';
 	import TextOnly from '../content/TextOnly.svelte';
 
-	export let project: Project;
+	interface Props {
+		project: Project;
+	}
+
+	let { project }: Props = $props();
 
 	const flyProps: FlyParams = { opacity: 0, y: 30, easing: expoOut, duration: 1500 };
 
-	$: hasDescription = project.description || project.descriptionIntro;
-	$: relatedProjects =
-		project.showRelatedProjects && (project.relatedProjects?.length || 0)
+	let hasDescription = $derived(project.description || project.descriptionIntro);
+	let relatedProjects =
+		$derived(project.showRelatedProjects && (project.relatedProjects?.length || 0)
 			? <ProjectGrid>{
 					title: 'Related Projects',
 					projects: project.relatedProjects,
 					_type: 'project_grid'
 				}
-			: null;
+			: null);
 
-	$: hasRelatedBg =
-		project.relatedProjectsBgColor && project.relatedProjectsBgColor !== 'transparent';
-	$: relatedBgIsLight = hasRelatedBg
+	let hasRelatedBg =
+		$derived(project.relatedProjectsBgColor && project.relatedProjectsBgColor !== 'transparent');
+	let relatedBgIsLight = $derived(hasRelatedBg
 		? getContrastYIQFromColor(project.relatedProjectsBgColor!) === 'black'
-		: false;
+		: false);
 </script>
 
 <div

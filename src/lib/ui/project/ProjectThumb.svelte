@@ -2,14 +2,17 @@
 	import type { Project, ProjectMedia } from '$lib/types';
 	import ProjectMediaComponent from '$lib/ui/project/ProjectMediaComponent.svelte';
 
-	export let project: Project;
-	export let size: 'half' | 'full' = 'half';
-	export let basePath = 'work';
+	interface Props {
+		project: Project;
+		size?: 'half' | 'full';
+		basePath?: string;
+	}
 
-	$: isFull = size === 'full';
+	let { project, size = 'half', basePath = 'work' }: Props = $props();
 
-	let media: ProjectMedia;
-	$: media = {
+	let isFull = $derived(size === 'full');
+
+	let media: ProjectMedia = $derived({
 		_type: 'project_media',
 		_id: project.slug,
 		name: project.title,
@@ -19,8 +22,9 @@
 		videoBgSrcHd: project.videoBgSrcHd,
 		useOriginalQuality: false,
 		autoplay: true
-	};
-	$: name = project.shortName || project.title;
+	});
+	
+	let name = $derived(project.shortName || project.title);
 </script>
 
 <article class="project" class:isFull>

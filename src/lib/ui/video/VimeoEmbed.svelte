@@ -1,9 +1,13 @@
 <script lang="ts">
-	export let vimeoId: number;
-	export let title: string | null = null;
+	interface Props {
+		vimeoId: number;
+		title?: string | null;
+	}
 
-	let clientWidth = 0;
-	let clientHeight = 0;
+	let { vimeoId, title = null }: Props = $props();
+
+	let clientWidth = $state(0);
+	let clientHeight = $state(0);
 </script>
 
 <div class="vimeo-container" bind:clientHeight bind:clientWidth>
@@ -13,7 +17,7 @@
 		allow="autoplay;"
 		{title}
 		style="width: {Math.max(1, clientHeight / clientWidth) * 177.777778}%;"
-	/>
+	></iframe>
 </div>
 
 <style>

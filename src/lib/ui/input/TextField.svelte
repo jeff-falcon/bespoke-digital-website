@@ -1,26 +1,42 @@
 <script lang="ts">
 	import { inputBorderIsRounded } from '$lib/store';
-	import { createEventDispatcher } from 'svelte';
 	import { fade } from 'svelte/transition';
 
-	export let label: string = '';
-	export let placeholder: string = '';
-	export let hint: string = '';
-	export let name: string;
-	export let id: string;
-	export let value: string;
-	export let type: string = 'text';
-	export let error: string = '';
-	export let allowSpaces: boolean | null = null;
-	export let readonly = false;
+	interface Props {
+		label?: string;
+		placeholder?: string;
+		hint?: string;
+		name: string;
+		id: string;
+		value: string;
+		type?: string;
+		error?: string;
+		allowSpaces?: boolean | null;
+		readonly?: boolean;
+		onBlur?: (value: string) => void;
+	}
 
-	let dispatch = createEventDispatcher<{ blur: string }>();
+	let {
+		label = '',
+		placeholder = '',
+		hint = '',
+		name,
+		id,
+		value = $bindable(),
+		type = 'text',
+		error = '',
+		allowSpaces = null,
+		readonly = false,
+		onBlur
+	}: Props = $props();
 
-	let isFocused = false;
-	let inputValue = value;
+	let isFocused = $state(false);
+	let inputValue = $state(value);
 
-	$: hasError = error.trim().length > 0;
-	$: shouldAllowSpaces = allowSpaces === false ? false : type !== 'password' && type !== 'email';
+	let hasError = $derived(error.trim().length > 0);
+	let shouldAllowSpaces = $derived(
+		allowSpaces === false ? false : type !== 'password' && type !== 'email'
+	);
 
 	function onChange(val: string) {
 		if (!shouldAllowSpaces) {
@@ -50,16 +66,16 @@
 			{id}
 			value={inputValue}
 			{readonly}
-			on:focus={(e) => (isFocused = true)}
-			on:blur={(e) => {
+			onfocus={(e) => (isFocused = true)}
+			onblur={(e) => {
 				isFocused = false;
 				onChange(e.currentTarget.value);
-				dispatch('blur', inputValue);
+				onBlur?.(inputValue);
 			}}
-			on:change={(e) => {
+			onchange={(e) => {
 				onChange(e.currentTarget.value);
 			}}
-			on:input={(e) => {
+			oninput={(e) => {
 				onChange(e.currentTarget.value);
 			}}
 		/>
