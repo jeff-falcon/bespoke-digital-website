@@ -5,7 +5,7 @@
 	import BespokeAnimatedLogo from '$lib/ui/logos/BespokeAnimatedLogo.svelte';
 	import InstagramLogo from '$lib/ui/logos/InstagramLogo.svelte';
 
-	import gsap from 'gsap';
+	import gsap, { Power3, Sine } from 'gsap';
 	import { onMount, tick, untrack } from 'svelte';
 	import { cubicIn, cubicOut, expoOut, linear, sineInOut } from 'svelte/easing';
 	import { fade, fly } from 'svelte/transition';
@@ -71,7 +71,7 @@
 		borderTween = gsap.to(borderEl, {
 			autoAlpha: 0,
 			duration: immediate ? 0 : 0.22,
-			ease: 'sine.inOut',
+			ease: Sine.easeInOut,
 			overwrite: true,
 			onComplete: () => {
 				borderTween = null;
@@ -114,7 +114,7 @@
 			borderTween = gsap.to(borderEl, {
 				autoAlpha: 1,
 				duration: 0.22,
-				ease: 'sine.inOut',
+				ease: Sine.easeInOut,
 				overwrite: true,
 				onComplete: () => {
 					borderTween = null;
@@ -135,7 +135,7 @@
 			width,
 			autoAlpha: 1,
 			duration: 0.42,
-			ease: 'power3.out',
+			ease: Power3.easeOut,
 			overwrite: true,
 			onComplete: () => {
 				borderTween = null;

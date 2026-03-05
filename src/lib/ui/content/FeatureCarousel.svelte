@@ -1,7 +1,7 @@
 <script lang="ts">
 	import type { FeatureCarousel } from '$lib/types';
 	import { PortableText } from '@portabletext/svelte';
-	import gsap from 'gsap';
+	import gsap, { Power2 } from 'gsap';
 	import { ScrollTrigger } from 'gsap/dist/ScrollTrigger';
 	import { onMount, tick } from 'svelte';
 	import ArrowButton from '../button/ArrowButton.svelte';
@@ -37,7 +37,7 @@
 	let lastViewportWidth = 0;
 	let lastViewportHeight = 0;
 
-	const easeCurve = 'power2.inOut';
+	const easeCurve = Power2.easeInOut;
 	const transitionDuration = 0.75;
 	const resizeWidthTolerance = 2;
 	const mobileNavResizeHeightMax = 140;
@@ -230,7 +230,7 @@
 				y: currentY,
 				autoAlpha: 1,
 				duration: transitionDuration,
-				ease: 'power2.out',
+				ease: Power2.easeOut,
 				overwrite: true
 			});
 		};
