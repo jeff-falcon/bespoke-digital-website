@@ -6,7 +6,7 @@
 	import InstagramLogo from '$lib/ui/logos/InstagramLogo.svelte';
 
 	import { gsap } from 'gsap';
-	import { untrack } from 'svelte';
+	import { onMount, tick, untrack } from 'svelte';
 	import { cubicIn, cubicOut, expoOut, linear, sineInOut } from 'svelte/easing';
 	import { fade, fly } from 'svelte/transition';
 
@@ -17,22 +17,25 @@
 
 	let { usePillFollower = true, config }: Props = $props();
 
-	let isBorderAnimating = $state(false);
 	let scrollY = $state(0);
 	let changeBgTimeout = $state<number>();
 	let hasBg = $state(false);
 
 	let bespokeLogo = $state<BespokeAnimatedLogo>();
+	let hMenuEl = $state<HTMLElement>();
 	let borderEl = $state<HTMLDivElement>();
 	let linkElements = $state<{ [key: string]: HTMLAnchorElement }>({});
-	let currentLinkHover = $state<HTMLAnchorElement | null>(null);
-	let hoverTimeout = $state<number>();
+	let hoveredUrl = $state<string | null>(null);
 	let menuStateTimeout = $state<number>();
+	let borderTween = $state<gsap.core.Tween | null>(null);
+	let previousActiveUrl: string | null = null;
+	let clickedTargetNoAnimate: string | null = null;
 
 	let useUnderline = $derived(config.borderRadius === 0);
 
 	function toggleMenu() {
 		const newState = store.menuState === 'open' ? 'closed' : 'open';
+		store.menuState = newState;
 		clearTimeout(menuStateTimeout);
 		if (newState === 'closed') {
 			menuStateTimeout = window.setTimeout(() => {
@@ -45,79 +48,128 @@
 		}
 		return newState;
 	}
-	function removeBorder() {
-		clearTimeout(hoverTimeout);
-		currentLinkHover = null;
-		isBorderAnimating = false;
+
+	function getActiveUrl() {
+		return menuLinks.find((link) => link.isActive)?.url || null;
 	}
-	function mouseOut(e: MouseEvent) {
-		clearTimeout(hoverTimeout);
-		hoverTimeout = window.setTimeout(() => {
-			if (!isOverCurrent) {
-				const prevLink = menuLinks.find((link) => link.isActive);
-				if (prevLink) {
-					drawBorder(prevLink.url, true);
-				} else if (borderEl) {
-					gsap.to(borderEl, {
-						autoAlpha: 0,
-						duration: 0.3,
-						ease: 'sine.inOut',
-						overwrite: true
-					});
+
+	function killBorderTween() {
+		if (borderTween) {
+			borderTween.kill();
+			borderTween = null;
+		}
+	}
+
+	function fadeBorderOut(immediate = false) {
+		if (!borderEl) return;
+		killBorderTween();
+		borderTween = gsap.to(borderEl, {
+			autoAlpha: 0,
+			duration: immediate ? 0 : 0.22,
+			ease: 'sine.inOut',
+			overwrite: true,
+			onComplete: () => {
+				borderTween = null;
+			}
+		});
+	}
+
+	function moveBorderTo(url: string, immediate = false) {
+		if (!usePillFollower || !borderEl || !hMenuEl) return false;
+		const targetEl = linkElements[url];
+		if (!targetEl) return false;
+
+		const navBox = hMenuEl.getBoundingClientRect();
+		const targetBox = targetEl.getBoundingClientRect();
+		const left = targetBox.left - navBox.left;
+		const width = targetBox.width;
+		const currentOpacity = Number(gsap.getProperty(borderEl, 'opacity')) || 0;
+		const isHidden = currentOpacity <= 0.01;
+
+		killBorderTween();
+
+		if (immediate) {
+			gsap.set(borderEl, {
+				left,
+				width,
+				autoAlpha: 1
+			});
+			return true;
+		}
+
+		if (isHidden) {
+			gsap.set(borderEl, {
+				left,
+				width
+			});
+			borderTween = gsap.to(borderEl, {
+				autoAlpha: 1,
+				duration: 0.22,
+				ease: 'sine.inOut',
+				overwrite: true,
+				onComplete: () => {
+					borderTween = null;
 				}
+			});
+			return true;
+		}
+
+		borderTween = gsap.to(borderEl, {
+			left,
+			width,
+			autoAlpha: 1,
+			duration: 0.42,
+			ease: 'power3.out',
+			overwrite: true,
+			onComplete: () => {
+				borderTween = null;
 			}
-		}, 350);
+		});
+
+		return true;
 	}
-	function drawBorder(url: string, removeOnComplete = false) {
-		clearTimeout(hoverTimeout);
-		hoverTimeout = window.setTimeout(() => {
-			if (!borderEl) return;
-			let prevLink = menuLinks.find((link) => link.isActive)?.url;
-			if (currentLinkHover) {
-				prevLink = currentLinkHover.getAttribute('href') || undefined;
-			}
-			if (!prevLink) prevLink = url;
-			if (prevLink && usePillFollower) {
-				isBorderAnimating = true;
-				const fromEl = linkElements[prevLink];
-				const toEl = linkElements[url];
-				const fromBox = fromEl.getBoundingClientRect();
-				const toBox = toEl.getBoundingClientRect();
-				const left = Math.min(fromBox.left, toBox.left);
-				const right = Math.max(fromBox.right, toBox.right);
-				currentLinkHover = toEl;
-				gsap.to(borderEl, {
-					autoAlpha: 1,
-					duration: 0.3,
-					ease: 'sine.inOut',
-					overwrite: true
-				});
-				const borderTl = gsap.timeline({
-					onComplete: () => {
-						if (removeOnComplete) {
-							currentLinkHover = null;
-							isBorderAnimating = false;
-						}
-					}
-				});
-				borderTl.set(borderEl, {
-					left: `${fromBox.left}px`,
-					width: `${fromBox.width}px`
-				});
-				borderTl.to(borderEl, {
-					duration: 0.22,
-					left: `${left}px`,
-					width: `${right - left}px`,
-					ease: 'power3.out'
-				});
-				borderTl.to(borderEl, {
-					duration: 0.3,
-					left: `${toBox.left}px`,
-					width: `${toBox.width}px`,
-					ease: 'power3.out'
-				});
-			}
-		}, 150);
+
+	function syncBorderToState(immediate = false) {
+		if (!usePillFollower) {
+			fadeBorderOut(true);
+			return;
+		}
+
+		const activeUrl = getActiveUrl();
+		const targetUrl = hoveredUrl || activeUrl;
+		const skipPositionAnimation =
+			!!previousActiveUrl && !!activeUrl && previousActiveUrl !== activeUrl && hoveredUrl === activeUrl;
+		const clickToHoveredTargetNoAnimate =
+			!!activeUrl && !!clickedTargetNoAnimate && activeUrl === clickedTargetNoAnimate;
+		const shouldImmediate = immediate || skipPositionAnimation || clickToHoveredTargetNoAnimate;
+		if (!targetUrl) {
+			fadeBorderOut(shouldImmediate);
+			if (clickToHoveredTargetNoAnimate) clickedTargetNoAnimate = null;
+			return;
+		}
+
+		const moved = moveBorderTo(targetUrl, shouldImmediate);
+		if (!moved) fadeBorderOut(shouldImmediate);
+		previousActiveUrl = activeUrl;
+		if (clickToHoveredTargetNoAnimate) clickedTargetNoAnimate = null;
+	}
+
+	function onLinkEnter(url: string) {
+		hoveredUrl = url;
+		syncBorderToState();
+	}
+
+	function onMenuLeave() {
+		hoveredUrl = null;
+		syncBorderToState();
+	}
+
+	function onLinkClick(url: string) {
+		const currentOpacity = borderEl ? Number(gsap.getProperty(borderEl, 'opacity')) || 0 : 0;
+		if (hoveredUrl === url && currentOpacity > 0.01) {
+			clickedTargetNoAnimate = url;
+		}
+		hoveredUrl = null;
 	}
 	$effect(() => {
 		if (
@@ -169,8 +221,43 @@
 	);
 	let menuIsWide = $derived(menuLinks.length >= 4 ? 960 : 760);
 	let isMenuOpen = $derived(store.menuState === 'open');
-	let isOverCurrent = $derived(currentLinkHover?.getAttribute('href') === currentRoute);
 	let mobileNavStyle = $derived(store.bgColor ? `--bg-color: ${store.bgColor};` : '');
+
+	$effect(() => {
+		if (!usePillFollower) {
+			fadeBorderOut(true);
+			return;
+		}
+
+		menuLinks;
+		currentRoute;
+		hoveredUrl;
+
+		const frame = requestAnimationFrame(() => {
+			syncBorderToState();
+		});
+
+		return () => {
+			cancelAnimationFrame(frame);
+		};
+	});
+
+	onMount(() => {
+		const init = async () => {
+			await tick();
+			previousActiveUrl = getActiveUrl();
+			syncBorderToState(true);
+		};
+		init();
+
+		const handleResize = () => syncBorderToState(true);
+		window.addEventListener('resize', handleResize);
+
+		return () => {
+			window.removeEventListener('resize', handleResize);
+			killBorderTween();
+		};
+	});
 </script>
 
 <svelte:window bind:scrollY />
@@ -194,15 +281,15 @@
 		</a>
 	</div>
 	<div class="right">
-		<nav class="h-menu" class:isBorderAnimating class:isOverCurrent>
+		<nav class="h-menu" bind:this={hMenuEl} onmouseleave={onMenuLeave}>
 			{#each menuLinks as link (link.url)}
 				<a
 					href={link.url}
-					class:active={link.isActive && !currentLinkHover}
+					class:active={link.isActive}
 					bind:this={linkElements[link.url]}
-					onclick={removeBorder}
-					onmouseleave={mouseOut}
-					onmouseenter={(e) => drawBorder(link.url)}>{link.name}</a
+					onclick={() => onLinkClick(link.url)}
+					onmouseenter={() => onLinkEnter(link.url)}
+					onfocus={() => onLinkEnter(link.url)}>{link.name}</a
 				>
 			{/each}
 			<div class="border" bind:this={borderEl}></div>
@@ -353,11 +440,12 @@
 	}
 	.h-menu {
 		display: none;
+		position: relative;
 	}
 	.h-menu a {
 		display: flex;
 		border-radius: var(--input-border-radius);
-		border: 1px solid transparent;
+		border: 0;
 		padding: 0 36px;
 		height: var(--button-height-large);
 		justify-content: center;
@@ -369,7 +457,6 @@
 		text-decoration: none;
 	}
 	.h-menu a.active {
-		border-color: var(--text-color-40);
 		opacity: 1;
 	}
 	.useUnderline .h-menu,
@@ -381,16 +468,7 @@
 		border-width: 0;
 		border-bottom-width: 2px;
 	}
-	.h-menu.isBorderAnimating a,
-	.h-menu.isBorderAnimating a.active {
-		border-color: transparent;
-	}
-	/* .h-menu:not(.isBorderAnimating) a {
-		transition-property: border-color, opacity;
-	}
-	.h-menu:not(.isBorderAnimating) a:hover {
-		border-color: var(--text-color-40);
-	} */
+	
 	.menu-btn {
 		display: block;
 		position: relative;
@@ -413,21 +491,15 @@
 		border-radius: var(--input-border-radius);
 		width: 0;
 		height: var(--button-height-large);
+		top: 0;
+		left: 0;
 		pointer-events: none;
-		visibility: hidden;
 		transition: border-color 180ms linear;
 		opacity: 0;
 	}
 	.useUnderline .border {
 		border-width: 0;
 		border-bottom-width: 2px;
-	}
-	.isBorderAnimating .border {
-		border-color: var(--text-color-40);
-		visibility: visible;
-	}
-	.isBorderAnimating.isOverCurrent .border {
-		border-color: var(--text-color-40);
 	}
 	.menu-btn .line {
 		width: 16px;
