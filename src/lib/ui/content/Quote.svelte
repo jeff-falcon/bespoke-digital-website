@@ -54,7 +54,7 @@
 		margin-bottom: 0;
 	}
 	.quote {
-		font-size: var(--40pt);
+		font-size: var(--36pt);
 		line-height: var(--48pt);
 		margin-bottom: var(--40pt);
 		opacity: 0;
@@ -74,7 +74,7 @@
 	.byline-row {
 		display: flex;
 		flex-direction: column;
-		gap: 32px;
+		gap: 24px;
 		align-items: flex-end;
 		translate: 0 50px;
 		filter: blur(20px);
@@ -116,8 +116,8 @@
 			grid-column: 1 / span 12;
 		}
 		.quote {
-			font-size: 3.5rem;
-			line-height: 5rem;
+			font-size: var(--48pt);
+			line-height: 4rem;
 		}
 		img {
 			width: 210px;
