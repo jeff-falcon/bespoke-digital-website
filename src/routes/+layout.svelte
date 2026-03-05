@@ -1,14 +1,12 @@
 <script lang="ts">
 	import { PUBLIC_GA4_TAG_ID } from '$env/static/public';
+	import { footerHasContactForm, inputBorderIsRounded, isMenuOpenComplete } from '$lib/store';
+	import Footer from '$lib/ui/nav/Footer.svelte';
 	import TopNav from '$lib/ui/nav/TopNav.svelte';
 	import 'video.js';
 	import 'video.js/dist/video-js.css';
-	import './styles.css';
-	// import 'swiper/css';
-	// import 'swiper/css/modules/navigation';
-	import { footerHasContactForm, inputBorderIsRounded, isMenuOpenComplete } from '$lib/store';
-	import Footer from '$lib/ui/nav/Footer.svelte';
 	import type { LayoutData } from './$types';
+	import './styles.css';
 
 	interface Props {
 		data: LayoutData;
