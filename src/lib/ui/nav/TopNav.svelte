@@ -5,7 +5,7 @@
 	import BespokeAnimatedLogo from '$lib/ui/logos/BespokeAnimatedLogo.svelte';
 	import InstagramLogo from '$lib/ui/logos/InstagramLogo.svelte';
 
-	import gsap, { Power3, Sine } from 'gsap';
+	import gsap, { Power3, Sine } from 'gsap/dist/gsap';
 	import { onMount, tick, untrack } from 'svelte';
 	import { cubicIn, cubicOut, expoOut, linear, sineInOut } from 'svelte/easing';
 	import { fade, fly } from 'svelte/transition';

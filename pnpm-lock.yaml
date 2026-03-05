@@ -38,6 +38,9 @@ importers:
       '@types/cookie':
         specifier: ^1.0.0
         version: 1.0.0
+      '@types/gsap':
+        specifier: ^3.0.0
+        version: 3.0.0
       '@types/mailchimp__mailchimp_transactional':
         specifier: ^1.0.11
         version: 1.0.11
@@ -582,6 +585,10 @@ packages:
 
   '@types/follow-redirects@1.14.4':
     resolution: {integrity: sha512-GWXfsD0Jc1RWiFmMuMFCpXMzi9L7oPDVwxUnZdg89kDNnqsRfUKXEtUYtA98A6lig1WXH/CYY/fvPW9HuN5fTA==}
+
+  '@types/gsap@3.0.0':
+    resolution: {integrity: sha512-BbWLi4WRHGze4C8NV7U7yRevuBFiPkPZZyGa0rryanvh/9HPUFXTNBXsGQxJZJq7Ix7j4RXMYodP3s+OsqCErg==}
+    deprecated: This is a stub types definition. gsap provides its own type definitions, so you do not need this installed.
 
   '@types/json-schema@7.0.15':
     resolution: {integrity: sha512-5+fP8P8MFNC+AyZCDxrB2pkZFPGzqQWUzpSeuuVLvm8VMcorNYavBqoFcxK8bQz4Qsbn4oUEEem4wDLfcysGHA==}
@@ -2105,6 +2112,10 @@ snapshots:
   '@types/follow-redirects@1.14.4':
     dependencies:
       '@types/node': 25.3.3
+
+  '@types/gsap@3.0.0':
+    dependencies:
+      gsap: 3.14.2
 
   '@types/json-schema@7.0.15': {}
 
