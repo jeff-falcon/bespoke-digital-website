@@ -131,6 +131,8 @@
 		}
 		.byline {
 			order: 1;
+			font-size: var(--24pt);
+			line-height: var(--32pt);
 		}
 	}
 	@media (min-width: 1200px) {
