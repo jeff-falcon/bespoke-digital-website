@@ -93,6 +93,7 @@
 		line-height: var(--24pt);
 		color: var(--text-light-60);
 		margin: 0;
+		text-align: right;
 		order: 2;
 	}
 	img {
