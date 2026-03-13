@@ -24,8 +24,7 @@
 	let slideHeight = $state(0);
 	let slidesWrapHeight = $state(0);
 
-	let timeline: gsap.core.Timeline | null = null;
-	let resizeRaf = 0;
+	let timeline = $state<gsap.core.Timeline | null>(null);
 
 	const incomingSlideOffscreenBuffer = 24;
 	const defaultSlideStackOffset = 32;
@@ -162,8 +161,7 @@
 				endTrigger: sectionEl,
 				end: 'bottom top',
 				pin: sectionEl,
-				scrub: 1,
-				invalidateOnRefresh: true
+				scrub: 1
 			}
 		});
 
@@ -181,21 +179,6 @@
 
 	onMount(() => {
 		setupCarousel();
-
-		const handleResize = () => {
-			cancelAnimationFrame(resizeRaf);
-			resizeRaf = requestAnimationFrame(() => {
-				setupCarousel();
-			});
-		};
-
-		window.addEventListener('resize', handleResize);
-
-		return () => {
-			window.removeEventListener('resize', handleResize);
-			cancelAnimationFrame(resizeRaf);
-			destroyCarousel();
-		};
 	});
 </script>
 
@@ -290,8 +273,8 @@
 		height: min-content;
 	}
 	.slide-title {
-		font-size: var(--24pt);
-		line-height: var(--28pt);
+		font-size: var(--22pt);
+		line-height: var(--26pt);
 		margin-bottom: var(--12pt);
 		margin-top: 0;
 	}
@@ -311,6 +294,10 @@
 	.intro {
 		margin-bottom: 32px;
 	}
+	.body :global(p) {
+		font-size: var(--14pt);
+		line-height: var(--20pt);
+	}
 	.body :global(p:first-of-type) {
 		margin-top: 0;
 	}
@@ -318,7 +305,7 @@
 		margin-bottom: 0;
 	}
 	.info :global(.btn) {
-		margin-top: 24px;
+		margin-top: 32px;
 		justify-content: center;
 	}
 	.body.desktop {
@@ -357,19 +344,24 @@
 		.body.mobile {
 			display: none;
 		}
+		.body :global(p) {
+			font-size: var(--16pt);
+			line-height: var(--24pt);
+		}
 		.slide-title {
-			font-size: var(--40pt);
-			line-height: var(--48pt);
+			font-size: var(--26pt);
+			line-height: var(--32pt);
 			margin-bottom: var(--16pt);
 		}
 		.intro {
 			margin-bottom: 68px;
+			max-width: 680px;
+			margin-inline: auto;
 		}
 		.intro .title {
 			margin-bottom: var(--24pt);
 		}
 		.info :global(.btn) {
-			margin-top: 48px;
 			width: fit-content;
 		}
 		.num {
@@ -381,7 +373,7 @@
 			aspect-ratio: 1.4563 / 1;
 		}
 		.wrap {
-			max-width: 1280px;
+			max-width: 974px;
 			margin-inline: auto;
 		}
 	}
@@ -393,7 +385,7 @@
 	}
 	@media (min-width: 1200px) and (min-height: 800px) {
 		.slide {
-			padding: 64px 60px 96px;
+			padding: 40px 48px 64px;
 		}
 	}
 </style>
