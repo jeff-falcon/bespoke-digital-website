@@ -138,6 +138,8 @@ async function getComponents(components: any): Promise<PageComponents> {
 		} else if (component._type === 'feature_carousel') {
 			const featureCarousel: FeatureCarousel = {
 				_type: 'feature_carousel',
+				title: component.title,
+				description: component.description,
 				slides: (component.slides ?? []).map(
 					(slide: any) =>
 						({

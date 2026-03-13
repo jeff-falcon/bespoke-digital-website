@@ -7,6 +7,10 @@
 	import ArrowButton from '../button/ArrowButton.svelte';
 	import ProjectMediaComponent from '../project/ProjectMediaComponent.svelte';
 
+	if (typeof window !== 'undefined') {
+		gsap.registerPlugin(ScrollTrigger);
+	}
+
 	interface Props {
 		data: FeatureCarousel;
 	}
@@ -337,6 +341,18 @@
 
 <section bind:this={sectionEl} class="feature-carousel gutter bg-{data.bgColor ?? 'transparent'}">
 	<div class="wrap">
+		{#if data.title || data.description}
+			<div class="info">
+				{#if data.title}
+					<h2 class="title">{data.title}</h2>
+				{/if}
+				{#if data.description}
+					<div class="description">
+						<PortableText value={data.description} components={{}} />
+					</div>
+				{/if}
+			</div>
+		{/if}
 		{#if data.slides.length}
 			<div
 				bind:this={slidesEl}
@@ -414,6 +430,19 @@
 		line-height: var(--28pt);
 		margin-bottom: var(--12pt);
 		margin-top: 0;
+	}
+	.info .title,
+	.info .description {
+		text-align: center;
+	}
+	.info .title {
+		margin: 0 0 var(--24pt);
+	}
+	.info .description {
+		text-wrap: balance;
+	}
+	.info .description :global(p) {
+		margin: 0 0 var(--16pt);
 	}
 	.body :global(p:first-of-type) {
 		margin-top: 0;
