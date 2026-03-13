@@ -279,6 +279,8 @@
 		line-height: var(--26pt);
 		margin-bottom: var(--12pt);
 		margin-top: 0;
+		text-wrap: balance;
+		/* text-wrap: pretty; */
 	}
 	.intro .title,
 	.intro .description {
@@ -289,6 +291,7 @@
 	}
 	.intro .description {
 		text-wrap: balance;
+		text-wrap: pretty; /* firefox ignores this */
 	}
 	.intro .description :global(p) {
 		margin: 0 0 var(--16pt);
@@ -299,6 +302,7 @@
 	.body :global(p) {
 		font-size: var(--14pt);
 		line-height: var(--20pt);
+		text-wrap: pretty;
 	}
 	.body :global(p:first-of-type) {
 		margin-top: 0;
@@ -315,7 +319,7 @@
 	}
 	.image {
 		position: relative;
-		aspect-ratio: 1.716667 / 1;
+		aspect-ratio: 1.73 / 1;
 		max-height: 300px;
 	}
 	.image.empty {
@@ -372,7 +376,7 @@
 		}
 		.image {
 			max-height: none;
-			aspect-ratio: 1.4563 / 1;
+			aspect-ratio: 1.37 / 1;
 		}
 		.wrap {
 			max-width: 974px;
