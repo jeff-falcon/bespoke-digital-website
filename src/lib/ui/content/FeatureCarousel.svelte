@@ -175,6 +175,8 @@
 				index - 1
 			);
 		});
+
+		timeline?.to({}, { duration: 0.2 });
 	}
 
 	onMount(() => {
