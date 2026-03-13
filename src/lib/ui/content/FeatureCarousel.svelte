@@ -3,7 +3,7 @@
 	import { PortableText } from '@portabletext/svelte';
 	import gsap from 'gsap/dist/gsap';
 	import { ScrollTrigger } from 'gsap/dist/ScrollTrigger';
-	import { onMount, tick } from 'svelte';
+	import { onMount } from 'svelte';
 	import ArrowButton from '../button/ArrowButton.svelte';
 	import ProjectMediaComponent from '../project/ProjectMediaComponent.svelte';
 
@@ -134,11 +134,10 @@
 	}
 
 	async function setupCarousel() {
-		await tick();
-		destroyCarousel();
-
 		const slides = slideElements.filter(Boolean);
 		if (!sectionEl || !triggerStartEl || !slidesEl || !slides.length) return;
+
+		if (slides.length === 1) return;
 
 		const { incomingY, slideStackOffset } = updateLayout();
 
@@ -148,8 +147,6 @@
 				zIndex: index + 1
 			});
 		});
-
-		if (slides.length === 1) return;
 
 		timeline = gsap.timeline({
 			defaults: {
@@ -161,7 +158,8 @@
 				endTrigger: sectionEl,
 				end: 'bottom top',
 				pin: sectionEl,
-				scrub: 1
+				scrub: 1,
+				invalidateOnRefresh: true
 			}
 		});
 
@@ -181,6 +179,10 @@
 
 	onMount(() => {
 		setupCarousel();
+
+		return () => {
+			destroyCarousel();
+		};
 	});
 </script>
 
@@ -269,6 +271,10 @@
 		min-height: var(--slide-height, auto);
 		will-change: transform;
 	}
+	.wrap {
+		display: flex;
+		flex-direction: column;
+	}
 	.num {
 		font-size: var(--38pt);
 		line-height: var(--48pt);
@@ -286,17 +292,23 @@
 	.intro .description {
 		text-align: center;
 	}
+	.intro .description :global(:first-child) {
+		margin-top: 0;
+	}
+	.intro .description :global(:last-child) {
+		margin-bottom: 0;
+	}
 	.intro .title {
-		margin: 0 0 var(--16pt);
+		margin: 0;
 	}
 	.intro .description {
 		text-wrap: balance;
 		text-wrap: pretty; /* firefox ignores this */
 	}
-	.intro .description :global(p) {
-		margin: 0 0 var(--16pt);
-	}
 	.intro {
+		display: flex;
+		flex-direction: column;
+		gap: var(--16pt);
 		margin-bottom: 32px;
 	}
 	.body :global(p) {
@@ -360,12 +372,14 @@
 			margin-bottom: var(--16pt);
 		}
 		.intro {
-			margin-bottom: 68px;
+			gap: var(--24pt);
 			max-width: 680px;
 			margin-inline: auto;
+			margin-bottom: 68px;
 		}
 		.intro .title {
-			margin-bottom: var(--24pt);
+			font-size: var(--40pt);
+			line-height: var(--48pt);
 		}
 		.info :global(.btn) {
 			width: fit-content;
@@ -392,6 +406,17 @@
 	@media (min-width: 1200px) and (min-height: 800px) {
 		.slide {
 			padding: 40px 48px 64px;
+		}
+	}
+	@media (max-height: 860px) {
+		.intro {
+			order: 1;
+		}
+		.trigger-start {
+			order: 2;
+		}
+		.slides {
+			order: 3;
 		}
 	}
 </style>
