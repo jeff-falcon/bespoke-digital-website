@@ -4,6 +4,7 @@
 	import gsap from 'gsap/dist/gsap';
 	import { ScrollTrigger } from 'gsap/dist/ScrollTrigger';
 	import { onMount } from 'svelte';
+	import { SvelteSet } from 'svelte/reactivity';
 	import ArrowButton from '../button/ArrowButton.svelte';
 	import ProjectMediaComponent from '../project/ProjectMediaComponent.svelte';
 
@@ -25,6 +26,8 @@
 	let slidesWrapHeight = $state(0);
 
 	let timeline = $state<gsap.core.Timeline | null>(null);
+	let slideTimelines = $state<gsap.core.Timeline[]>([]);
+	let slideAnimCompletion = new SvelteSet<number>();
 
 	const incomingSlideOffscreenBuffer = 24;
 	const defaultSlideStackOffset = 32;
@@ -40,6 +43,7 @@
 			timeline.kill();
 			timeline = null;
 		}
+		slideTimelines = [];
 		gsap.killTweensOf(slideElements.filter(Boolean));
 	}
 
@@ -140,6 +144,7 @@
 		if (slides.length === 1) return;
 
 		const { incomingY, slideStackOffset } = updateLayout();
+		slideTimelines = [];
 
 		slides.forEach((slide, index) => {
 			gsap.set(slide, {
@@ -165,13 +170,36 @@
 
 		slides.forEach((slide, index) => {
 			if (index === 0) return;
-			timeline?.to(
+			const subTimeline = gsap.timeline({
+				defaults: {
+					ease: 'none'
+				}
+			});
+			subTimeline.to(
 				slide,
 				{
-					y: index * slideStackOffset
+					y: index * slideStackOffset,
+					duration: 1,
+					onUpdate: () => {
+						if (subTimeline.progress() >= 0.9) {
+							if (!slideAnimCompletion.has(index - 1)) {
+								slideAnimCompletion.add(index - 1);
+							}
+						} else {
+							if (slideAnimCompletion.has(index - 1)) {
+								slideAnimCompletion.delete(index - 1);
+							}
+						}
+					},
+					onComplete: () => {
+						slideAnimCompletion.add(index - 1);
+					}
 				},
-				index - 1
+				0
 			);
+
+			slideTimelines[index] = subTimeline;
+			timeline?.add(subTimeline, index - 1);
 		});
 
 		timeline?.to({}, { duration: 0.2 });
@@ -210,7 +238,8 @@
 				{#each data.slides as slide, index (slide)}
 					<div
 						class="slide"
-						style={`background-color:${slideColors[index] ?? slideColorEnd};z-index:${index + 1}`}
+						style={`background-color:${slideColors[index] ?? slideColorEnd};`}
+						class:isComplete={slideAnimCompletion.has(index)}
 						bind:this={slideElements[index]}
 					>
 						<span class="num">{(index + 1).toString().padStart(2, '0')}</span>
@@ -279,6 +308,11 @@
 		font-size: var(--38pt);
 		line-height: var(--48pt);
 		height: min-content;
+		transition: opacity 450ms linear;
+		will-change: opacity;
+	}
+	.slide.isComplete .num {
+		opacity: 0;
 	}
 	.slide-title {
 		font-size: var(--22pt);
