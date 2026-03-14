@@ -168,6 +168,8 @@ export interface LogoGrid {
 
 export interface FeatureCarousel {
 	_type: 'feature_carousel';
+	title?: string;
+	description?: InputValue;
 	slides: FeatureCarouselSlide[];
 	bgColor: SectionBackgroundColor;
 }

@@ -1,11 +1,16 @@
 <script lang="ts">
 	import type { FeatureCarousel } from '$lib/types';
 	import { PortableText } from '@portabletext/svelte';
-	import gsap, { Power2 } from 'gsap/dist/gsap';
+	import gsap from 'gsap/dist/gsap';
 	import { ScrollTrigger } from 'gsap/dist/ScrollTrigger';
-	import { onMount, tick } from 'svelte';
+	import { onMount } from 'svelte';
+	import { SvelteSet } from 'svelte/reactivity';
 	import ArrowButton from '../button/ArrowButton.svelte';
 	import ProjectMediaComponent from '../project/ProjectMediaComponent.svelte';
+
+	if (typeof window !== 'undefined') {
+		gsap.registerPlugin(ScrollTrigger);
+	}
 
 	interface Props {
 		data: FeatureCarousel;
@@ -14,66 +19,58 @@
 	let { data }: Props = $props();
 
 	let sectionEl = $state<HTMLElement>();
+	let triggerStartEl = $state<HTMLDivElement>();
 	let slidesEl = $state<HTMLDivElement>();
 	let slideElements = $state<HTMLDivElement[]>([]);
 	let slideHeight = $state(0);
 	let slidesWrapHeight = $state(0);
-	let headerOffset = 0;
-	let sectionTopPadding = 0;
-	let currentSlideOffset = 0;
-	let incomingSlideStartY = 0;
 
-	let scrollTrigger: ScrollTrigger | null = null;
-	let revealTrigger: ScrollTrigger | null = null;
-	let resizeRaf = 0;
-	let currentIndex = 0;
-	let queuedIndex: number | null = null;
-	let isAnimating = false;
-	let hasRevealedFirstSlide = false;
-	let lastViewportWidth = 0;
-	let lastViewportHeight = 0;
+	let timeline = $state<gsap.core.Timeline | null>(null);
+	let slideTimelines = $state<gsap.core.Timeline[]>([]);
+	let slideAnimCompletion = new SvelteSet<number>();
 
-	const easeCurve = Power2.easeInOut;
-	const transitionDuration = 0.75;
-	const resizeWidthTolerance = 2;
-	const mobileNavResizeHeightMax = 140;
 	const incomingSlideOffscreenBuffer = 24;
+	const defaultSlideStackOffset = 32;
+	const slideColorStart = '#334041';
+	const slideColorEnd = '#242D2E';
+
+	const slideColors = $derived.by(() =>
+		getInterpolatedColors(data.slides.length, slideColorStart, slideColorEnd)
+	);
 
 	function destroyCarousel() {
-		if (scrollTrigger) {
-			scrollTrigger.kill();
-			scrollTrigger = null;
+		if (timeline) {
+			timeline.kill();
+			timeline = null;
 		}
-		if (revealTrigger) {
-			revealTrigger.kill();
-			revealTrigger = null;
-		}
-		gsap.killTweensOf(slideElements);
-		isAnimating = false;
-		queuedIndex = null;
+		slideTimelines = [];
+		gsap.killTweensOf(slideElements.filter(Boolean));
 	}
 
 	function getHeaderOffset() {
 		if (typeof window === 'undefined') return 0;
-		if (window.innerWidth >= 568) {
-			return 0;
-		}
-		const topNavHeight = getComputedStyle(document.documentElement)
-			.getPropertyValue('--top-nav-height')
-			.trim();
-		const parsed = Number.parseFloat(topNavHeight);
-		return Number.isFinite(parsed) ? parsed : 0;
+		const header = document.querySelector('header');
+		return header instanceof HTMLElement ? header.getBoundingClientRect().height : 0;
 	}
 
-	function updateHeights() {
-		if (!slidesEl || !slideElements.length) return;
+	function getSlideStackOffset() {
+		if (!sectionEl) return defaultSlideStackOffset;
+		const stackOffset = Number.parseFloat(
+			getComputedStyle(sectionEl).getPropertyValue('--slide-stack-offset')
+		);
+		return Number.isFinite(stackOffset) ? stackOffset : defaultSlideStackOffset;
+	}
+
+	function updateLayout() {
+		if (!slidesEl || !slideElements.length) {
+			return {
+				incomingY: 0,
+				slideStackOffset: defaultSlideStackOffset
+			};
+		}
 
 		slideHeight = 0;
 		slidesWrapHeight = 0;
-		headerOffset = getHeaderOffset();
-		sectionTopPadding = 0;
-		currentSlideOffset = 0;
-		incomingSlideStartY = 0;
 		slidesEl.style.setProperty('--slide-height', 'auto');
 		slidesEl.style.setProperty('--slides-wrap-height', 'auto');
 		slidesEl.style.height = 'auto';
@@ -85,251 +82,133 @@
 			slideHeight = Math.max(slideHeight, slide.offsetHeight);
 		}
 
-		if (!slideHeight) return;
+		if (!slideHeight) {
+			return {
+				incomingY: incomingSlideOffscreenBuffer,
+				slideStackOffset: defaultSlideStackOffset
+			};
+		}
 
-		const sectionStyle = sectionEl ? getComputedStyle(sectionEl) : null;
-		sectionTopPadding = sectionStyle ? Number.parseFloat(sectionStyle.paddingTop || '0') || 0 : 0;
-		const viewportHeight = typeof window === 'undefined' ? slideHeight : window.innerHeight;
-		const visibleViewportHeight = Math.max(0, viewportHeight - headerOffset);
-		currentSlideOffset = Math.max(0, (visibleViewportHeight - slideHeight) / 2 - sectionTopPadding);
-		const viewportBottomInSlides = Math.max(0, visibleViewportHeight - sectionTopPadding);
-		incomingSlideStartY = Math.max(
-			currentSlideOffset + 100,
-			viewportBottomInSlides + incomingSlideOffscreenBuffer
-		);
-		slidesWrapHeight = Math.max(slideHeight, currentSlideOffset + slideHeight);
-
+		const slideStackOffset = getSlideStackOffset();
+		slidesWrapHeight = slideHeight + slideStackOffset * Math.max(0, slideElements.length - 1);
 		slidesEl.style.height = `${slidesWrapHeight}px`;
 		for (const slide of slideElements) {
 			slide.style.minHeight = `${slideHeight}px`;
 		}
+
+		return {
+			incomingY:
+				(typeof window === 'undefined' ? slideHeight : window.innerHeight) +
+				incomingSlideOffscreenBuffer,
+			slideStackOffset
+		};
 	}
 
-	function getViewportDimensions() {
-		const viewport = window.visualViewport;
-		if (viewport) {
-			return {
-				width: Math.round(viewport.width),
-				height: Math.round(viewport.height)
-			};
+	function hexToRgb(hex: string) {
+		const normalized = hex.replace('#', '').trim();
+		if (normalized.length !== 6) {
+			return { r: 0, g: 0, b: 0 };
 		}
 		return {
-			width: window.innerWidth,
-			height: window.innerHeight
+			r: Number.parseInt(normalized.slice(0, 2), 16),
+			g: Number.parseInt(normalized.slice(2, 4), 16),
+			b: Number.parseInt(normalized.slice(4, 6), 16)
 		};
 	}
 
-	function shouldIgnoreResize(width: number, height: number) {
-		if (!lastViewportWidth || !lastViewportHeight) return false;
-
-		const widthDelta = Math.abs(width - lastViewportWidth);
-		const heightDelta = Math.abs(height - lastViewportHeight);
-
-		return (
-			widthDelta <= resizeWidthTolerance &&
-			heightDelta > 0 &&
-			heightDelta <= mobileNavResizeHeightMax
-		);
+	function rgbToHex(value: number) {
+		return value.toString(16).padStart(2, '0');
 	}
 
-	function getSlideTargetState(index: number, activeIndex: number, currentY: number) {
-		if (!sectionEl) return { autoAlpha: 0, scale: 1, y: currentY };
-		const depth = activeIndex - index;
-		const slideStackStep =
-			Number.parseFloat(getComputedStyle(sectionEl).getPropertyValue('--slide-behind-offset-y')) ||
-			70;
-		const stackedY = currentY - depth * slideStackStep;
-
-		if (index === activeIndex) {
-			return { autoAlpha: 1, scale: 1, y: currentY };
-		}
-		if (index === activeIndex - 1) {
-			return { autoAlpha: 0, scale: 0.8, y: stackedY };
-		}
-		if (index < activeIndex - 1) {
-			return { autoAlpha: 0, scale: 0.6, y: stackedY };
-		}
-		return { autoAlpha: 1, scale: 1.15, y: incomingSlideStartY || currentY + 100 };
+	function interpolateChannel(start: number, end: number, progress: number) {
+		return Math.round(start + (end - start) * progress);
 	}
 
-	function applyState(index: number, currentY: number) {
-		const slides = slideElements.filter(Boolean);
-		slides.forEach((slide, slideIndex) => {
-			gsap.set(slide, getSlideTargetState(slideIndex, index, currentY));
-		});
-	}
+	function getInterpolatedColors(count: number, startColor: string, endColor: string) {
+		if (count <= 0) return [];
+		if (count === 1) return [startColor];
 
-	function animateToIndex(targetIndex: number, currentY: number) {
-		const slides = slideElements.filter(Boolean);
-		if (!slides.length) return;
+		const start = hexToRgb(startColor);
+		const end = hexToRgb(endColor);
 
-		if (isAnimating) {
-			queuedIndex = targetIndex;
-			return;
-		}
-
-		if (targetIndex === currentIndex) return;
-
-		isAnimating = true;
-		queuedIndex = null;
-
-		let completeCount = 0;
-		const done = () => {
-			completeCount += 1;
-			if (completeCount < slides.length) return;
-
-			currentIndex = targetIndex;
-			isAnimating = false;
-			if (queuedIndex !== null && queuedIndex !== currentIndex) {
-				const nextIndex = queuedIndex;
-				queuedIndex = null;
-				animateToIndex(nextIndex, currentY);
-			}
-		};
-
-		slides.forEach((slide, slideIndex) => {
-			gsap.to(slide, {
-				...getSlideTargetState(slideIndex, targetIndex, currentY),
-				duration: transitionDuration,
-				ease: easeCurve,
-				overwrite: true,
-				onComplete: done
-			});
+		return Array.from({ length: count }, (_, index) => {
+			const progress = index / (count - 1);
+			return `#${rgbToHex(interpolateChannel(start.r, end.r, progress))}${rgbToHex(interpolateChannel(start.g, end.g, progress))}${rgbToHex(interpolateChannel(start.b, end.b, progress))}`;
 		});
 	}
 
 	async function setupCarousel() {
-		await tick();
-		destroyCarousel();
-
 		const slides = slideElements.filter(Boolean);
-		if (!sectionEl || !slidesEl || !slides.length) return;
+		if (!sectionEl || !triggerStartEl || !slidesEl || !slides.length) return;
 
-		updateHeights();
-		const currentY = currentSlideOffset;
-		const maxIndex = slides.length - 1;
+		if (slides.length === 1) return;
 
-		currentIndex = 0;
-		queuedIndex = null;
-		isAnimating = false;
-		hasRevealedFirstSlide = false;
+		const { incomingY, slideStackOffset } = updateLayout();
+		slideTimelines = [];
 
-		applyState(0, currentY);
-		gsap.set(slides[0], { y: currentY + 200, autoAlpha: 0 });
-
-		const revealFirstSlide = () => {
-			if (hasRevealedFirstSlide) return;
-			hasRevealedFirstSlide = true;
-			gsap.to(slides[0], {
-				y: currentY,
-				autoAlpha: 1,
-				duration: transitionDuration,
-				ease: Power2.easeOut,
-				overwrite: true
+		slides.forEach((slide, index) => {
+			gsap.set(slide, {
+				y: index === 0 ? 0 : incomingY,
+				zIndex: index + 1
 			});
-		};
+		});
 
-		const resetFirstSlide = () => {
-			gsap.killTweensOf(slides);
-			currentIndex = 0;
-			queuedIndex = null;
-			isAnimating = false;
-			hasRevealedFirstSlide = false;
-			applyState(0, currentY);
-			gsap.set(slides[0], { y: currentY + 200, autoAlpha: 0 });
-		};
-
-		const handleProgress = (progress: number) => {
-			const targetIndex = Math.max(0, Math.min(maxIndex, Math.round(progress * maxIndex)));
-			animateToIndex(targetIndex, currentY);
-		};
-
-		revealTrigger = ScrollTrigger.create({
-			trigger: sectionEl,
-			start: 'top bottom-=300',
-			onEnter: () => {
-				revealFirstSlide();
+		timeline = gsap.timeline({
+			defaults: {
+				ease: 'none'
 			},
-			onEnterBack: () => {
-				revealFirstSlide();
-			},
-			onLeaveBack: () => {
-				resetFirstSlide();
+			scrollTrigger: {
+				trigger: triggerStartEl,
+				start: () => `top top+=${getHeaderOffset()}`,
+				endTrigger: sectionEl,
+				end: 'bottom top',
+				pin: sectionEl,
+				scrub: 1,
+				invalidateOnRefresh: true
 			}
 		});
 
-		scrollTrigger = ScrollTrigger.create({
-			trigger: sectionEl,
-			start: () => `top top+=${headerOffset}`,
-			end: () => {
-				const slideCount = slides.length;
-				const distance = slideHeight * (slideCount + (slideCount - 1) * 0.8);
-				return `+=${distance}`;
-			},
-			pin: true,
-			invalidateOnRefresh: true,
-			onEnter: () => {
-				revealFirstSlide();
-			},
-			onEnterBack: () => {
-				revealFirstSlide();
-			},
-			onUpdate: (self) => {
-				revealFirstSlide();
-				handleProgress(self.progress);
-			}
+		slides.forEach((slide, index) => {
+			if (index === 0) return;
+			const subTimeline = gsap.timeline({
+				defaults: {
+					ease: 'none'
+				}
+			});
+			subTimeline.to(
+				slide,
+				{
+					y: index * slideStackOffset,
+					duration: 1,
+					onUpdate: () => {
+						if (subTimeline.progress() >= 0.9) {
+							if (!slideAnimCompletion.has(index - 1)) {
+								slideAnimCompletion.add(index - 1);
+							}
+						} else {
+							if (slideAnimCompletion.has(index - 1)) {
+								slideAnimCompletion.delete(index - 1);
+							}
+						}
+					},
+					onComplete: () => {
+						slideAnimCompletion.add(index - 1);
+					}
+				},
+				0
+			);
+
+			slideTimelines[index] = subTimeline;
+			timeline?.add(subTimeline, index - 1);
 		});
+
+		timeline?.to({}, { duration: 0.2 });
 	}
 
 	onMount(() => {
 		setupCarousel();
-		const initialViewport = getViewportDimensions();
-		lastViewportWidth = initialViewport.width;
-		lastViewportHeight = initialViewport.height;
-
-		const handleResize = () => {
-			const nextViewport = getViewportDimensions();
-			const ignoreResize = shouldIgnoreResize(nextViewport.width, nextViewport.height);
-			lastViewportWidth = nextViewport.width;
-			lastViewportHeight = nextViewport.height;
-			if (ignoreResize) return;
-			const previousRange = scrollTrigger
-				? {
-						start: scrollTrigger.start,
-						end: scrollTrigger.end,
-						scrollY: window.scrollY
-					}
-				: null;
-
-			cancelAnimationFrame(resizeRaf);
-			resizeRaf = requestAnimationFrame(async () => {
-				await setupCarousel();
-				ScrollTrigger.refresh();
-
-				if (!previousRange || !scrollTrigger) return;
-				const { start: oldStart, end: oldEnd, scrollY: oldScrollY } = previousRange;
-				let targetScrollY: number | null = null;
-
-				if (oldScrollY > oldEnd) {
-					targetScrollY = scrollTrigger.end + (oldScrollY - oldEnd);
-				} else if (oldScrollY >= oldStart) {
-					const oldDistance = Math.max(1, oldEnd - oldStart);
-					const oldProgress = (oldScrollY - oldStart) / oldDistance;
-					const newDistance = Math.max(1, scrollTrigger.end - scrollTrigger.start);
-					targetScrollY = scrollTrigger.start + oldProgress * newDistance;
-				}
-
-				if (targetScrollY !== null && Math.abs(targetScrollY - window.scrollY) > 1) {
-					window.scrollTo({ top: targetScrollY, left: window.scrollX, behavior: 'auto' });
-				}
-			});
-		};
-
-		window.addEventListener('resize', handleResize);
 
 		return () => {
-			window.removeEventListener('resize', handleResize);
-			cancelAnimationFrame(resizeRaf);
 			destroyCarousel();
 		};
 	});
@@ -337,6 +216,19 @@
 
 <section bind:this={sectionEl} class="feature-carousel gutter bg-{data.bgColor ?? 'transparent'}">
 	<div class="wrap">
+		<div class="trigger-start" bind:this={triggerStartEl}></div>
+		{#if data.title || data.description}
+			<div class="intro">
+				{#if data.title}
+					<h2 class="title">{data.title}</h2>
+				{/if}
+				{#if data.description}
+					<div class="description">
+						<PortableText value={data.description} components={{}} />
+					</div>
+				{/if}
+			</div>
+		{/if}
 		{#if data.slides.length}
 			<div
 				bind:this={slidesEl}
@@ -344,7 +236,12 @@
 				style={`--slide-height:${slideHeight}px;--slides-wrap-height:${slidesWrapHeight}px`}
 			>
 				{#each data.slides as slide, index (slide)}
-					<div class="slide" bind:this={slideElements[index]}>
+					<div
+						class="slide"
+						style={`background-color:${slideColors[index] ?? slideColorEnd};`}
+						class:isComplete={slideAnimCompletion.has(index)}
+						bind:this={slideElements[index]}
+					>
 						<span class="num">{(index + 1).toString().padStart(2, '0')}</span>
 						<div class="image" class:empty={!slide.media}>
 							{#if slide.media}
@@ -381,18 +278,18 @@
 	section {
 		padding-top: 3rem;
 		padding-bottom: 7.5rem;
-		--slide-behind-offset-y: 70px;
-	}
-	:global(.pin-spacer:has(.feature-carousel)) {
-		overflow: hidden !important;
+		--slide-stack-offset: 32px;
 	}
 	.slides {
 		position: relative;
 		height: var(--slides-wrap-height, auto);
 	}
+	.trigger-start {
+		height: 1px;
+		width: 100%;
+	}
 	.slide {
 		display: grid;
-		background: var(--bg-turquoise);
 		padding: 24px 16px 40px;
 		grid-template-rows: auto auto 1fr;
 		gap: 16px;
@@ -401,19 +298,57 @@
 		left: 0;
 		width: 100%;
 		min-height: var(--slide-height, auto);
-		will-change: transform, opacity;
-		transform-origin: center top;
+		will-change: transform;
+	}
+	.wrap {
+		display: flex;
+		flex-direction: column;
 	}
 	.num {
 		font-size: var(--38pt);
 		line-height: var(--48pt);
 		height: min-content;
+		transition: opacity 450ms linear;
+		will-change: opacity;
+	}
+	.slide.isComplete .num {
+		opacity: 0;
 	}
 	.slide-title {
-		font-size: var(--24pt);
-		line-height: var(--28pt);
+		font-size: var(--22pt);
+		line-height: var(--26pt);
 		margin-bottom: var(--12pt);
 		margin-top: 0;
+		text-wrap: balance;
+		/* text-wrap: pretty; */
+	}
+	.intro .title,
+	.intro .description {
+		text-align: center;
+	}
+	.intro .description :global(:first-child) {
+		margin-top: 0;
+	}
+	.intro .description :global(:last-child) {
+		margin-bottom: 0;
+	}
+	.intro .title {
+		margin: 0;
+	}
+	.intro .description {
+		text-wrap: balance;
+		text-wrap: pretty; /* firefox ignores this */
+	}
+	.intro {
+		display: flex;
+		flex-direction: column;
+		gap: var(--16pt);
+		margin-bottom: 32px;
+	}
+	.body :global(p) {
+		font-size: var(--14pt);
+		line-height: var(--20pt);
+		text-wrap: pretty;
 	}
 	.body :global(p:first-of-type) {
 		margin-top: 0;
@@ -422,7 +357,7 @@
 		margin-bottom: 0;
 	}
 	.info :global(.btn) {
-		margin-top: 24px;
+		margin-top: 32px;
 		justify-content: center;
 	}
 	.body.desktop {
@@ -430,16 +365,13 @@
 	}
 	.image {
 		position: relative;
-		aspect-ratio: 1.716667 / 1;
+		aspect-ratio: 1.73 / 1;
 		max-height: 300px;
 	}
 	.image.empty {
 		background: red;
 	}
 	@media (min-width: 480px) {
-		section {
-			--slide-behind-offset-y: 95px;
-		}
 		.slide {
 			padding-inline: 32px;
 		}
@@ -451,7 +383,6 @@
 		section {
 			padding-top: 4rem;
 			padding-bottom: 8rem;
-			--slide-behind-offset-y: 85px;
 		}
 		.slide {
 			gap: 24px var(--gutter-lg);
@@ -465,13 +396,26 @@
 		.body.mobile {
 			display: none;
 		}
+		.body :global(p) {
+			font-size: var(--16pt);
+			line-height: var(--24pt);
+		}
 		.slide-title {
-			font-size: var(--40pt);
-			line-height: var(--48pt);
+			font-size: var(--26pt);
+			line-height: var(--32pt);
 			margin-bottom: var(--16pt);
 		}
+		.intro {
+			gap: var(--24pt);
+			max-width: 680px;
+			margin-inline: auto;
+			margin-bottom: 68px;
+		}
+		.intro .title {
+			font-size: var(--40pt);
+			line-height: var(--48pt);
+		}
 		.info :global(.btn) {
-			margin-top: 48px;
 			width: fit-content;
 		}
 		.num {
@@ -480,10 +424,10 @@
 		}
 		.image {
 			max-height: none;
-			aspect-ratio: 1.4563 / 1;
+			aspect-ratio: 1.37 / 1;
 		}
 		.wrap {
-			max-width: 1280px;
+			max-width: 974px;
 			margin-inline: auto;
 		}
 	}
@@ -495,7 +439,18 @@
 	}
 	@media (min-width: 1200px) and (min-height: 800px) {
 		.slide {
-			padding: 64px 60px 96px;
+			padding: 40px 48px 64px;
+		}
+	}
+	@media (max-height: 860px) {
+		.intro {
+			order: 1;
+		}
+		.trigger-start {
+			order: 2;
+		}
+		.slides {
+			order: 3;
 		}
 	}
 </style>
