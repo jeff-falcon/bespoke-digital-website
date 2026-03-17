@@ -8,7 +8,7 @@
 	interface Props {
 		media: ProjectMedia;
 		cover?: boolean;
-		fillContainer?: boolean;
+		fillContainer?: boolean | 'desktop';
 		scaleOnReveal?: boolean;
 		isFullWidth?: boolean;
 	}
@@ -65,6 +65,7 @@
 			class:isIntersecting
 			class:scaleOnReveal
 			class:fillContainer={!cover && fillContainer}
+			class:desktop={!cover && fillContainer === 'desktop'}
 			data-is-video-playing={isVideoPlaying}
 			data-has-video-id={hasVideoId}
 			data-is-video-embed={isVideoEmbed}
@@ -181,5 +182,15 @@
 	}
 	.media.scaleOnReveal:not(.isBgVideo).isIntersecting img {
 		transform: scale(1);
+	}
+	@media (max-width: 719px) {
+		.fillContainer.desktop img,
+		.fillContainer.desktop picture {
+			object-fit: contain;
+			position: relative;
+			top: auto;
+			left: auto;
+			height: auto;
+		}
 	}
 </style>

@@ -31,7 +31,7 @@
 
 {#snippet introText()}
 	{#if hasIntro && !isTextLayout}
-		<div class="intro text-align-{textAlign}">
+		<div class="intro align-{textAlign}">
 			{@render textContent()}
 		</div>
 	{/if}
@@ -49,42 +49,42 @@
 		<div class="media">
 			{#if layout === 'two_one' || layout === 'one_two'}
 				<ProjectMediaComponent media={mediaItems[0]} />
-				{#each mediaItems.slice(1) as item}
-					<ProjectMediaComponent media={item} fillContainer={true} />
+				{#each mediaItems.slice(1) as item, index}
+					<ProjectMediaComponent media={item} fillContainer={index > 0 ? true : 'desktop'} />
 				{/each}
 			{/if}
 			{#if layout === 'three' || layout === 'four'}
 				{#each mediaItems as item, index}
-					<ProjectMediaComponent media={item} fillContainer={index > 0} />
+					<ProjectMediaComponent media={item} fillContainer={index > 0 ? 'desktop' : false} />
 				{/each}
 			{/if}
 			{#if layout === 'one_three'}
 				<ProjectMediaComponent media={mediaItems[0]} />
 				{#each mediaItems.slice(1) as item, index}
-					<ProjectMediaComponent media={item} fillContainer={index > 0} />
+					<ProjectMediaComponent media={item} fillContainer={index > 0 ? 'desktop' : false} />
 				{/each}
 			{/if}
 			{#if layout === 'three_one'}
 				{#each mediaItems.slice(0, 2) as item, index}
-					<ProjectMediaComponent media={item} fillContainer={index > 0} />
+					<ProjectMediaComponent media={item} fillContainer={index > 0 ? 'desktop' : false} />
 				{/each}
 				<ProjectMediaComponent media={mediaItems[3]} />
 			{/if}
 			{#if layout === 'one_half_half'}
 				<ProjectMediaComponent media={mediaItems[0]} />
-				{#each mediaItems.slice(1) as item}
-					<ProjectMediaComponent media={item} fillContainer={true} />
+				{#each mediaItems.slice(1) as item, index}
+					<ProjectMediaComponent media={item} fillContainer={index > 0 ? true : 'desktop'} />
 				{/each}
 			{/if}
 			{#if layout === 'half_half_one'}
-				{#each mediaItems.slice(0, -1) as item}
-					<ProjectMediaComponent media={item} fillContainer={true} />
+				{#each mediaItems.slice(0, 2) as item, index}
+					<ProjectMediaComponent media={item} fillContainer={index > 0 ? 'desktop' : true} />
 				{/each}
-				<ProjectMediaComponent media={mediaItems[mediaItems.length - 1]} />
+				<ProjectMediaComponent media={mediaItems[2]} />
 			{/if}
 			{#if layout === 'one_text' || layout === 'text_one'}
 				{#if hasIntro}
-					<div class="text text-align-{textAlign}">
+					<div class="text align-{textAlign}">
 						{@render textContent()}
 					</div>
 				{/if}
@@ -112,13 +112,15 @@
 	}
 
 	.intro {
-		margin-bottom: var(--gutter-sm);
+		margin-bottom: 32px;
+		max-width: 960px;
+		margin-inline: auto;
 	}
 
 	.title {
 		font-size: var(--24pt);
 		line-height: var(--32pt);
-		margin: 0 0 var(--24pt);
+		margin: 0 0 var(--16pt);
 	}
 
 	.description {
@@ -134,15 +136,15 @@
 		margin-bottom: 0;
 	}
 
-	.intro.text-align-centered {
+	.intro.align-centered {
 		text-align: center;
 	}
 
-	.intro.text-align-left {
+	.intro.align-left {
 		text-align: left;
 	}
 
-	.intro.text-align-right {
+	.intro.align-right {
 		text-align: right;
 	}
 
@@ -152,17 +154,17 @@
 		justify-content: center;
 	}
 
-	.text.text-align-centered {
+	.text.align-centered {
 		align-items: center;
 		text-align: center;
 	}
 
-	.text.text-align-left {
+	.text.align-left {
 		align-items: flex-start;
 		text-align: left;
 	}
 
-	.text.text-align-right {
+	.text.align-right {
 		align-items: flex-end;
 		text-align: right;
 	}
@@ -175,14 +177,49 @@
 	.layout_four .media {
 		grid-template-columns: repeat(2, minmax(0, 1fr));
 	}
+	.layout_one_two .media,
+	.layout_two_one .media {
+		grid-template-columns: repeat(2, minmax(0, 1fr));
+	}
 
+	@media (max-width: 719px) {
+		.layout_one_two .media :global(:nth-child(1)),
+		.layout_two_one .media :global(:nth-child(3)) {
+			grid-column: 1 / span 2;
+		}
+		.layout_one_half_half .media,
+		.layout_half_half_one .media {
+			grid-template-columns: repeat(2, minmax(0, 1fr));
+		}
+		.layout_one_half_half .media :global(:nth-child(1)),
+		.layout_half_half_one .media :global(:nth-child(3)) {
+			grid-column: 1 / span 2;
+		}
+		.layout_one_text.hasText .media > .text,
+		.layout_text_one.hasText .media > .text {
+			padding-top: 1.5rem;
+			padding-bottom: 1.5rem;
+		}
+	}
 	@media (min-width: 720px) {
 		.media-group {
 			--gap: var(--gutter-lg);
+			--vpad: 4rem;
 		}
-		.layout_one_two .media,
-		.layout_two_one .media {
-			grid-template-columns: repeat(2, minmax(0, 1fr));
+
+		.intro {
+			margin-bottom: 76px;
+		}
+
+		.title {
+			font-size: var(--40pt);
+			line-height: var(--48pt);
+			margin-bottom: var(--24pt);
+		}
+
+		.description {
+			font-size: var(--24pt);
+			line-height: var(--32pt);
 		}
 		.layout_one_two .media :global(:nth-child(1)),
 		.layout_two_one .media :global(:nth-child(3)) {
@@ -227,7 +264,6 @@
 		}
 		.layout_one_text.hasText .media > .text {
 			grid-column: 2;
-			padding-inline: 80px;
 		}
 		.layout_one_text.hasText .media :global(figure) {
 			grid-column: 1;
@@ -235,7 +271,10 @@
 		}
 		.layout_text_one.hasText .media > .text {
 			grid-column: 1;
-			padding-inline: 80px;
+		}
+		.hasText .media > .text {
+			padding-inline: 24px;
+			text-wrap: pretty;
 		}
 		.layout_text_one.hasText .media :global(figure) {
 			grid-column: 2;
@@ -243,23 +282,8 @@
 		}
 	}
 	@media (min-width: 960px) {
-		.media-group {
-			--vpad: 4rem;
-		}
-
-		.intro {
-			margin-bottom: 76px;
-		}
-
-		.title {
-			font-size: var(--40pt);
-			line-height: var(--48pt);
-			margin-bottom: var(--32pt);
-		}
-
-		.description {
-			font-size: var(--20pt);
-			line-height: var(--32pt);
+		.hasText .media > .text {
+			padding-inline: 80px;
 		}
 	}
 </style>

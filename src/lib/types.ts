@@ -237,6 +237,7 @@ export interface MediaGroup {
 		| 'four'
 		| 'one_half_half'
 		| 'half_half_one'
+		| 'single'
 		| 'one_text'
 		| 'text_one';
 	media?: ProjectMedia[];
