@@ -88,6 +88,7 @@ export type PageComponents = Array<
 	| TeamGrid
 	| Text2Column
 	| Quote
+	| MediaGroup
 >;
 
 export interface Page {
@@ -217,6 +218,28 @@ export interface ColumnedText {
 		body: InputValue;
 	}[];
 	bgColor: SectionBackgroundColor;
+}
+
+export interface MediaGroup {
+	_type: 'media_group';
+	_id: string;
+	name: string;
+	title?: string;
+	description?: InputValue;
+	text_align?: 'centered' | 'left' | 'right';
+	layout?:
+		| 'one_two'
+		| 'two_one'
+		| 'three_one'
+		| 'one_three'
+		| 'one_full'
+		| 'three'
+		| 'four'
+		| 'one_half_half'
+		| 'half_half_one'
+		| 'one_text'
+		| 'text_one';
+	media?: ProjectMedia[];
 }
 
 export interface ClientList {

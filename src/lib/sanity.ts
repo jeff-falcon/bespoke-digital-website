@@ -6,6 +6,7 @@ import type {
 	FeatureCarouselSlide,
 	Form,
 	LogoGrid,
+	MediaGroup,
 	Page,
 	PageComponents,
 	Project,
@@ -63,6 +64,7 @@ export async function getPage(slug: string, cookies: Cookies): Promise<Page | un
 			_type == 'text_2col_ref' => @->{..., "bgColor": background_color},
 			_type == 'quote_ref' => @->{..., "bgColor": background_color, "textColor": text_color},
 			_type == 'feature_carousel_ref' => @->{..., "bgColor": background_color, "slides": slides[]{..., media->}},
+			_type == 'media_group_ref' => @->{..., "text_align": text_align, "media": media[]->{...}},
 			_type == 'columned_text_ref' => @->{..., "borderedTitle": bordered_title, "bgColor": background_color},
 			_type == 'client_list_ref' => @->{..., "bgColor": background_color},
 			_type == 'team_grid_ref' => @->{..., "bgColor": background_color, "extraMembers": extra_members[]->, "extraMembersTitle": extra_members_title},
@@ -180,6 +182,21 @@ async function getComponents(components: any): Promise<PageComponents> {
 			comps.push(team);
 		} else if (component._type === 'form') {
 			comps.push(component as Form);
+		} else if (component._type === 'media_group') {
+			const mediaItems = (component.media ?? [])
+				.map((m: any) => parseProjectMediaFromData(m, false))
+				.filter(Boolean);
+			const mediaGroup: MediaGroup = {
+				_type: 'media_group',
+				_id: component._id,
+				name: component.name,
+				title: component.title,
+				description: component.description,
+				text_align: component.text_align,
+				layout: component.layout,
+				media: mediaItems
+			};
+			comps.push(mediaGroup);
 		} else {
 			console.log('unknown component', component);
 		}

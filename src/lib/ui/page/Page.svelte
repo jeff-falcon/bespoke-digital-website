@@ -8,6 +8,7 @@
 	import ClientList from '../content/ClientList.svelte';
 	import ColumnedText from '../content/ColumnedText.svelte';
 	import FeatureCarousel from '../content/FeatureCarousel.svelte';
+	import MediaGroup from '../content/MediaGroup.svelte';
 	import Quote from '../content/Quote.svelte';
 	import TeamGrid from '../content/TeamGrid.svelte';
 	import Text2Column from '../content/Text2Column.svelte';
@@ -106,6 +107,9 @@
 			{/if}
 			{#if component._type === 'feature_carousel'}
 				<FeatureCarousel data={component} />
+			{/if}
+			{#if component._type === 'media_group'}
+				<MediaGroup data={component} />
 			{/if}
 		{/each}
 	{/if}
