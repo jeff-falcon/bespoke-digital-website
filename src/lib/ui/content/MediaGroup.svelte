@@ -32,7 +32,7 @@
 		</div>
 	{/if}
 {/snippet}
-<section class="media-group gutter layout_{layout}">
+<section class="media-group gutter layout_{layout}" class:hasIntro={hasIntro && !isTextLayout}>
 	{#if layout !== 'one_text' && layout !== 'text_one'}
 		{@render introText()}
 	{/if}
@@ -50,14 +50,29 @@
 					<ProjectMediaComponent media={item} fillContainer={index > 0} />
 				{/each}
 			{/if}
+			{#if layout === 'one_three'}
+				<ProjectMediaComponent media={mediaItems[0]} />
+				{#each mediaItems.slice(1) as item, index}
+					<ProjectMediaComponent media={item} fillContainer={index > 0} />
+				{/each}
+			{/if}
 		</div>
 	{/if}
 </section>
 
 <style>
 	.media-group {
-		padding-top: 3rem;
-		padding-bottom: 3rem;
+		--pad-top: 3rem;
+		--pad-bot: 3rem;
+		--gap: var(--gutter-sm);
+		padding-top: var(--pad-top);
+		padding-bottom: var(--pad-bot);
+	}
+	.media-group :global(+ .media-group:not(.hasIntro)) {
+		padding-top: 0;
+	}
+	.media-group:has(:global(+ .media-group:not(.hasIntro))) {
+		padding-bottom: var(--gap);
 	}
 
 	.intro {
@@ -96,7 +111,7 @@
 	}
 	.media {
 		display: grid;
-		gap: var(--gutter-sm);
+		gap: var(--gap);
 	}
 
 	.layout_one_four .media {
@@ -104,19 +119,23 @@
 	}
 
 	@media (min-width: 720px) {
-		.media {
-			gap: var(--gutter-lg);
+		.media-group {
+			--gap: var(--gutter-lg);
 		}
-		.layout_one_two .media {
+		.layout_one_two .media,
+		.layout_two_one .media {
 			grid-template-columns: repeat(2, minmax(0, 1fr));
 		}
-		.layout_one_two .media :global(:nth-child(1)) {
+		.layout_one_two .media :global(:nth-child(1)),
+		.layout_two_one .media :global(:nth-child(3)) {
 			grid-row: 1 / span 2;
 		}
-		.layout_one_two .media :global(:nth-child(2)) {
+		.layout_one_two .media :global(:nth-child(2)),
+		.layout_two_one .media :global(:nth-child(1)) {
 			grid-row: 1;
 		}
-		.layout_one_two .media :global(:nth-child(3)) {
+		.layout_one_two .media :global(:nth-child(3)),
+		.layout_two_one .media :global(:nth-child(2)) {
 			grid-row: 2;
 		}
 		.layout_three .media {
@@ -124,6 +143,13 @@
 		}
 		.layout_four .media {
 			grid-template-columns: repeat(4, minmax(0, 1fr));
+		}
+		.layout_one_three .media {
+			grid-template-columns: repeat(3, minmax(0, 1fr));
+		}
+		.layout_one_three .media :global(:nth-child(1)),
+		.layout_three_one .media :global(:nth-child(4)) {
+			grid-column: 1 / span 3;
 		}
 	}
 	@media (min-width: 960px) {
