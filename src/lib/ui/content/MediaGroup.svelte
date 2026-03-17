@@ -18,21 +18,29 @@
 	const isTextLayout = $derived(layout === 'one_text' || layout === 'text_one');
 </script>
 
-{#snippet introText()}
-	{#if hasIntro && !isTextLayout}
-		<div class="intro text-align-{textAlign}">
-			{#if data.title}
-				<h2 class="title">{data.title}</h2>
-			{/if}
-			{#if data.description}
-				<div class="description">
-					<PortableText value={data.description} components={{}} />
-				</div>
-			{/if}
+{#snippet textContent()}
+	{#if data.title}
+		<h2 class="title">{data.title}</h2>
+	{/if}
+	{#if data.description}
+		<div class="description">
+			<PortableText value={data.description} components={{}} />
 		</div>
 	{/if}
 {/snippet}
-<section class="media-group gutter layout_{layout}" class:hasIntro={hasIntro && !isTextLayout}>
+
+{#snippet introText()}
+	{#if hasIntro && !isTextLayout}
+		<div class="intro text-align-{textAlign}">
+			{@render textContent()}
+		</div>
+	{/if}
+{/snippet}
+<section
+	class="media-group gutter layout_{layout}"
+	class:hasIntro={hasIntro && !isTextLayout}
+	class:hasText={hasIntro && isTextLayout}
+>
 	{#if layout !== 'one_text' && layout !== 'text_one'}
 		{@render introText()}
 	{/if}
@@ -56,17 +64,45 @@
 					<ProjectMediaComponent media={item} fillContainer={index > 0} />
 				{/each}
 			{/if}
+			{#if layout === 'three_one'}
+				{#each mediaItems.slice(0, 2) as item, index}
+					<ProjectMediaComponent media={item} fillContainer={index > 0} />
+				{/each}
+				<ProjectMediaComponent media={mediaItems[3]} />
+			{/if}
+			{#if layout === 'one_half_half'}
+				<ProjectMediaComponent media={mediaItems[0]} />
+				{#each mediaItems.slice(1) as item}
+					<ProjectMediaComponent media={item} fillContainer={true} />
+				{/each}
+			{/if}
+			{#if layout === 'half_half_one'}
+				{#each mediaItems.slice(0, -1) as item}
+					<ProjectMediaComponent media={item} fillContainer={true} />
+				{/each}
+				<ProjectMediaComponent media={mediaItems[mediaItems.length - 1]} />
+			{/if}
+			{#if layout === 'one_text' || layout === 'text_one'}
+				{#if hasIntro}
+					<div class="text text-align-{textAlign}">
+						{@render textContent()}
+					</div>
+				{/if}
+				<ProjectMediaComponent media={mediaItems[0]} />
+			{/if}
+			{#if layout === 'one_full'}
+				<ProjectMediaComponent media={mediaItems[0]} />
+			{/if}
 		</div>
 	{/if}
 </section>
 
 <style>
 	.media-group {
-		--pad-top: 3rem;
-		--pad-bot: 3rem;
+		--vpad: 3rem;
 		--gap: var(--gutter-sm);
-		padding-top: var(--pad-top);
-		padding-bottom: var(--pad-bot);
+		padding-top: var(--vpad);
+		padding-bottom: var(--vpad);
 	}
 	.media-group :global(+ .media-group:not(.hasIntro)) {
 		padding-top: 0;
@@ -109,12 +145,34 @@
 	.intro.text-align-right {
 		text-align: right;
 	}
+
+	.text {
+		display: flex;
+		flex-direction: column;
+		justify-content: center;
+	}
+
+	.text.text-align-centered {
+		align-items: center;
+		text-align: center;
+	}
+
+	.text.text-align-left {
+		align-items: flex-start;
+		text-align: left;
+	}
+
+	.text.text-align-right {
+		align-items: flex-end;
+		text-align: right;
+	}
 	.media {
 		display: grid;
 		gap: var(--gap);
+		grid-template-rows: auto;
 	}
 
-	.layout_one_four .media {
+	.layout_four .media {
 		grid-template-columns: repeat(2, minmax(0, 1fr));
 	}
 
@@ -144,18 +202,49 @@
 		.layout_four .media {
 			grid-template-columns: repeat(4, minmax(0, 1fr));
 		}
-		.layout_one_three .media {
+		.layout_one_three .media,
+		.layout_three_one .media {
 			grid-template-columns: repeat(3, minmax(0, 1fr));
 		}
 		.layout_one_three .media :global(:nth-child(1)),
 		.layout_three_one .media :global(:nth-child(4)) {
 			grid-column: 1 / span 3;
 		}
+		.layout_one_half_half .media,
+		.layout_half_half_one .media {
+			grid-template-columns: repeat(4, minmax(0, 1fr));
+		}
+		.layout_one_half_half .media :global(:nth-child(1)) {
+			grid-column: 1 / span 2;
+		}
+		.layout_half_half_one .media :global(:nth-child(3)) {
+			grid-column: 3 / span 2;
+		}
+		.layout_one_text.hasText .media,
+		.layout_text_one.hasText .media {
+			align-items: center;
+			grid-template-columns: repeat(2, minmax(0, 1fr));
+		}
+		.layout_one_text.hasText .media > .text {
+			grid-column: 2;
+			padding-inline: 80px;
+		}
+		.layout_one_text.hasText .media :global(figure) {
+			grid-column: 1;
+			grid-row: 1;
+		}
+		.layout_text_one.hasText .media > .text {
+			grid-column: 1;
+			padding-inline: 80px;
+		}
+		.layout_text_one.hasText .media :global(figure) {
+			grid-column: 2;
+			grid-row: 1;
+		}
 	}
 	@media (min-width: 960px) {
 		.media-group {
-			padding-top: 4rem;
-			padding-bottom: 4rem;
+			--vpad: 4rem;
 		}
 
 		.intro {
