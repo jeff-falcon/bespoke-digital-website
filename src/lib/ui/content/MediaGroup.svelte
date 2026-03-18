@@ -5,9 +5,10 @@
 
 	interface Props {
 		data: MediaGroup;
+		noGutter?: boolean;
 	}
 
-	let { data }: Props = $props();
+	let { data, noGutter = false }: Props = $props();
 
 	const layout = $derived(data.layout ?? 'one_full');
 	const mediaItems = $derived(data.media ?? []);
@@ -37,7 +38,8 @@
 	{/if}
 {/snippet}
 <section
-	class="media-group gutter layout_{layout}"
+	class="media-group layout_{layout}"
+	class:gutter={!noGutter}
 	class:hasIntro={hasIntro && !isTextLayout}
 	class:hasText={hasIntro && isTextLayout}
 >
@@ -107,14 +109,18 @@
 	.media-group :global(+ .media-group:not(.hasIntro)) {
 		padding-top: 0;
 	}
-	.media-group:has(:global(+ .media-group:not(.hasIntro))) {
+	.media-group:has(:global(+ .media-group)) {
 		padding-bottom: var(--gap);
+	}
+	.media-group:has(:global(+ .media-group.hasIntro)) {
+		padding-bottom: 0;
 	}
 
 	.intro {
 		margin-bottom: 32px;
 		max-width: 960px;
 		margin-inline: auto;
+		text-wrap: balance;
 	}
 
 	.title {

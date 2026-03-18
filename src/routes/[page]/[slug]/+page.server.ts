@@ -1,6 +1,6 @@
 import { parseCloudinaryImage, parseProjectMediaFromData } from '$lib/parse';
 import { getClient } from '$lib/sanity';
-import type { Project, ProjectMedia, ProjectMediaPair, TextOnly } from '$lib/types';
+import type { MediaGroup, Project, ProjectMedia, ProjectMediaPair, TextOnly } from '$lib/types';
 import { error } from '@sveltejs/kit';
 import type { PageServerLoad } from './$types';
 
@@ -20,6 +20,7 @@ export const load: PageServerLoad = async ({
 					left->,
 					right->
 				},
+				_type == 'media_group_item' => @->{..., "media": media[]->},
 			},
 			"tags": tags[]->prefLabel,
 			"relatedProjects": *[_type == "project" && count(tags[@._ref in ^.^.tags[]._ref]) > 0 && slug.current != "${params.slug}" && !(_id in path("drafts.**"))]{
@@ -42,7 +43,7 @@ export const load: PageServerLoad = async ({
 			error(404, 'Page not found');
 		}
 		const projectData = data[0];
-		const mediaList: Array<ProjectMedia | ProjectMediaPair | TextOnly> = [];
+		const mediaList: Array<ProjectMedia | ProjectMediaPair | TextOnly | MediaGroup> = [];
 		if (projectData.media) {
 			for (const media of projectData.media) {
 				if (media._type === 'project_media') {
@@ -65,6 +66,21 @@ export const load: PageServerLoad = async ({
 							right
 						});
 					}
+				}
+				if (media._type === 'media_group') {
+					const mediaGroupItems = (media.media ?? [])
+						.map((m: any) => parseProjectMediaFromData(m, false))
+						.filter(Boolean);
+					mediaList.push({
+						_type: 'media_group',
+						_id: media._id,
+						name: media.name,
+						title: media.title,
+						description: media.description,
+						text_align: media.text_align,
+						layout: media.layout,
+						media: mediaGroupItems
+					} as MediaGroup);
 				}
 				if (media._type === 'text_only') {
 					mediaList.push(media);
@@ -92,7 +108,7 @@ export const load: PageServerLoad = async ({
 			media: mediaList,
 			bgColor: projectData.bg_color?.value,
 			relatedProjects:
-				projectData.show_related_projects !== false ? projectData.relatedProjects ?? [] : [],
+				projectData.show_related_projects !== false ? (projectData.relatedProjects ?? []) : [],
 			relatedProjectsBgColor: projectData.related_projects_bg_color?.value,
 			showRelatedProjects: projectData.show_related_projects !== false,
 			tags: projectData.tags ?? []
