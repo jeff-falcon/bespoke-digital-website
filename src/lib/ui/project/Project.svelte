@@ -1,12 +1,13 @@
 <script lang="ts">
+	import { getContrastYIQFromColor } from '$lib/color';
+	import type { MediaGroup as MediaGroupType, Project, ProjectGrid } from '$lib/types';
 	import ProjectMediaComponent from '$lib/ui/project/ProjectMediaComponent.svelte';
 	import { PortableText } from '@portabletext/svelte';
-	import type { Project, ProjectGrid } from '$lib/types';
-	import { fly, type FlyParams } from 'svelte/transition';
 	import { expoOut } from 'svelte/easing';
-	import ProjectGridComponent from './ProjectGrid.svelte';
-	import { getContrastYIQFromColor } from '$lib/color';
+	import { fly, type FlyParams } from 'svelte/transition';
+	import MediaGroup from '../content/MediaGroup.svelte';
 	import TextOnly from '../content/TextOnly.svelte';
+	import ProjectGridComponent from './ProjectGrid.svelte';
 
 	interface Props {
 		project: Project;
@@ -17,20 +18,48 @@
 	const flyProps: FlyParams = { opacity: 0, y: 30, easing: expoOut, duration: 1500 };
 
 	let hasDescription = $derived(project.description || project.descriptionIntro);
-	let relatedProjects =
-		$derived(project.showRelatedProjects && (project.relatedProjects?.length || 0)
+	let relatedProjects = $derived(
+		project.showRelatedProjects && (project.relatedProjects?.length || 0)
 			? <ProjectGrid>{
 					title: 'Related Projects',
 					projects: project.relatedProjects,
 					_type: 'project_grid'
 				}
-			: null);
+			: null
+	);
 
-	let hasRelatedBg =
-		$derived(project.relatedProjectsBgColor && project.relatedProjectsBgColor !== 'transparent');
-	let relatedBgIsLight = $derived(hasRelatedBg
-		? getContrastYIQFromColor(project.relatedProjectsBgColor!) === 'black'
-		: false);
+	let hasRelatedBg = $derived(
+		project.relatedProjectsBgColor && project.relatedProjectsBgColor !== 'transparent'
+	);
+	let relatedBgIsLight = $derived(
+		hasRelatedBg ? getContrastYIQFromColor(project.relatedProjectsBgColor!) === 'black' : false
+	);
+
+	type GroupedItem =
+		| { type: 'single'; item: NonNullable<Project['media']>[number]; index: number }
+		| { type: 'media_group_run'; items: MediaGroupType[] };
+
+	let groupedMedia = $derived.by(() => {
+		const items = project.media ?? [];
+		const groups: GroupedItem[] = [];
+		let currentRun: MediaGroupType[] = [];
+
+		for (let i = 0; i < items.length; i++) {
+			if (items[i]._type === 'media_group') {
+				currentRun.push(items[i] as MediaGroupType);
+			} else {
+				if (currentRun.length) {
+					groups.push({ type: 'media_group_run', items: currentRun });
+					currentRun = [];
+				}
+				groups.push({ type: 'single', item: items[i], index: i });
+			}
+		}
+		if (currentRun.length) {
+			groups.push({ type: 'media_group_run', items: currentRun });
+		}
+		return groups;
+	});
 </script>
 
 <div
@@ -76,27 +105,38 @@
 	{/if}
 	{#if project.media}
 		<section class="medias gutter">
-			{#each project.media as item, index}
-				{#if item._type === 'project_media'}
-					<ProjectMediaComponent media={item} scaleOnReveal={index === 0} />
-				{/if}
-				{#if item._type === 'item_pair'}
-					{@const leftRatio = (item.left.image?.height ?? 100) / (item.left.image?.width ?? 100)}
-					{@const rightRatio = (item.right.image?.height ?? 100) / (item.right.image?.width ?? 100)}
+			{#each groupedMedia as group}
+				{#if group.type === 'media_group_run'}
+					<div class="media-group-run">
+						{#each group.items as mg}
+							<MediaGroup data={mg} noGutter />
+						{/each}
+					</div>
+				{:else}
+					{@const item = group.item}
+					{@const index = group.index}
+					{#if item._type === 'project_media'}
+						<ProjectMediaComponent media={item} scaleOnReveal={index === 0} />
+					{/if}
+					{#if item._type === 'item_pair'}
+						{@const leftRatio = (item.left.image?.height ?? 100) / (item.left.image?.width ?? 100)}
+						{@const rightRatio =
+							(item.right.image?.height ?? 100) / (item.right.image?.width ?? 100)}
 
-					<div
-						class="pair"
-						class:isLeftLarger={leftRatio > rightRatio}
-						class:isRightLarger={leftRatio < rightRatio}
-					>
-						<ProjectMediaComponent media={item.left} scaleOnReveal={index === 0} />
-						<ProjectMediaComponent media={item.right} scaleOnReveal={index === 0} />
-					</div>
-				{/if}
-				{#if item._type === 'text_only'}
-					<div class="text-block">
-						<TextOnly data={item} />
-					</div>
+						<div
+							class="pair"
+							class:isLeftLarger={leftRatio > rightRatio}
+							class:isRightLarger={leftRatio < rightRatio}
+						>
+							<ProjectMediaComponent media={item.left} scaleOnReveal={index === 0} />
+							<ProjectMediaComponent media={item.right} scaleOnReveal={index === 0} />
+						</div>
+					{/if}
+					{#if item._type === 'text_only'}
+						<div class="text-block">
+							<TextOnly data={item} />
+						</div>
+					{/if}
 				{/if}
 			{/each}
 		</section>
@@ -192,6 +232,15 @@
 		margin-left: calc(0px - var(--gutter-sm));
 		margin-right: calc(0px - var(--gutter-sm));
 	}
+	.media-group-run :global(.media-group:first-of-type) {
+		--vpad: 0;
+	}
+	.media-group-run :global(.media-group:first-of-type:has(.intro)) {
+		--vpad: 1rem;
+	}
+	.media-group-run :global(.media-group:last-of-type) {
+		padding-bottom: 0;
+	}
 
 	@media (min-width: 720px) {
 		.medias {
@@ -224,6 +273,9 @@
 		.text-block {
 			margin-left: calc(0px - var(--gutter-lg));
 			margin-right: calc(0px - var(--gutter-lg));
+		}
+		.media-group-run :global(.media-group:first-of-type:has(.intro)) {
+			--vpad: 2rem;
 		}
 	}
 	@media (min-width: 960px) {

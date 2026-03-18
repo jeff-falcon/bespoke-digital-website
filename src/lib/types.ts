@@ -44,7 +44,7 @@ export interface Project {
 	image?: CloudinaryImage;
 	videoBgSrc?: string;
 	videoBgSrcHd?: string;
-	media?: Array<ProjectMedia | ProjectMediaPair | TextOnly>;
+	media?: Array<ProjectMedia | ProjectMediaPair | TextOnly | MediaGroup>;
 	bgColor?: string;
 	tags?: string[];
 	relatedProjects?: Project[];
