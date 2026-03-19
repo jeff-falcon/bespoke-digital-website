@@ -28,7 +28,10 @@
 		isFullWidth ? media.videoBgSrcHd || media.videoBgSrc : media.videoBgSrc
 	);
 	let isBgVideo = $derived(media.kind === 'video-bg' && Boolean(videoBgSrc));
-	let isStaticImage = $derived(media.kind === 'image' && Boolean(media.image?.url));
+	let isBgVideoMissingVideo = $derived(media.kind === 'video-bg' && !Boolean(videoBgSrc));
+	let isStaticImage = $derived(
+		(media.kind === 'image' || isBgVideoMissingVideo) && Boolean(media.image?.url)
+	);
 	let hasVideoId = $derived(!isNaN(Number(videoBgSrc)));
 	let isVideoPlayer = $derived(
 		media.kind === 'video-player' && Boolean(media.videoPlayerSrc) && !hasVideoId
