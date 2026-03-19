@@ -55,7 +55,7 @@
 					<ProjectMediaComponent media={item} fillContainer={index > 0 ? true : 'desktop'} />
 				{/each}
 			{/if}
-			{#if layout === 'three' || layout === 'four'}
+			{#if layout === 'two' || layout === 'three' || layout === 'four'}
 				{#each mediaItems as item, index}
 					<ProjectMediaComponent media={item} fillContainer={index > 0 ? 'desktop' : false} />
 				{/each}
@@ -241,6 +241,9 @@
 		}
 		.layout_three .media {
 			grid-template-columns: repeat(3, minmax(0, 1fr));
+		}
+		.layout_two .media {
+			grid-template-columns: repeat(2, minmax(0, 1fr));
 		}
 		.layout_four .media {
 			grid-template-columns: repeat(4, minmax(0, 1fr));
