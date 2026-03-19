@@ -233,6 +233,7 @@ export interface MediaGroup {
 		| 'three_one'
 		| 'one_three'
 		| 'one_full'
+		| 'two'
 		| 'three'
 		| 'four'
 		| 'one_half_half'
