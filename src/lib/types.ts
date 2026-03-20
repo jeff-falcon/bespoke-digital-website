@@ -205,17 +205,23 @@ export interface Text2Column {
 	_type: 'text_2col';
 	col1: InputValue;
 	col2: InputValue;
+	indented: boolean;
 	bgColor: SectionBackgroundColor;
 }
 
 export interface ColumnedText {
 	_type: 'columned_text';
 	title: string;
+	pre_title: string;
 	borderedTitle: boolean;
 	indented: boolean;
 	body: {
 		title: string;
 		body: InputValue;
+		button: {
+			button_title: string;
+			button_url: string;
+		};
 	}[];
 	bgColor: SectionBackgroundColor;
 }

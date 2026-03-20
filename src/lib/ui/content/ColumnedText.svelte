@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { page } from '$app/state';
 	import type { ColumnedText } from '$lib/types';
 	import { PortableText } from '@portabletext/svelte';
 
@@ -9,7 +10,15 @@
 	let { data }: Props = $props();
 
 	let hasTitle = $derived(data.title && data.title.length > 0);
+	let hasPreTitle = $derived(data.pre_title && data.pre_title.length > 0);
 	let hasBorderedTitle = $derived(hasTitle && data.borderedTitle);
+
+	function getTarget(url: string) {
+		if (url.startsWith('http') && !url.startsWith(page.url.origin)) {
+			return '_blank';
+		}
+		return '_self';
+	}
 </script>
 
 <section
@@ -17,7 +26,10 @@
 	class:hasBorderedTitle
 	class:indented={data.indented}
 >
-	<div class="wrap">
+	<div class="wrap" class:hasTitle class:hasPreTitle>
+		{#if hasPreTitle}
+			<h5 class="pre-title">{data.pre_title}</h5>
+		{/if}
 		{#if hasTitle}
 			<h2 class="title">{data.title}</h2>
 		{/if}
@@ -36,6 +48,13 @@
 					<div class="body">
 						<PortableText value={column.body} components={{}} />
 					</div>
+					{#if column.button?.button_title && column.button?.button_url}
+						<a
+							class="button"
+							href={column.button.button_url}
+							target={getTarget(column.button.button_url)}>{column.button.button_title}</a
+						>
+					{/if}
 				</div>
 			{/each}
 		</div>
@@ -69,7 +88,7 @@
 	.hasBorderedTitle hr {
 		display: none;
 	}
-	.hasBorderedTitle .columns :global(p) {
+	.columns :global(p) {
 		font-size: var(--18pt);
 		line-height: var(--24pt);
 	}
@@ -101,6 +120,12 @@
 	.column .body :global(li) {
 		margin: 0.5em 0;
 	}
+	.hasPreTitle:not(.hasTitle) h5 {
+		margin-bottom: var(--32pt);
+	}
+	.button {
+		margin-top: var(--24pt);
+	}
 	@media (min-width: 560px) {
 		.columns {
 			display: grid;
@@ -117,7 +142,7 @@
 			gap: 56px var(--gutter-lg);
 		}
 		.column hr {
-			margin: var(--16pt) 0 var(--24pt);
+			margin: var(--16pt) 0;
 		}
 		.wrap .title {
 			margin: 0 0 var(--32pt);
@@ -125,13 +150,16 @@
 		section:not(.hasBorderedTitle) .wrap .title {
 			margin-bottom: 56px;
 		}
-		.hasBorderedTitle .columns :global(p) {
+		.columns :global(p) {
 			font-size: var(--20pt);
 			line-height: var(--32pt);
 		}
 		.hasBorderedTitle .wrap .title {
 			margin-bottom: 56px;
 			padding-bottom: 48px;
+		}
+		.button {
+			margin-top: var(--32pt);
 		}
 	}
 	@media (min-width: 768px) {
