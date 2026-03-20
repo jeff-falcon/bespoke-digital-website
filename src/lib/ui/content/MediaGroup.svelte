@@ -2,6 +2,7 @@
 	import type { MediaGroup } from '$lib/types';
 	import { PortableText } from '@portabletext/svelte';
 	import ProjectMediaComponent from '../project/ProjectMediaComponent.svelte';
+	import StylizedList from './StylizedList.svelte';
 
 	interface Props {
 		data: MediaGroup;
@@ -25,7 +26,7 @@
 	{/if}
 	{#if data.description}
 		<div class="description">
-			<PortableText value={data.description} components={{}} />
+			<PortableText value={data.description} components={{ list: StylizedList }} />
 		</div>
 	{/if}
 {/snippet}
@@ -38,7 +39,7 @@
 	{/if}
 {/snippet}
 <section
-	class="media-group layout_{layout}"
+	class="media-group layout_{layout} bg-transparent"
 	class:gutter={!noGutter}
 	class:hasIntro={hasIntro && !isTextLayout}
 	class:hasText={hasIntro && isTextLayout}
@@ -106,7 +107,8 @@
 		padding-top: var(--vpad);
 		padding-bottom: var(--vpad);
 	}
-	.media-group :global(+ .media-group:not(.hasIntro)) {
+	.media-group :global(+ .media-group:not(.hasIntro)),
+	.media-group :global(+ .bg-transparent) {
 		padding-top: 0;
 	}
 	.media-group:has(:global(+ .media-group)) {
@@ -114,6 +116,10 @@
 	}
 	.media-group:has(:global(+ .media-group.hasIntro)) {
 		padding-bottom: 0;
+	}
+
+	.media-group :global(+ .text-2col.bg-transparent) {
+		padding-top: 1.5rem;
 	}
 
 	.intro {
@@ -178,6 +184,24 @@
 		display: grid;
 		gap: var(--gap);
 		grid-template-rows: auto;
+	}
+	.align-centered :global(ul),
+	.align-centered :global(ol) {
+		width: fit-content;
+		margin-inline: auto;
+	}
+	.align-centered :global(li) {
+		width: fit-content;
+		margin-inline: auto;
+	}
+	.align-right :global(ul),
+	.align-right :global(ol) {
+		padding-left: 0;
+	}
+	.align-right :global(li) {
+		width: fit-content;
+		margin-left: auto;
+		padding-left: 0;
 	}
 
 	.layout_four .media {

@@ -1,6 +1,7 @@
 <script lang="ts">
-	import type { ListComponentProps } from '@portabletext/svelte';
+	import { PortableText, type ListComponentProps } from '@portabletext/svelte';
 	import type { Snippet } from 'svelte';
+	import LargeParagraph from './LargeParagraph.svelte';
 
 	type Props = {
 		portableText: ListComponentProps;
@@ -18,8 +19,6 @@
 				: false
 			: false
 	);
-
-	$inspect('list isBold', isBold);
 </script>
 
 {#if isNumbered}
@@ -27,9 +26,12 @@
 		{@render children?.()}
 	</ol>
 {:else}
-	<ul>
-		{@render children?.()}
-	</ul>
+	<div class="stylized-list">
+		<PortableText
+			value={portableText.value}
+			components={{ block: { p: LargeParagraph }, unknownBlockStyle: LargeParagraph }}
+		/>
+	</div>
 {/if}
 
 <style>
@@ -70,6 +72,15 @@
 		color: var(--text-color);
 		font-weight: normal;
 	}
+	.stylized-list :global(li:has(p)) {
+		font-size: var(--18pt);
+		line-height: var(--24pt);
+		color: var(--text-color-60);
+		margin: var(--12pt) 0;
+	}
+	.stylized-list :global(ul:has(li p)) {
+		padding-left: 1.25em;
+	}
 	@media (min-width: 960px) {
 		ol.boldTitles :global(li strong:first-of-type) {
 			font-size: var(--26pt);
@@ -79,6 +90,10 @@
 		}
 		ol :global(li) {
 			padding: 40px 0 40px 112px;
+		}
+		.stylized-list :global(li:has(p)) {
+			font-size: var(--20pt);
+			line-height: var(--32pt);
 		}
 	}
 </style>
