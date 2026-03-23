@@ -8,7 +8,8 @@
 	}
 
 	let { data }: Props = $props();
-	let useThreeColumns = $derived(data.columns === 'three' && data.projects.length % 2 !== 0);
+	let count = $derived(data.projects.length);
+	let useThreeColumns = $derived(data.columns === 'three' && count >= 3 && count % 2 !== 0);
 </script>
 
 <section class="project-grid gutter">
