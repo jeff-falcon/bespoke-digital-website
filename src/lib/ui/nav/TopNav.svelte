@@ -27,7 +27,7 @@
 	let linkElements = $state<{ [key: string]: HTMLElement }>({});
 	let hoveredUrl = $state<string | null>(null);
 	let menuStateTimeout = $state<number>();
-	let openSubnavUrl = $state<string | null>(null);
+	let openSubnavId = $state<string | null>(null);
 	let subnavCloseTimeout = $state<number>();
 	let borderTween = $state<gsap.core.Tween | null>(null);
 	let previousActiveUrl: string | null = null;
@@ -40,6 +40,7 @@
 		store.menuState = newState;
 		clearTimeout(menuStateTimeout);
 		if (newState === 'closed') {
+			mobileSubnavOpenId = null;
 			menuStateTimeout = window.setTimeout(() => {
 				store.isMenuOpenComplete = false;
 			}, 10);
@@ -57,7 +58,7 @@
 	}
 
 	function getActiveUrl() {
-		return menuLinks.find((link) => link.isActive)?.url || null;
+		return menuLinks.find((link) => link.isActive)?.id || null;
 	}
 
 	function killBorderTween() {
@@ -157,7 +158,7 @@
 		if (pendingNavUrl && activeUrl === pendingNavUrl) {
 			pendingNavUrl = null;
 		}
-		const targetUrl = pendingNavUrl || hoveredUrl || openSubnavUrl || activeUrl;
+		const targetUrl = pendingNavUrl || hoveredUrl || openSubnavId || activeUrl;
 		const skipPositionAnimation =
 			!!previousActiveUrl &&
 			!!activeUrl &&
@@ -191,20 +192,20 @@
 		closeSubnav();
 	}
 
-	function openSubnavFor(url: string) {
+	function openSubnavFor(id: string) {
 		clearTimeout(subnavCloseTimeout);
-		const link = menuLinks.find((l) => l.url === url);
+		const link = menuLinks.find((l) => l.id === id);
 		if (link && (link.children?.length ?? 0) > 0) {
-			openSubnavUrl = url;
+			openSubnavId = id;
 		} else {
-			openSubnavUrl = null;
+			openSubnavId = null;
 		}
 	}
 
 	function closeSubnav() {
 		clearTimeout(subnavCloseTimeout);
 		subnavCloseTimeout = window.setTimeout(() => {
-			openSubnavUrl = null;
+			openSubnavId = null;
 			syncBorderToState();
 		}, 150);
 	}
@@ -232,7 +233,8 @@
 	$effect(() => {
 		if (navigating?.type === 'popstate' || navigating?.type === 'link') {
 			untrack(() => {
-				openSubnavUrl = null;
+				openSubnavId = null;
+				mobileSubnavOpenId = null;
 				if (store.menuState === 'open') {
 					setMenuState('closed');
 				}
@@ -271,9 +273,10 @@
 	});
 	let currentRoute = $derived(page.url.pathname ?? '');
 	let menuItems = $derived(
-		config.menu.map((item) => ({
+		config.menu.map((item, i) => ({
+			id: `menu-${i}`,
 			name: item.title,
-			url: `/${item.slug}/`,
+			url: item.slug ? `/${item.slug}/` : '',
 			children:
 				item.children?.map((child) => ({
 					name: child.title,
@@ -281,7 +284,11 @@
 				})) || []
 		}))
 	);
-	function isLinkActive(url: string) {
+	function isLinkActive(url: string, children: { url: string }[] = []) {
+		if (children.length > 0) {
+			return children.some((child) => isChildActive(child.url));
+		}
+		if (!url) return false;
 		return (currentRoute.indexOf(url.replace(/\/$/, '')) ?? -1) > -1;
 	}
 	function isChildActive(url: string) {
@@ -291,7 +298,7 @@
 	let menuLinks = $derived(
 		menuItems.map((item) => ({
 			...item,
-			isActive: isLinkActive(item.url),
+			isActive: isLinkActive(item.url, item.children),
 			children: item.children.map((child) => ({
 				...child,
 				isActive: isChildActive(child.url)
@@ -299,26 +306,41 @@
 		}))
 	);
 	let activeSubnav = $derived(
-		openSubnavUrl
-			? menuLinks.find((l) => l.url === openSubnavUrl && (l.children?.length ?? 0) > 0)
+		openSubnavId
+			? menuLinks.find((l) => l.id === openSubnavId && (l.children?.length ?? 0) > 0)
 			: undefined
 	);
 	let showSubnav = $state(false);
 	let subnavSnapshot = $state<{
-		url: string;
+		id: string;
 		children: { name: string; url: string; isActive: boolean }[];
 	} | null>(null);
 	$effect(() => {
 		if (activeSubnav) {
-			subnavSnapshot = { url: activeSubnav.url, children: [...activeSubnav.children] };
+			subnavSnapshot = { id: activeSubnav.id, children: [...activeSubnav.children] };
 			showSubnav = true;
 		} else {
 			showSubnav = false;
 		}
 	});
+	let mobileSubnavOpenId = $state<string | null>(null);
 	let mobileSubnavParent = $derived(
-		menuLinks.find((l) => (l.children?.length ?? 0) > 0 && l.isActive)
+		mobileSubnavOpenId
+			? menuLinks.find(
+					(l, index) => l.id + '-' + index === mobileSubnavOpenId && (l.children?.length ?? 0) > 0
+				)
+			: undefined
 	);
+	let showMobileSubnav = $state(false);
+	let mobileSubnavSnapshot = $state<{ name: string; url: string }[] | null>(null);
+	$effect(() => {
+		if (mobileSubnavParent) {
+			mobileSubnavSnapshot = [...mobileSubnavParent.children];
+			showMobileSubnav = true;
+		} else {
+			showMobileSubnav = false;
+		}
+	});
 	let menuIsWide = $derived(menuLinks.length >= 4 ? 960 : 760);
 	let isMenuOpen = $derived(store.menuState === 'open');
 	let mobileNavStyle = $derived(store.bgColor ? `--bg-color: ${store.bgColor};` : '');
@@ -383,39 +405,39 @@
 	</div>
 	<div class="right">
 		<nav class="h-menu" bind:this={hMenuEl} onmouseleave={onMenuLeave}>
-			{#each menuLinks as link, index (link.url + '-' + 'index')}
+			{#each menuLinks as link, index (link.id)}
 				{#if (link.children?.length ?? 0) > 0}
 					<button
 						type="button"
 						class="h-menu-btn"
 						class:active={link.isActive}
-						bind:this={linkElements[link.url]}
+						bind:this={linkElements[link.id]}
 						onclick={() => {
-							openSubnavFor(link.url);
-							onLinkClick(link.url);
+							openSubnavFor(link.id);
+							onLinkClick(link.id);
 						}}
 						onmouseenter={() => {
-							onLinkEnter(link.url);
-							openSubnavFor(link.url);
+							onLinkEnter(link.id);
+							openSubnavFor(link.id);
 						}}
 						onfocus={() => {
-							onLinkEnter(link.url);
-							openSubnavFor(link.url);
+							onLinkEnter(link.id);
+							openSubnavFor(link.id);
 						}}>{link.name}</button
 					>
 				{:else}
 					<a
 						href={link.url}
 						class:active={link.isActive}
-						bind:this={linkElements[link.url]}
-						onclick={() => onLinkClick(link.url)}
+						bind:this={linkElements[link.id]}
+						onclick={() => onLinkClick(link.id)}
 						onmouseenter={() => {
-							onLinkEnter(link.url);
-							openSubnavUrl = null;
+							onLinkEnter(link.id);
+							openSubnavId = null;
 						}}
 						onfocus={() => {
-							onLinkEnter(link.url);
-							openSubnavUrl = null;
+							onLinkEnter(link.id);
+							openSubnavId = null;
 						}}>{link.name}</a
 					>
 				{/if}
@@ -428,7 +450,7 @@
 					class="subnav"
 					role="menu"
 					style="left: {(() => {
-						const el = linkElements[subnavSnapshot.url];
+						const el = linkElements[subnavSnapshot.id];
 						if (!el || !hMenuEl) return '0px';
 						const navBox = hMenuEl.getBoundingClientRect();
 						const elBox = el.getBoundingClientRect();
@@ -482,12 +504,16 @@
 		></div>
 		<div class="wrap">
 			<nav class="v-menu">
-				{#each menuItems as link, index (link.url)}
+				{#each menuItems as link, index (link.id + '-' + index)}
 					{#if link.children.length > 0}
-						<span
+						<button
 							class="v-menu-parent"
-							class:active={isLinkActive(link.url)}
+							class:active={isLinkActive(link.url, link.children)}
 							class:hasSubnav={!!mobileSubnavParent}
+							onclick={() => {
+								const id = link.id + '-' + index;
+								mobileSubnavOpenId = mobileSubnavOpenId === id ? null : id;
+							}}
 							in:fly|global={{
 								duration: 1200,
 								opacity: 0,
@@ -501,7 +527,7 @@
 								y: 0,
 								easing: cubicIn,
 								delay: index * 50
-							}}>{link.name}</span
+							}}>{link.name}</button
 						>
 					{:else}
 						<a
@@ -526,9 +552,9 @@
 					{/if}
 				{/each}
 			</nav>
-			{#if mobileSubnavParent?.children}
+			{#if showMobileSubnav && mobileSubnavSnapshot}
 				<nav class="v-subnav">
-					{#each mobileSubnavParent.children as child, index (child.url)}
+					{#each mobileSubnavSnapshot as child, index (child.url + '-' + index)}
 						<a
 							href={child.url}
 							in:fly|global={{
@@ -847,12 +873,16 @@
 		opacity: 1;
 	}
 	.v-menu .v-menu-parent {
+		background: none;
+		border: none;
+		padding: 0;
+		font: inherit;
 		font-size: var(--24pt);
 		line-height: 1;
 		color: var(--text-color);
 		width: min-content;
 		white-space: nowrap;
-		cursor: default;
+		cursor: pointer;
 	}
 	.v-subnav {
 		grid-column: 2;
@@ -863,8 +893,8 @@
 		justify-content: center;
 	}
 	.v-subnav a {
-		font-size: var(--18pt);
-		line-height: 1;
+		font-size: var(--16pt);
+		line-height: var(--24pt);
 		color: var(--text-color);
 		white-space: nowrap;
 	}
