@@ -247,7 +247,7 @@
 	let menuLinks = $derived(
 		config.menu.map((item) => {
 			return {
-				name: item.name,
+				name: item.title,
 				url: `/${item.slug}/`,
 				isActive: (currentRoute.indexOf(`/${item.slug}`) ?? -1) > -1
 			};
@@ -569,6 +569,7 @@
 		display: grid;
 		grid-template-columns: repeat(4, 1fr);
 		gap: 40px var(--gutter-sm);
+		padding-inline: var(--gutter-sm);
 	}
 	#mobile-nav .bg {
 		position: absolute;
@@ -587,7 +588,7 @@
 		overscroll-behavior: contain;
 	}
 	#mobile-nav .wrap {
-		grid-column: 3 / span 2;
+		grid-column: 1 / span 2;
 		display: flex;
 		flex-direction: column;
 		position: relative;

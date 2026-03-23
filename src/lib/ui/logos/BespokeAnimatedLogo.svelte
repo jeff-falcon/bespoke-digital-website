@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
-	import { cubicInOut, quintInOut } from 'svelte/easing';
+	import { quintInOut } from 'svelte/easing';
 	import { fly } from 'svelte/transition';
 
 	let part = $state(1);
@@ -149,7 +149,7 @@
 	svg {
 		display: block;
 		height: 28px;
-		width: 186px;
+		width: 175px;
 		fill: var(--text-color);
 	}
 	@media (min-width: 720px) {

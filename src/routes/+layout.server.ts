@@ -32,9 +32,13 @@ export async function load({ cookies, url }) {
 	const client = getClient(draftsEnabled);
 	const groq = `*[_type == "config"]{
     locations,
-    "menu": main_menu[]->{
-      name,
-      "slug": slug.current
+    "menu": main_menu[]{
+      title,
+      "slug": page->slug.current,
+      children[]{
+        title,
+        "slug": page->slug.current
+      }
     },
     "socials": socials_group{
       name,
