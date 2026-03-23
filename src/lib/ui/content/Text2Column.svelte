@@ -10,6 +10,7 @@
 	}
 
 	let { data, withGutter = true }: Props = $props();
+	let useStylizedList = $derived(data.useStylizedList !== false);
 </script>
 
 <section
@@ -22,7 +23,7 @@
 			<PortableText
 				value={data.col1}
 				components={{
-					list: StylizedList,
+					list: useStylizedList ? StylizedList : undefined,
 					block: { p: LargeParagraph },
 					unknownBlockStyle: LargeParagraph
 				}}
@@ -32,7 +33,7 @@
 			<PortableText
 				value={data.col2}
 				components={{
-					list: StylizedList,
+					list: useStylizedList ? StylizedList : undefined,
 					block: { p: LargeParagraph },
 					unknownBlockStyle: LargeParagraph
 				}}

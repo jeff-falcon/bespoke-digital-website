@@ -22,7 +22,7 @@
 </script>
 
 {#if isNumbered}
-	<ol class:boldTitles={isBold}>
+	<ol class:boldTitles={isBold} class="stylized">
 		{@render children?.()}
 	</ol>
 {:else}

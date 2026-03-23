@@ -61,10 +61,10 @@ export async function getPage(slug: string, cookies: Cookies): Promise<Page | un
 			_type == 'projects' => @->{...,projects[]->},
 			_type == 'project_media_ref' => @->,
 			_type == 'text_only_ref' => @->{..., "bgColor": background_color},
-			_type == 'text_2col_ref' => @->{..., "bgColor": background_color},
+			_type == 'text_2col_ref' => @->{..., "useStylizedList": use_stylized_list, "bgColor": background_color},
 			_type == 'quote_ref' => @->{..., "bgColor": background_color, "textColor": text_color},
 			_type == 'feature_carousel_ref' => @->{..., "bgColor": background_color, "slides": slides[]{..., media->}},
-			_type == 'media_group_ref' => @->{..., "text_align": text_align, "media": media[]->{...}},
+			_type == 'media_group_ref' => @->{..., "textAlign": text_align, "media": media[]->{...}},
 			_type == 'columned_text_ref' => @->{..., "borderedTitle": bordered_title, "bgColor": background_color},
 			_type == 'client_list_ref' => @->{..., "bgColor": background_color},
 			_type == 'team_grid_ref' => @->{..., "bgColor": background_color, "extraMembers": extra_members[]->, "extraMembersTitle": extra_members_title},
@@ -192,9 +192,10 @@ async function getComponents(components: any): Promise<PageComponents> {
 				name: component.name,
 				title: component.title,
 				description: component.description,
-				text_align: component.text_align,
+				textAlign: component.textAlign,
 				layout: component.layout,
-				media: mediaItems
+				media: mediaItems,
+				useStylizedList: component.use_stylized_list
 			};
 			comps.push(mediaGroup);
 		} else {

@@ -206,6 +206,7 @@ export interface Text2Column {
 	col1: InputValue;
 	col2: InputValue;
 	indented: boolean;
+	useStylizedList: boolean;
 	bgColor: SectionBackgroundColor;
 }
 
@@ -232,7 +233,8 @@ export interface MediaGroup {
 	name: string;
 	title?: string;
 	description?: InputValue;
-	text_align?: 'centered' | 'left' | 'right';
+	useStylizedList?: boolean;
+	textAlign?: 'centered' | 'left' | 'right';
 	layout?:
 		| 'one_two'
 		| 'two_one'

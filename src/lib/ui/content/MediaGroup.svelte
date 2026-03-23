@@ -13,7 +13,7 @@
 
 	const layout = $derived(data.layout ?? 'one_full');
 	const mediaItems = $derived(data.media ?? []);
-	const textAlign = $derived(data.text_align ?? 'centered');
+	const textAlign = $derived(data.textAlign ?? 'centered');
 	const hasIntro = $derived(
 		Boolean(data.title || (data.description && (data.description as any[]).length))
 	);
@@ -26,7 +26,10 @@
 	{/if}
 	{#if data.description}
 		<div class="description">
-			<PortableText value={data.description} components={{ list: StylizedList }} />
+			<PortableText
+				value={data.description}
+				components={data.useStylizedList ? { list: StylizedList } : undefined}
+			/>
 		</div>
 	{/if}
 {/snippet}
@@ -185,22 +188,25 @@
 		gap: var(--gap);
 		grid-template-rows: auto;
 	}
+
 	.align-centered :global(ul),
-	.align-centered :global(ol) {
+	.align-centered :global(ol:not(.stylized)) {
+		text-align: left;
 		width: fit-content;
 		margin-inline: auto;
+		max-width: 480px;
+		text-wrap: initial;
 	}
-	.align-centered :global(li) {
-		width: fit-content;
-		margin-inline: auto;
+	.align-centered :global(ol.stylized),
+	.align-right :global(ol.stylized) {
+		text-align: left;
 	}
+
 	.align-right :global(ul),
-	.align-right :global(ol) {
+	.align-right :global(ol:not(.stylized)) {
 		padding-left: 0;
 	}
-	.align-right :global(li) {
-		width: fit-content;
-		margin-left: auto;
+	.align-right :global(:not(.stylized) li) {
 		padding-left: 0;
 	}
 
