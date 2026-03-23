@@ -108,7 +108,7 @@
 		padding-bottom: var(--vpad);
 	}
 	.media-group :global(+ .media-group:not(.hasIntro)),
-	.media-group :global(+ .bg-transparent) {
+	.media-group :global(+ .bg-transparent:not(.hasIntro)) {
 		padding-top: 0;
 	}
 	.media-group:has(:global(+ .media-group)) {
