@@ -666,7 +666,8 @@
 		display: none;
 		position: relative;
 	}
-	.h-menu a {
+	.h-menu a,
+	.h-menu button {
 		display: flex;
 		border-radius: var(--input-border-radius);
 		border: 0;
@@ -676,6 +677,11 @@
 		align-items: center;
 		transition: linear 180ms;
 		transition-property: opacity;
+		font-size: var(--18pt);
+		line-height: var(--24pt);
+		background: transparent;
+		color: inherit;
+		font-weight: bold;
 	}
 	.h-menu a:hover,
 	.h-menu .h-menu-btn:hover {
@@ -685,43 +691,31 @@
 	.h-menu .h-menu-btn.active {
 		opacity: 1;
 	}
-	.h-menu .h-menu-btn {
-		display: flex;
-		border-radius: var(--input-border-radius);
-		border: 0;
-		padding: 0 36px;
-		height: var(--button-height-large);
-		justify-content: center;
-		align-items: center;
-		transition: linear 180ms;
-		transition-property: opacity;
-		background: none;
-		color: inherit;
-		font: inherit;
-		cursor: pointer;
-	}
 	.subnav {
 		position: absolute;
 		top: 100%;
-		margin-top: 8px;
+		margin-top: 16px;
 		display: flex;
 		flex-direction: column;
 		background: var(--text-color-5);
 		backdrop-filter: blur(60px);
-		-webkit-backdrop-filter: blur(60px);
 		border: 1px solid var(--text-color-40);
 		border-radius: var(--input-border-radius);
-		padding: 4px;
-		min-width: 160px;
+		padding: 0;
 		z-index: 10;
+		overflow: hidden;
 	}
 	.subnav a {
-		display: block;
-		padding: 10px 20px;
+		display: flex;
+		align-items: center;
+		padding: 0 36px;
+		height: var(--button-height-large);
 		color: var(--text-color);
 		white-space: nowrap;
 		border-radius: calc(var(--input-border-radius) - 4px);
 		transition: background-color 120ms linear;
+		font-size: var(--18pt);
+		line-height: var(--24pt);
 	}
 	.subnav a:hover,
 	.subnav a.active {
