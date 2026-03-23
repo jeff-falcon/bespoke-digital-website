@@ -1,4 +1,8 @@
-import { parseCloudinaryImage, parseProjectMediaFromData } from '$lib/parse';
+import {
+	parseCloudinaryImage,
+	parseMediaGroupFromData,
+	parseProjectMediaFromData
+} from '$lib/parse';
 import { getClient } from '$lib/sanity';
 import type { MediaGroup, Project, ProjectMedia, ProjectMediaPair, TextOnly } from '$lib/types';
 import { error } from '@sveltejs/kit';
@@ -68,19 +72,7 @@ export const load: PageServerLoad = async ({
 					}
 				}
 				if (media._type === 'media_group') {
-					const mediaGroupItems = (media.media ?? [])
-						.map((m: any) => parseProjectMediaFromData(m, false))
-						.filter(Boolean);
-					mediaList.push({
-						_type: 'media_group',
-						_id: media._id,
-						name: media.name,
-						title: media.title,
-						description: media.description,
-						textAlign: media.text_align,
-						layout: media.layout,
-						media: mediaGroupItems
-					} as MediaGroup);
+					mediaList.push(parseMediaGroupFromData(media));
 				}
 				if (media._type === 'text_only') {
 					mediaList.push(media);

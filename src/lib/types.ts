@@ -234,6 +234,7 @@ export interface MediaGroup {
 	title?: string;
 	description?: InputValue;
 	textAlign?: 'centered' | 'left';
+	collapseMargin?: boolean;
 	layout?:
 		| 'one_two'
 		| 'two_one'

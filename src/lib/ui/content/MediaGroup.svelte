@@ -17,6 +17,7 @@
 	const hasText = $derived(
 		isTextLayout && Boolean(data.title || (data.description && (data.description as any[]).length))
 	);
+	const collapseNext = $derived(data.collapseMargin);
 </script>
 
 {#snippet textContent()}
@@ -29,7 +30,12 @@
 		</div>
 	{/if}
 {/snippet}
-<section class="media-group layout_{layout} bg-transparent" class:gutter={!noGutter} class:hasText>
+<section
+	class="media-group layout_{layout} bg-transparent"
+	class:gutter={!noGutter}
+	class:hasText
+	class:collapseNext
+>
 	{#if mediaItems.length}
 		<div class="media">
 			{#if layout === 'two_one' || layout === 'one_two'}
@@ -89,15 +95,12 @@
 		padding-top: var(--vpad);
 		padding-bottom: var(--vpad);
 	}
-	.media-group :global(+ .media-group:not(.hasIntro)),
-	.media-group :global(+ .bg-transparent:not(.hasIntro)) {
-		padding-top: 0;
-	}
 	.media-group:has(:global(+ .media-group)) {
 		padding-bottom: var(--gap);
 	}
-	.media-group:has(:global(+ .media-group.hasIntro)) {
-		padding-bottom: 0;
+	.media-group.collapseNext :global(+ .media-group),
+	.media-group :global(+ .bg-transparent:not(.media-group)) {
+		padding-top: 0;
 	}
 
 	.media-group :global(+ .text-2col.bg-transparent) {
