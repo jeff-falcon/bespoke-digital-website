@@ -5,7 +5,9 @@
 	import { PortableText } from '@portabletext/svelte';
 	import { expoOut } from 'svelte/easing';
 	import { fly, type FlyParams } from 'svelte/transition';
+	import ColumnedText from '../content/ColumnedText.svelte';
 	import MediaGroup from '../content/MediaGroup.svelte';
+	import Text2Column from '../content/Text2Column.svelte';
 	import TextOnly from '../content/TextOnly.svelte';
 	import ProjectGridComponent from './ProjectGrid.svelte';
 
@@ -137,6 +139,12 @@
 							<TextOnly data={item} />
 						</div>
 					{/if}
+					{#if item._type === 'columned_text'}
+						<ColumnedText data={item} />
+					{/if}
+					{#if item._type === 'text_2col'}
+						<Text2Column data={item} />
+					{/if}
 				{/if}
 			{/each}
 		</section>
@@ -228,9 +236,9 @@
 	.hasRelatedBg.relatedBgIsLight :global(.project-grid) {
 		color: var(--bg-dark);
 	}
-	.text-block {
-		margin-left: calc(0px - var(--gutter-sm));
-		margin-right: calc(0px - var(--gutter-sm));
+	.medias :global(section.gutter) {
+		padding-left: 0;
+		padding-right: 0;
 	}
 	.media-group-run :global(.media-group:first-of-type) {
 		--vpad: 0;
@@ -269,10 +277,6 @@
 		.isRightLarger :global(.media:nth-of-type(1) img),
 		.isLeftLarger :global(.media:nth-of-type(2) img) {
 			object-fit: cover;
-		}
-		.text-block {
-			margin-left: calc(0px - var(--gutter-lg));
-			margin-right: calc(0px - var(--gutter-lg));
 		}
 		.media-group-run :global(.media-group:first-of-type:has(.intro)) {
 			--vpad: 2rem;
