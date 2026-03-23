@@ -1,6 +1,10 @@
-import { parseCloudinaryImage, parseProjectMediaFromData } from '$lib/parse';
+import {
+	parseCloudinaryImage,
+	parseMediaGroupFromData,
+	parseProjectMediaFromData
+} from '$lib/parse';
 import { getClient } from '$lib/sanity';
-import type { MediaGroup, Project, ProjectMedia, ProjectMediaPair, TextOnly } from '$lib/types';
+import type { Project, ProjectMediaPair } from '$lib/types';
 import { error } from '@sveltejs/kit';
 import type { PageServerLoad } from './$types';
 
@@ -21,6 +25,8 @@ export const load: PageServerLoad = async ({
 					right->
 				},
 				_type == 'media_group_item' => @->{..., "media": media[]->},
+				_type == 'columned_text_ref' => @->{..., "bgColor": background_color},
+				_type == 'text_2col_ref' => @->{..., "bgColor": background_color},
 			},
 			"tags": tags[]->prefLabel,
 			"relatedProjects": *[_type == "project" && count(tags[@._ref in ^.^.tags[]._ref]) > 0 && slug.current != "${params.slug}" && !(_id in path("drafts.**"))]{
@@ -43,7 +49,7 @@ export const load: PageServerLoad = async ({
 			error(404, 'Page not found');
 		}
 		const projectData = data[0];
-		const mediaList: Array<ProjectMedia | ProjectMediaPair | TextOnly | MediaGroup> = [];
+		const mediaList: Project['media'] = [];
 		if (projectData.media) {
 			for (const media of projectData.media) {
 				if (media._type === 'project_media') {
@@ -68,21 +74,13 @@ export const load: PageServerLoad = async ({
 					}
 				}
 				if (media._type === 'media_group') {
-					const mediaGroupItems = (media.media ?? [])
-						.map((m: any) => parseProjectMediaFromData(m, false))
-						.filter(Boolean);
-					mediaList.push({
-						_type: 'media_group',
-						_id: media._id,
-						name: media.name,
-						title: media.title,
-						description: media.description,
-						textAlign: media.text_align,
-						layout: media.layout,
-						media: mediaGroupItems
-					} as MediaGroup);
+					mediaList.push(parseMediaGroupFromData(media));
 				}
-				if (media._type === 'text_only') {
+				if (
+					media._type === 'text_2col' ||
+					media._type === 'text_only' ||
+					media._type === 'columned_text'
+				) {
 					mediaList.push(media);
 				}
 			}

@@ -1,4 +1,11 @@
-import type { CloudinaryImage, Hero, MultiHero, Project, ProjectMedia } from '$lib/types';
+import type {
+	CloudinaryImage,
+	Hero,
+	MediaGroup,
+	MultiHero,
+	Project,
+	ProjectMedia
+} from '$lib/types';
 
 export function parseCloudinaryImage(
 	image: any,
@@ -79,6 +86,24 @@ export function parseProjectMediaFromData(project: any, isSingle = true): Projec
 		autoplay: project.autoplay ?? false
 	};
 	return media;
+}
+
+export function parseMediaGroupFromData(data: any) {
+	const media = (data.media ?? [])
+		.map((m: any) => parseProjectMediaFromData(m, false))
+		.filter(Boolean);
+	const mediaGroup: MediaGroup = {
+		_type: 'media_group',
+		_id: data._id,
+		name: data.name,
+		title: data.title,
+		description: data.description,
+		textAlign: data.text_align,
+		collapseMargin: data.collapse_margin !== false,
+		layout: data.layout,
+		media
+	};
+	return mediaGroup;
 }
 
 export function parseProjectFromData(data: any) {

@@ -6,7 +6,6 @@ import type {
 	FeatureCarouselSlide,
 	Form,
 	LogoGrid,
-	MediaGroup,
 	Page,
 	PageComponents,
 	Project,
@@ -21,6 +20,7 @@ import { error, type Cookies } from '@sveltejs/kit';
 import {
 	makeSquareThumbnail,
 	parseCloudinaryImage,
+	parseMediaGroupFromData,
 	parseMultiHeroFromData,
 	parseProjectFromData,
 	parseProjectMediaFromData
@@ -183,20 +183,7 @@ async function getComponents(components: any): Promise<PageComponents> {
 		} else if (component._type === 'form') {
 			comps.push(component as Form);
 		} else if (component._type === 'media_group') {
-			const mediaItems = (component.media ?? [])
-				.map((m: any) => parseProjectMediaFromData(m, false))
-				.filter(Boolean);
-			const mediaGroup: MediaGroup = {
-				_type: 'media_group',
-				_id: component._id,
-				name: component.name,
-				title: component.title,
-				description: component.description,
-				textAlign: component.text_align,
-				layout: component.layout,
-				media: mediaItems
-			};
-			comps.push(mediaGroup);
+			comps.push(parseMediaGroupFromData(component));
 		} else {
 			console.log('unknown component', component);
 		}
