@@ -24,9 +24,11 @@
 	let bespokeLogo = $state<BespokeAnimatedLogo>();
 	let hMenuEl = $state<HTMLElement>();
 	let borderEl = $state<HTMLDivElement>();
-	let linkElements = $state<{ [key: string]: HTMLAnchorElement }>({});
+	let linkElements = $state<{ [key: string]: HTMLElement }>({});
 	let hoveredUrl = $state<string | null>(null);
 	let menuStateTimeout = $state<number>();
+	let openSubnavUrl = $state<string | null>(null);
+	let subnavCloseTimeout = $state<number>();
 	let borderTween = $state<gsap.core.Tween | null>(null);
 	let previousActiveUrl: string | null = null;
 	let clickedTargetNoAnimate: string | null = null;
@@ -155,7 +157,7 @@
 		if (pendingNavUrl && activeUrl === pendingNavUrl) {
 			pendingNavUrl = null;
 		}
-		const targetUrl = pendingNavUrl || hoveredUrl || activeUrl;
+		const targetUrl = pendingNavUrl || hoveredUrl || openSubnavUrl || activeUrl;
 		const skipPositionAnimation =
 			!!previousActiveUrl &&
 			!!activeUrl &&
@@ -183,8 +185,32 @@
 	}
 
 	function onMenuLeave() {
+		console.log('menu leave');
 		hoveredUrl = null;
 		syncBorderToState();
+		closeSubnav();
+	}
+
+	function openSubnavFor(url: string) {
+		clearTimeout(subnavCloseTimeout);
+		const link = menuLinks.find((l) => l.url === url);
+		if (link && (link.children?.length ?? 0) > 0) {
+			openSubnavUrl = url;
+		} else {
+			openSubnavUrl = null;
+		}
+	}
+
+	function closeSubnav() {
+		clearTimeout(subnavCloseTimeout);
+		subnavCloseTimeout = window.setTimeout(() => {
+			openSubnavUrl = null;
+			syncBorderToState();
+		}, 150);
+	}
+
+	function cancelSubnavClose() {
+		clearTimeout(subnavCloseTimeout);
 	}
 
 	function onLinkClick(url: string) {
@@ -204,12 +230,12 @@
 		fadeBorderOut(true);
 	}
 	$effect(() => {
-		if (
-			(navigating?.type === 'popstate' || navigating?.type === 'link') &&
-			store.menuState === 'open'
-		) {
+		if (navigating?.type === 'popstate' || navigating?.type === 'link') {
 			untrack(() => {
-				setMenuState('closed');
+				openSubnavUrl = null;
+				if (store.menuState === 'open') {
+					setMenuState('closed');
+				}
 			});
 		}
 	});
@@ -244,14 +270,54 @@
 		}
 	});
 	let currentRoute = $derived(page.url.pathname ?? '');
+	let menuItems = $derived(
+		config.menu.map((item) => ({
+			name: item.title,
+			url: `/${item.slug}/`,
+			children:
+				item.children?.map((child) => ({
+					name: child.title,
+					url: `/${child.slug}/`
+				})) || []
+		}))
+	);
+	function isLinkActive(url: string) {
+		return (currentRoute.indexOf(url.replace(/\/$/, '')) ?? -1) > -1;
+	}
+	function isChildActive(url: string) {
+		return currentRoute === url.replace(/\/$/, '');
+	}
+	// Keep menuLinks as a derived for pill follower and other logic that needs isActive
 	let menuLinks = $derived(
-		config.menu.map((item) => {
-			return {
-				name: item.title,
-				url: `/${item.slug}/`,
-				isActive: (currentRoute.indexOf(`/${item.slug}`) ?? -1) > -1
-			};
-		})
+		menuItems.map((item) => ({
+			...item,
+			isActive: isLinkActive(item.url),
+			children: item.children.map((child) => ({
+				...child,
+				isActive: isChildActive(child.url)
+			}))
+		}))
+	);
+	let activeSubnav = $derived(
+		openSubnavUrl
+			? menuLinks.find((l) => l.url === openSubnavUrl && (l.children?.length ?? 0) > 0)
+			: undefined
+	);
+	let showSubnav = $state(false);
+	let subnavSnapshot = $state<{
+		url: string;
+		children: { name: string; url: string; isActive: boolean }[];
+	} | null>(null);
+	$effect(() => {
+		if (activeSubnav) {
+			subnavSnapshot = { url: activeSubnav.url, children: [...activeSubnav.children] };
+			showSubnav = true;
+		} else {
+			showSubnav = false;
+		}
+	});
+	let mobileSubnavParent = $derived(
+		menuLinks.find((l) => (l.children?.length ?? 0) > 0 && l.isActive)
 	);
 	let menuIsWide = $derived(menuLinks.length >= 4 ? 960 : 760);
 	let isMenuOpen = $derived(store.menuState === 'open');
@@ -317,17 +383,67 @@
 	</div>
 	<div class="right">
 		<nav class="h-menu" bind:this={hMenuEl} onmouseleave={onMenuLeave}>
-			{#each menuLinks as link (link.url)}
-				<a
-					href={link.url}
-					class:active={link.isActive}
-					bind:this={linkElements[link.url]}
-					onclick={() => onLinkClick(link.url)}
-					onmouseenter={() => onLinkEnter(link.url)}
-					onfocus={() => onLinkEnter(link.url)}>{link.name}</a
-				>
+			{#each menuLinks as link, index (link.url + '-' + 'index')}
+				{#if (link.children?.length ?? 0) > 0}
+					<button
+						type="button"
+						class="h-menu-btn"
+						class:active={link.isActive}
+						bind:this={linkElements[link.url]}
+						onclick={() => {
+							openSubnavFor(link.url);
+							onLinkClick(link.url);
+						}}
+						onmouseenter={() => {
+							onLinkEnter(link.url);
+							openSubnavFor(link.url);
+						}}
+						onfocus={() => {
+							onLinkEnter(link.url);
+							openSubnavFor(link.url);
+						}}>{link.name}</button
+					>
+				{:else}
+					<a
+						href={link.url}
+						class:active={link.isActive}
+						bind:this={linkElements[link.url]}
+						onclick={() => onLinkClick(link.url)}
+						onmouseenter={() => {
+							onLinkEnter(link.url);
+							openSubnavUrl = null;
+						}}
+						onfocus={() => {
+							onLinkEnter(link.url);
+							openSubnavUrl = null;
+						}}>{link.name}</a
+					>
+				{/if}
 			{/each}
 			<div class="border" bind:this={borderEl}></div>
+			{#if showSubnav && subnavSnapshot}
+				<!-- svelte-ignore a11y_no_static_element_interactions -->
+				<!-- svelte-ignore a11y_interactive_supports_focus -->
+				<div
+					class="subnav"
+					role="menu"
+					style="left: {(() => {
+						const el = linkElements[subnavSnapshot.url];
+						if (!el || !hMenuEl) return '0px';
+						const navBox = hMenuEl.getBoundingClientRect();
+						const elBox = el.getBoundingClientRect();
+						return `${elBox.left - navBox.left}px`;
+					})()}"
+					onmouseenter={cancelSubnavClose}
+					onmouseleave={closeSubnav}
+					in:fade={{ duration: 150 }}
+					out:fade={{ duration: 100 }}
+				>
+					{#each subnavSnapshot.children as child, index (child.url + '-' + index)}
+						<a href={child.url} class:active={child.isActive}>{child.name}</a>
+					{/each}
+				</div>
+			{/if}
 		</nav>
 		{#if !isMenuOpen}
 			<a
@@ -366,30 +482,77 @@
 		></div>
 		<div class="wrap">
 			<nav class="v-menu">
-				{#each menuLinks as link, index (link.url)}
-					<a
-						href={link.url}
-						in:fly|global={{
-							duration: 1200,
-							opacity: 0,
-							y: 30,
-							easing: expoOut,
-							delay: index * 80
-						}}
-						out:fly|global={{
-							duration: 400,
-							opacity: 0,
-							y: 0,
-							easing: cubicIn,
-							delay: index * 50
-						}}
-						class:active={link.isActive}>{link.name}</a
-					>
+				{#each menuItems as link, index (link.url)}
+					{#if link.children.length > 0}
+						<span
+							class="v-menu-parent"
+							class:active={isLinkActive(link.url)}
+							class:hasSubnav={!!mobileSubnavParent}
+							in:fly|global={{
+								duration: 1200,
+								opacity: 0,
+								y: 30,
+								easing: expoOut,
+								delay: index * 80
+							}}
+							out:fly|global={{
+								duration: 400,
+								opacity: 0,
+								y: 0,
+								easing: cubicIn,
+								delay: index * 50
+							}}>{link.name}</span
+						>
+					{:else}
+						<a
+							href={link.url}
+							class:hasSubnav={!!mobileSubnavParent}
+							in:fly|global={{
+								duration: 1200,
+								opacity: 0,
+								y: 30,
+								easing: expoOut,
+								delay: index * 80
+							}}
+							out:fly|global={{
+								duration: 400,
+								opacity: 0,
+								y: 0,
+								easing: cubicIn,
+								delay: index * 50
+							}}
+							class:active={isLinkActive(link.url)}>{link.name}</a
+						>
+					{/if}
 				{/each}
 			</nav>
+			{#if mobileSubnavParent?.children}
+				<nav class="v-subnav">
+					{#each mobileSubnavParent.children as child, index (child.url)}
+						<a
+							href={child.url}
+							in:fly|global={{
+								duration: 1200,
+								opacity: 0,
+								y: 30,
+								easing: expoOut,
+								delay: index * 80 + 200
+							}}
+							out:fly|global={{
+								duration: 400,
+								opacity: 0,
+								y: 0,
+								easing: cubicIn,
+								delay: index * 50
+							}}
+							class:active={isChildActive(child.url)}>{child.name}</a
+						>
+					{/each}
+				</nav>
+			{/if}
 			<footer>
 				<div class="socials">
-					{#each config.socials.links as link, index (link)}
+					{#each config.socials.links as link, index (link + '-' + index)}
 						<a
 							href={link.url}
 							target="_blank"
@@ -488,11 +651,62 @@
 		transition: linear 180ms;
 		transition-property: opacity;
 	}
-	.h-menu a:hover {
+	.h-menu a:hover,
+	.h-menu .h-menu-btn:hover {
 		text-decoration: none;
 	}
-	.h-menu a.active {
+	.h-menu a.active,
+	.h-menu .h-menu-btn.active {
 		opacity: 1;
+	}
+	.h-menu .h-menu-btn {
+		display: flex;
+		border-radius: var(--input-border-radius);
+		border: 0;
+		padding: 0 36px;
+		height: var(--button-height-large);
+		justify-content: center;
+		align-items: center;
+		transition: linear 180ms;
+		transition-property: opacity;
+		background: none;
+		color: inherit;
+		font: inherit;
+		cursor: pointer;
+	}
+	.subnav {
+		position: absolute;
+		top: 100%;
+		margin-top: 8px;
+		display: flex;
+		flex-direction: column;
+		background: var(--text-color-5);
+		backdrop-filter: blur(60px);
+		-webkit-backdrop-filter: blur(60px);
+		border: 1px solid var(--text-color-40);
+		border-radius: var(--input-border-radius);
+		padding: 4px;
+		min-width: 160px;
+		z-index: 10;
+	}
+	.subnav a {
+		display: block;
+		padding: 10px 20px;
+		color: var(--text-color);
+		white-space: nowrap;
+		border-radius: calc(var(--input-border-radius) - 4px);
+		transition: background-color 120ms linear;
+	}
+	.subnav a:hover,
+	.subnav a.active {
+		background-color: var(--text-color-10);
+		text-decoration: none;
+	}
+	.useUnderline .subnav {
+		border-radius: 0;
+	}
+	.useUnderline .subnav a {
+		border-radius: 0;
 	}
 	.useUnderline .h-menu,
 	.useUnderline .border {
@@ -588,9 +802,10 @@
 		overscroll-behavior: contain;
 	}
 	#mobile-nav .wrap {
-		grid-column: 1 / span 2;
-		display: flex;
-		flex-direction: column;
+		grid-column: 1 / span 4;
+		display: grid;
+		grid-template-columns: 1fr 1fr;
+		grid-template-rows: 1fr auto;
 		position: relative;
 		z-index: 1;
 	}
@@ -600,6 +815,7 @@
 		margin: 24px 0 0;
 	}
 	#mobile-nav footer {
+		grid-column: 1 / span 2;
 		padding-bottom: 40px;
 	}
 	.v-menu {
@@ -618,7 +834,43 @@
 	}
 	.v-menu a:hover,
 	.v-menu a:focus,
-	.v-menu a:active {
+	.v-menu a:active,
+	.v-menu .v-menu-parent:hover {
+		text-decoration: none;
+	}
+	.v-menu a.hasSubnav,
+	.v-menu .v-menu-parent.hasSubnav {
+		opacity: 0.6;
+		transition: opacity 180ms linear;
+	}
+	.v-menu .v-menu-parent.active {
+		opacity: 1;
+	}
+	.v-menu .v-menu-parent {
+		font-size: var(--24pt);
+		line-height: 1;
+		color: var(--text-color);
+		width: min-content;
+		white-space: nowrap;
+		cursor: default;
+	}
+	.v-subnav {
+		grid-column: 2;
+		grid-row: 1;
+		display: flex;
+		flex-direction: column;
+		gap: 32px;
+		justify-content: center;
+	}
+	.v-subnav a {
+		font-size: var(--18pt);
+		line-height: 1;
+		color: var(--text-color);
+		white-space: nowrap;
+	}
+	.v-subnav a:hover,
+	.v-subnav a:focus,
+	.v-subnav a:active {
 		text-decoration: none;
 	}
 	.insta-btn {
