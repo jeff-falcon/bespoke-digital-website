@@ -77,7 +77,8 @@ export const load: PageServerLoad = async ({
 						name: media.name,
 						title: media.title,
 						description: media.description,
-						text_align: media.text_align,
+						textAlign: media.textAlign,
+						useStylizedList: media.use_stylized_list,
 						layout: media.layout,
 						media: mediaGroupItems
 					} as MediaGroup);
