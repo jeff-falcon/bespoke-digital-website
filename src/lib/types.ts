@@ -141,8 +141,9 @@ export interface Location {
 }
 
 export interface MenuItem {
-	name: string;
+	title: string;
 	slug: string;
+	children?: MenuItem[];
 }
 
 export interface Solutions {

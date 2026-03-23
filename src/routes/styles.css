@@ -34,6 +34,7 @@
 	--text-light-40: hsla(0, 0%, 100%, 0.4);
 	--text-light-30: hsla(0, 0%, 100%, 0.3);
 	--text-light-15: hsla(0, 0%, 100%, 0.15);
+	--text-light-10: hsla(0, 0%, 100%, 0.1);
 	--text-light-5: hsla(0, 0%, 100%, 0.05);
 	--text-dark: var(--bg-dark);
 	--text-dark-15: rgb(38 38 38 / 0.15);
@@ -84,6 +85,7 @@
 	--text-color-40: var(--text-light-40);
 	--text-color-30: var(--text-light-30);
 	--text-color-15: var(--text-light-15);
+	--text-color-10: var(--text-light-10);
 	--text-color-5: var(--text-light-5);
 }
 html,
@@ -105,6 +107,7 @@ body.bg-is-light {
 	--text-color-40: hsla(0, 0%, 15%, 0.5);
 	--text-color-30: hsla(0, 0%, 15%, 0.4);
 	--text-color-15: hsla(0, 0%, 15%, 0.25);
+	--text-color-10: hsla(0, 0%, 15%, 0.25);
 	--text-color-5: hsla(0, 0%, 15%, 0.25);
 	--error-text: #c72797;
 }
