@@ -59,6 +59,7 @@ export interface ProjectGrid {
 	title?: string;
 	useFeature: boolean;
 	disableGrid?: boolean;
+	columns?: 'two' | 'three';
 	moreLink?: {
 		buttonTitle: string;
 		url: string;

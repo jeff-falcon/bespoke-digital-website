@@ -8,6 +8,7 @@
 	}
 
 	let { data }: Props = $props();
+	let useThreeColumns = $derived(data.columns === 'three' && data.projects.length % 2 !== 0);
 </script>
 
 <section class="project-grid gutter">
@@ -18,7 +19,7 @@
 			{/if}
 		</div>
 	{/if}
-	<div class="projects">
+	<div class="projects" class:three={useThreeColumns}>
 		{#each data.projects as project, index (project)}
 			<ProjectThumb
 				{project}
@@ -73,8 +74,16 @@
 		}
 		.projects {
 			display: grid;
-			grid-template-columns: repeat(2, 1fr);
+			grid-template-columns: repeat(2, minmax(0, 1fr));
 			gap: 72px var(--gutter-lg);
+		}
+		.projects.three {
+			grid-template-columns: repeat(3, minmax(0, 1fr));
+		}
+		.projects.three :global(.info) {
+			flex-direction: column;
+			display: flex;
+			gap: 4px;
 		}
 		.title {
 			font-size: var(--26pt);

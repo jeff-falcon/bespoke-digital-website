@@ -121,6 +121,7 @@ async function getComponents(components: any): Promise<PageComponents> {
 					: undefined,
 				useFeature: component.feature_first ?? false,
 				disableGrid: component.feature_all === true,
+				columns: component.columns ?? 'two',
 				projects
 			};
 			comps.push(grid);
