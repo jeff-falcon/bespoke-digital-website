@@ -194,8 +194,7 @@ async function getComponents(components: any): Promise<PageComponents> {
 				description: component.description,
 				textAlign: component.text_align,
 				layout: component.layout,
-				media: mediaItems,
-				useStylizedList: component.use_stylized_list
+				media: mediaItems
 			};
 			comps.push(mediaGroup);
 		} else {

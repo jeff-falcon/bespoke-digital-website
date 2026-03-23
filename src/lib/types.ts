@@ -233,8 +233,7 @@ export interface MediaGroup {
 	name: string;
 	title?: string;
 	description?: InputValue;
-	useStylizedList?: boolean;
-	textAlign?: 'centered' | 'left' | 'right';
+	textAlign?: 'centered' | 'left';
 	layout?:
 		| 'one_two'
 		| 'two_one'
