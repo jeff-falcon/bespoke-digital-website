@@ -2,7 +2,6 @@
 	import type { MediaGroup } from '$lib/types';
 	import { PortableText } from '@portabletext/svelte';
 	import ProjectMediaComponent from '../project/ProjectMediaComponent.svelte';
-	import StylizedList from './StylizedList.svelte';
 
 	interface Props {
 		data: MediaGroup;
@@ -14,10 +13,10 @@
 	const layout = $derived(data.layout ?? 'one_full');
 	const mediaItems = $derived(data.media ?? []);
 	const textAlign = $derived(data.textAlign ?? 'centered');
-	const hasIntro = $derived(
-		Boolean(data.title || (data.description && (data.description as any[]).length))
-	);
 	const isTextLayout = $derived(layout === 'one_text' || layout === 'text_one');
+	const hasText = $derived(
+		isTextLayout && Boolean(data.title || (data.description && (data.description as any[]).length))
+	);
 </script>
 
 {#snippet textContent()}
@@ -26,31 +25,11 @@
 	{/if}
 	{#if data.description}
 		<div class="description">
-			<PortableText
-				value={data.description}
-				components={data.useStylizedList ? { list: StylizedList } : undefined}
-			/>
+			<PortableText value={data.description} />
 		</div>
 	{/if}
 {/snippet}
-
-{#snippet introText()}
-	{#if hasIntro && !isTextLayout}
-		<div class="intro align-{textAlign}">
-			{@render textContent()}
-		</div>
-	{/if}
-{/snippet}
-<section
-	class="media-group layout_{layout} bg-transparent"
-	class:gutter={!noGutter}
-	class:hasIntro={hasIntro && !isTextLayout}
-	class:hasText={hasIntro && isTextLayout}
->
-	{#if layout !== 'one_text' && layout !== 'text_one'}
-		{@render introText()}
-	{/if}
-
+<section class="media-group layout_{layout} bg-transparent" class:gutter={!noGutter} class:hasText>
 	{#if mediaItems.length}
 		<div class="media">
 			{#if layout === 'two_one' || layout === 'one_two'}
@@ -89,7 +68,7 @@
 				<ProjectMediaComponent media={mediaItems[2]} />
 			{/if}
 			{#if layout === 'one_text' || layout === 'text_one'}
-				{#if hasIntro}
+				{#if hasText}
 					<div class="text align-{textAlign}">
 						{@render textContent()}
 					</div>
@@ -125,24 +104,6 @@
 		padding-top: 1.5rem;
 	}
 
-	.intro {
-		margin-bottom: 32px;
-		max-width: 960px;
-		margin-inline: auto;
-		text-wrap: balance;
-	}
-
-	.title {
-		font-size: var(--24pt);
-		line-height: var(--32pt);
-		margin: 0 0 var(--16pt);
-	}
-
-	.description {
-		font-size: var(--18pt);
-		line-height: var(--24pt);
-	}
-
 	.description :global(> :first-child) {
 		margin-top: 0;
 	}
@@ -151,22 +112,19 @@
 		margin-bottom: 0;
 	}
 
-	.intro.align-centered {
-		text-align: center;
+	.description :global(h1) {
+		line-height: var(--48pt);
 	}
-
-	.intro.align-left {
-		text-align: left;
-	}
-
-	.intro.align-right {
-		text-align: right;
+	.description :global(li) {
+		margin: 0.6667em 0;
 	}
 
 	.text {
 		display: flex;
 		flex-direction: column;
 		justify-content: center;
+		align-items: flex-start;
+		text-align: left;
 	}
 
 	.text.align-centered {
@@ -174,40 +132,10 @@
 		text-align: center;
 	}
 
-	.text.align-left {
-		align-items: flex-start;
-		text-align: left;
-	}
-
-	.text.align-right {
-		align-items: flex-end;
-		text-align: right;
-	}
 	.media {
 		display: grid;
 		gap: var(--gap);
 		grid-template-rows: auto;
-	}
-
-	.align-centered :global(ul),
-	.align-centered :global(ol:not(.stylized)) {
-		text-align: left;
-		width: fit-content;
-		margin-inline: auto;
-		max-width: 480px;
-		text-wrap: initial;
-	}
-	.align-centered :global(ol.stylized),
-	.align-right :global(ol.stylized) {
-		text-align: left;
-	}
-
-	.align-right :global(ul),
-	.align-right :global(ol:not(.stylized)) {
-		padding-left: 0;
-	}
-	.align-right :global(:not(.stylized) li) {
-		padding-left: 0;
 	}
 
 	.layout_four .media {
@@ -243,20 +171,6 @@
 			--vpad: 4rem;
 		}
 
-		.intro {
-			margin-bottom: 76px;
-		}
-
-		.title {
-			font-size: var(--40pt);
-			line-height: var(--48pt);
-			margin-bottom: var(--24pt);
-		}
-
-		.description {
-			font-size: var(--24pt);
-			line-height: var(--32pt);
-		}
 		.layout_one_two .media :global(:nth-child(1)),
 		.layout_two_one .media :global(:nth-child(3)) {
 			grid-row: 1 / span 2;
