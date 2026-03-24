@@ -681,7 +681,7 @@
 		line-height: var(--24pt);
 		background: transparent;
 		color: inherit;
-		font-weight: bold;
+		font-weight: normal;
 	}
 	.h-menu a:hover,
 	.h-menu .h-menu-btn:hover {
@@ -716,6 +716,7 @@
 		transition: background-color 120ms linear;
 		font-size: var(--18pt);
 		line-height: var(--24pt);
+		font-weight: normal;
 	}
 	.subnav a:hover,
 	.subnav a.active {
