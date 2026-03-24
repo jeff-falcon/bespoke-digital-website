@@ -107,8 +107,8 @@ body.bg-is-light {
 	--text-color-40: hsla(0, 0%, 15%, 0.5);
 	--text-color-30: hsla(0, 0%, 15%, 0.4);
 	--text-color-15: hsla(0, 0%, 15%, 0.25);
-	--text-color-10: hsla(0, 0%, 15%, 0.25);
-	--text-color-5: hsla(0, 0%, 15%, 0.25);
+	--text-color-10: hsla(0, 0%, 15%, 0.1);
+	--text-color-5: hsla(0, 0%, 15%, 0.05);
 	--error-text: #c72797;
 }
 
