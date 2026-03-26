@@ -708,6 +708,7 @@
 	.subnav a {
 		display: flex;
 		align-items: center;
+		justify-content: flex-start;
 		padding: 0 36px;
 		height: var(--button-height-large);
 		color: var(--text-color);
