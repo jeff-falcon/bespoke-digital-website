@@ -83,6 +83,7 @@ export function parseProjectMediaFromData(project: any, isSingle = true): Projec
 		videoBgSrc: project.thumb_vimeo_src as string,
 		videoBgSrcHd: project.thumb_vimeo_src_hd as string,
 		useOriginalQuality,
+		vimeoPlayerId: project.vimeo_player_id as string,
 		autoplay: project.autoplay ?? false
 	};
 	return media;

@@ -111,12 +111,13 @@ export interface ProjectMedia {
 	_id: string;
 	name: string;
 	image?: CloudinaryImage;
-	kind?: 'image' | 'video-bg' | 'video-player';
+	kind?: 'image' | 'video-bg' | 'video-player' | 'vimeo-player';
 	videoPlayerSrc?: string;
 	videoBgSrc?: string;
 	videoBgSrcHd?: string;
 	useOriginalQuality: boolean;
 	autoplay: boolean;
+	vimeoPlayerId?: string;
 }
 
 export interface ProjectMediaPair {
