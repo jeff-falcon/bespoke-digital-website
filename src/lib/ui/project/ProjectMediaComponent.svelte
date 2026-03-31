@@ -37,6 +37,7 @@
 		media.kind === 'video-player' && Boolean(media.videoPlayerSrc) && !hasVideoId
 	);
 	let isVideoEmbed = $derived(media.kind === 'video-bg' && Boolean(videoBgSrc) && hasVideoId);
+	let isVimeoPlayer = $derived(media.kind === 'vimeo-player' && Boolean(media.vimeoPlayerId));
 
 	function onVideoPlaying(isPlaying: boolean) {
 		window.requestAnimationFrame(() => {
@@ -55,6 +56,20 @@
 			autoplay={media.autoplay}
 		/>
 	</div>
+{:else if isVimeoPlayer}
+	<div class="vimeo-native">
+		<div style="padding:56.25% 0 0 0;position:relative;">
+			<iframe
+				src="https://player.vimeo.com/video/{media.vimeoPlayerId}?badge=0&amp;autopause=0&amp;player_id=0&amp;app_id=58479"
+				frameborder="0"
+				allow="autoplay; fullscreen; picture-in-picture; clipboard-write; encrypted-media; web-share"
+				referrerpolicy="strict-origin-when-cross-origin"
+				style="position:absolute;top:0;left:0;width:100%;height:100%;"
+				title={media.name}
+			></iframe>
+		</div>
+	</div>
+	<script src="https://player.vimeo.com/api/player.js"></script>
 {:else if isStaticImage || isBgVideo || isVideoEmbed}
 	<IntersectionObserver element={figureEl} bind:intersecting={isIntersecting} once={true}>
 		<figure
