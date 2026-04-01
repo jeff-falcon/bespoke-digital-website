@@ -27,6 +27,7 @@ export const load: PageServerLoad = async ({
 				_type == 'media_group_item' => @->{..., "media": media[]->},
 				_type == 'columned_text_ref' => @->{..., "bgColor": background_color},
 				_type == 'text_2col_ref' => @->{..., "bgColor": background_color},
+				_type == 'quote_ref' => @->{..., "bgColor": background_color, "textColor": text_color},
 			},
 			"tags": tags[]->prefLabel,
 			"relatedProjects": *[_type == "project" && count(tags[@._ref in ^.^.tags[]._ref]) > 0 && slug.current != "${params.slug}" && !(_id in path("drafts.**"))]{
@@ -79,6 +80,7 @@ export const load: PageServerLoad = async ({
 				if (
 					media._type === 'text_2col' ||
 					media._type === 'text_only' ||
+					media._type === 'quote' ||
 					media._type === 'columned_text'
 				) {
 					mediaList.push(media);

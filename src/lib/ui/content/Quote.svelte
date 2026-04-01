@@ -5,9 +5,10 @@
 	interface Props {
 		data: Quote;
 		withGutter?: boolean;
+		reanimate?: boolean;
 	}
 
-	let { data, withGutter = true }: Props = $props();
+	let { data, withGutter = true, reanimate = true }: Props = $props();
 
 	let isIntersecting = $state(false);
 	let quoteEl = $state<HTMLElement>();
@@ -16,7 +17,7 @@
 {#if data.quote}
 	<section class="quote-section bg-transparent" class:gutter={withGutter} class:isIntersecting>
 		<div class="wrap">
-			<IntersectionObserver element={quoteEl} bind:intersecting={isIntersecting} once={false}>
+			<IntersectionObserver element={quoteEl} bind:intersecting={isIntersecting} once={!reanimate}>
 				<h2 class="quote" class:green={data.textColor === 'green'} bind:this={quoteEl}>
 					"{data.quote}"
 				</h2>

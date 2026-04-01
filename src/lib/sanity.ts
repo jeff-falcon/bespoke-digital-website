@@ -1,19 +1,13 @@
 import { SANITY_DATASET, SANITY_PROJECT_ID, SANITY_TOKEN } from '$env/static/private';
 import type {
 	ClientList,
-	ColumnedText,
 	FeatureCarousel,
 	FeatureCarouselSlide,
-	Form,
-	LogoGrid,
 	Page,
 	PageComponents,
 	Project,
 	ProjectGrid,
-	Quote,
-	TeamGrid,
-	Text2Column,
-	TextOnly
+	TeamGrid
 } from '$lib/types';
 import { createClient } from '@sanity/client';
 import { error, type Cookies } from '@sveltejs/kit';
@@ -128,16 +122,6 @@ async function getComponents(components: any): Promise<PageComponents> {
 		} else if (component._type === 'project_media') {
 			const p = parseProjectMediaFromData(component);
 			if (p) comps.push(p);
-		} else if (component._type === 'logo_grid') {
-			comps.push(component as LogoGrid);
-		} else if (component._type === 'text_only') {
-			comps.push(component as TextOnly);
-		} else if (component._type === 'text_2col') {
-			comps.push(component as Text2Column);
-		} else if (component._type === 'quote') {
-			comps.push(component as Quote);
-		} else if (component._type === 'columned_text') {
-			comps.push(component as ColumnedText);
 		} else if (component._type === 'feature_carousel') {
 			const featureCarousel: FeatureCarousel = {
 				_type: 'feature_carousel',
@@ -181,10 +165,14 @@ async function getComponents(components: any): Promise<PageComponents> {
 				bgColor: component.bg_color ?? 'transparent'
 			};
 			comps.push(team);
-		} else if (component._type === 'form') {
-			comps.push(component as Form);
 		} else if (component._type === 'media_group') {
 			comps.push(parseMediaGroupFromData(component));
+		} else if (
+			['form', 'logo_grid', 'text_only', 'text_2col', 'quote', 'columned_text'].includes(
+				component._type
+			)
+		) {
+			comps.push(component);
 		} else {
 			console.log('unknown component', component);
 		}

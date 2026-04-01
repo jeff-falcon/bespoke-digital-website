@@ -45,7 +45,7 @@ export interface Project {
 	videoBgSrc?: string;
 	videoBgSrcHd?: string;
 	media?: Array<
-		ProjectMedia | ProjectMediaPair | TextOnly | Text2Column | ColumnedText | MediaGroup
+		ProjectMedia | ProjectMediaPair | TextOnly | Text2Column | ColumnedText | MediaGroup | Quote
 	>;
 	bgColor?: string;
 	tags?: string[];
