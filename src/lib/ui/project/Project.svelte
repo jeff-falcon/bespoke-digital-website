@@ -19,7 +19,21 @@
 
 	const flyProps: FlyParams = { opacity: 0, y: 30, easing: expoOut, duration: 1500 };
 
-	let hasDescription = $derived(project.description || project.descriptionIntro);
+	let descriptionIntroText = $derived(
+		project.descriptionIntro
+			?.map((block: any) => block.children.map((child: any) => child.text).join())
+			.join()
+			.trim() ?? ''
+	);
+
+	let descriptionText = $derived(
+		project.description
+			?.map((block: any) => block.children.map((child: any) => child.text).join())
+			.join()
+			.trim() ?? ''
+	);
+
+	let hasDescription = $derived(Boolean(descriptionIntroText || descriptionText));
 	let relatedProjects = $derived(
 		project.showRelatedProjects && (project.relatedProjects?.length || 0)
 			? <ProjectGrid>{
@@ -36,6 +50,11 @@
 	let relatedBgIsLight = $derived(
 		hasRelatedBg ? getContrastYIQFromColor(project.relatedProjectsBgColor!) === 'black' : false
 	);
+
+	let hasTitle = $derived(Boolean(project.title && !project.titleHidden));
+	let hasCredits = $derived(project.credits?.length ?? 0 > 0);
+
+	let hasProjectInfo = $derived(hasCredits || hasDescription || hasTitle);
 
 	type GroupedItem =
 		| { type: 'single'; item: NonNullable<Project['media']>[number]; index: number }
@@ -69,8 +88,9 @@
 	style="--related-section-bg: {project.relatedProjectsBgColor ?? 'transparent'}"
 	class:hasRelatedBg
 	class:relatedBgIsLight
+	class:hasProjectInfo
 >
-	{#if project.name}
+	{#if hasProjectInfo}
 		<section class="gutter project-info">
 			{#if hasDescription}
 				{#if project.descriptionIntro}
@@ -84,25 +104,27 @@
 					</div>
 				{/if}
 			{/if}
-			<div class="name-credits">
-				{#if !project.titleHidden}
-					<h3 class="project-name" in:fly|global={{ ...flyProps, delay: 75 }}>{project.title}</h3>
-				{/if}
-				{#if project.credits?.length}
-					<div class="credits">
-						{#each project.credits as credit, index (credit)}
-							<div class="credit" in:fly|global={{ ...flyProps, delay: index * 60 + 140 }}>
-								{#if credit.name}
-									<h3 class="name">{credit.name}</h3>
-								{/if}
-								{#if credit.credit}
-									<p class="value">{credit.credit}</p>
-								{/if}
-							</div>
-						{/each}
-					</div>
-				{/if}
-			</div>
+			{#if hasCredits || hasTitle}
+				<div class="name-credits">
+					{#if hasTitle}
+						<h3 class="project-name" in:fly|global={{ ...flyProps, delay: 75 }}>{project.title}</h3>
+					{/if}
+					{#if hasCredits}
+						<div class="credits">
+							{#each project.credits as credit, index (credit)}
+								<div class="credit" in:fly|global={{ ...flyProps, delay: index * 60 + 140 }}>
+									{#if credit.name}
+										<h3 class="name">{credit.name}</h3>
+									{/if}
+									{#if credit.credit}
+										<p class="value">{credit.credit}</p>
+									{/if}
+								</div>
+							{/each}
+						</div>
+					{/if}
+				</div>
+			{/if}
 		</section>
 	{/if}
 	{#if project.media}
@@ -111,7 +133,7 @@
 				{#if group.type === 'media_group_run'}
 					<div class="media-group-run">
 						{#each group.items as mg}
-							<MediaGroup data={mg} noGutter />
+							<MediaGroup data={mg} />
 						{/each}
 					</div>
 				{:else}
@@ -169,6 +191,9 @@
 			'description-extra';
 		padding-top: 120px;
 		padding-bottom: 40px;
+	}
+	.project-view:not(.hasProjectInfo) {
+		padding-top: 120px;
 	}
 	.description.intro {
 		grid-area: description-intro;
@@ -249,6 +274,13 @@
 	.media-group-run :global(.media-group:last-of-type) {
 		padding-bottom: 0;
 	}
+	.medias :global(.bg-dark.gutter),
+	.medias :global(.bg-darker.gutter) {
+		margin-left: calc(var(--gutter) * -1);
+		margin-right: calc(var(--gutter) * -1);
+		padding-left: var(--gutter);
+		padding-right: var(--gutter);
+	}
 
 	@media (min-width: 720px) {
 		.medias {
@@ -291,6 +323,9 @@
 			gap: var(--32pt) calc(var(--gutter-lg) + var(--column-width));
 			padding-top: 128px;
 			padding-bottom: 68px;
+		}
+		.project-view:not(.hasProjectInfo) {
+			padding-top: 128px;
 		}
 		.name-credits {
 			padding-top: 0;
