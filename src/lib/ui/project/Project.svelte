@@ -7,6 +7,7 @@
 	import { fly, type FlyParams } from 'svelte/transition';
 	import ColumnedText from '../content/ColumnedText.svelte';
 	import MediaGroup from '../content/MediaGroup.svelte';
+	import Quote from '../content/Quote.svelte';
 	import Text2Column from '../content/Text2Column.svelte';
 	import TextOnly from '../content/TextOnly.svelte';
 	import ProjectGridComponent from './ProjectGrid.svelte';
@@ -166,6 +167,9 @@
 					{/if}
 					{#if item._type === 'text_2col'}
 						<Text2Column data={item} />
+					{/if}
+					{#if item._type === 'quote'}
+						<Quote data={item} withGutter={false} reanimate={false} />
 					{/if}
 				{/if}
 			{/each}
