@@ -193,7 +193,7 @@
 		padding-bottom: 40px;
 	}
 	.project-view:not(.hasProjectInfo) {
-		padding-top: 120px;
+		padding-top: 80px;
 	}
 	.description.intro {
 		grid-area: description-intro;
@@ -325,7 +325,7 @@
 			padding-bottom: 68px;
 		}
 		.project-view:not(.hasProjectInfo) {
-			padding-top: 128px;
+			padding-top: 96px;
 		}
 		.name-credits {
 			padding-top: 0;
